@@ -1,56 +1,55 @@
-The content below is an example project proposal / requirements document. Replace the text below the lines marked "__TODO__" with details specific to your project. Remove the "TODO" lines.
-
-(___TODO__: your project name_)
-
-# Shoppy Shoperson 
+#  My Top Spotify
 
 ## Overview
 
-(___TODO__: a brief one or two paragraph, high-level description of your project_)
+Spotify is awesome. You can listen to music on the go, offline, with high quality audio. You get personalized playlists, access to an unparalleled catalog of songs, and a sleek, seamless UI.
 
-Remembering what to buy at the grocery store is waaaaay too difficult. Also, shopping for groceries when you're hungry leads to regrettable purchases. Sooo... that's where Shoppy Shoperson comes in!
+But, ever wondered what your most played tracks are? How about your most played artists? Spotify may gave you those stats in their annual "Year Wrapped" feature, but what if you wanted to know right this second? 
 
-Shoppy Shoperson is a web app that will allow users to keep track of multiple grocery lists. Users can register and login. Once they're logged in, they can create or view their grocery list. For every list that they have, they can add items to the list or cross off items.
+Enter My Top Spotify . Connect your Spotify account to MyTopSpotifyPlays to get access to your top 50 most played tracks and artists. Wanna put those into their own playlists so you can bump them later? Got you covered. 
 
 
 ## Data Model
 
-(___TODO__: a description of your application's data and their relationships to each other_) 
+The application will store Users, Tracks, and Tracklists
 
-The application will store Users, Lists and Items
+Users:
+* Can have multiple tracklists based on time or type (via references)
 
-* users can have multiple lists (via references)
-* each list can have multiple items (by embedding)
+Tracklists:
+* Can contain multiple tracks (by embedding)
+* Can be based on either top played artists or top played tracks
+* Can vary based on desired time scope
 
-(___TODO__: sample documents_)
+Tracks:
+* Can contain varying amounts of metadata 
+* Can be played via user’s active device
 
-An Example User:
+An example User:
 
 ```javascript
 {
-  username: "shannonshopper",
+  username: "technojunkie",
   hash: // a password hash,
-  lists: // an array of references to List documents
+  tracklists: // an array of references to Tracklist documents
 }
 ```
 
-An Example List with Embedded Items:
+An example Tracklist with embedded items:
 
 ```javascript
 {
   user: // a reference to a User object
-  name: "Breakfast foods",
+  name: "Top 50 Played Tracks",
   items: [
-    { name: "pancakes", quantity: "9876", checked: false},
-    { name: "ramen", quantity: "2", checked: true},
-  ],
-  createdAt: // timestamp
+    { name: "Sad Machine", artist: "Porter Robinson", album: "Worlds"},
+    { name: "Zulu", artist: "Stephan Bodzin", album: "Powers of Ten"},
+    // ... continues with additional unique tracks till 50 track limit
+  ]
 }
 ```
-
-
+///
 ## [Link to Commented First Draft Schema](db.js) 
-
 (___TODO__: create a first draft of your Schemas in db.js and link to it_)
 
 ## Wireframes
@@ -88,29 +87,26 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 ## Research Topics
 
-(___TODO__: the research topics that you're planning on working on along with their point values... and the total points of research topics listed_)
+* (2 points) Node.js wrapper library for Spotify's Web API
+  * WHAT: Handy Node.js library that simplifies a lot of the low level request-response handling with Spotify's Web API. Puts a layer of abstraction over retreiving JSON metadata about music, artists, albums, and tracks, directly from the Spotify Data Catalogue. Includes helper functions to retreive music metadata, perform searches, gather user info, and more. 
+  * WHY: Abstraction the library provides allows time for focusing on other aspects of the project rather than just dealing with Spotify's Web API. Additionally, the library functions are built with a strong focus on callback. We have been using callbacks heavily in this course, so it's nice to be able to put them to use here too.  
+* (1 points) Spotify Web API
+  * WHAT: Based on simple REST principles, the Spotify Web API endpoints return JSON metadata about music, artists, albums, and tracks, directly from the Spotify Data Catalogue. Web API also provides access to user related data, like playlists and music that the user saves in the "Your Music" library. Such access is enabled through selective authorization, by the user.
+  * WHY: As fate would have it, one of the only functions the Node.js wrapper library mentioned above doesn't have is being able to retrieve top played tracks/artists. Therefore, will have to use the Spotify Web API directly to do that. Not complaining! Will be nice to see the similarities/differences between implementation of the wrapper vs direct API. 
+* (4 points) Vue
+    * WHAT: JS framework with various optional tools for building UIs. Adds JS functionality within HTML documents. Small size, simple integration and detailed documentation.
+    * WHY: Frontend frameworks are all the rage these days. I've fiddled with Vue a LITTLE before, but yet to build a full-fledged app out of it. Would love to change that with this project.
+* (2 points) Bootstrap
+  * WHAT: Arguably the best CSS framework around for responsive design. It has great templates for typography, forms, buttons, tables, navigation, modals, image carousels, and other elements. Built by Twitter engineers!
+  * WHY: CSS isn't my strong suit. So, of course, Bootstrap is my saviour! It's easy to use, responsive to different devices, and has great documentation.
 
-* (5 points) Integrate user authentication
-    * I'm going to be using passport for user authentication
-    * And account has been made for testing; I'll email you the password
-    * see <code>cs.nyu.edu/~jversoza/ait-final/register</code> for register page
-    * see <code>cs.nyu.edu/~jversoza/ait-final/login</code> for login page
-* (4 points) Perform client side form validation using a JavaScript library
-    * see <code>cs.nyu.edu/~jversoza/ait-final/my-form</code>
-    * if you put in a number that's greater than 5, an error message will appear in the dom
-* (5 points) vue.js
-    * used vue.js as the frontend framework; it's a challenging library to learn, so I've assigned it 5 points
+9 points total out of 8 required points
 
-10 points total out of 8 required points (___TODO__: addtional points will __not__ count for extra credit_)
-
-
+///
 ## [Link to Initial Main Project File](app.js) 
-
-(___TODO__: create a skeleton Express application with a package.json, app.js, views folder, etc. ... and link to your initial app.js_)
 
 ## Annotations / References Used
 
-(___TODO__: list any tutorials/references/etc. that you've based your code off of_)
-
-1. [passport.js authentication docs](http://passportjs.org/docs) - (add link to source code that was based on this)
-2. [tutorial on vue.js](https://vuejs.org/v2/guide/) - (add link to source code that was based on this)
+1. Spotify Web API: https://developer.spotify.com/documentation/web-api/
+2. Node.js wrapper library for Spotify's Web API: https://github.com/thelinmichael/spotify-web-api-node
+3. Bootstrap docs: https://getbootstrap.com/ 
