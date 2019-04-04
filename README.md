@@ -6,22 +6,22 @@
 
 But, ever wondered what your most played tracks are? How about your most played artists? Spotify may gave you those stats in their annual **Year Wrapped** feature, but what if you wanted to know right this second? 
 
-Enter My Top Spotify . Connect your Spotify account to **My Top Spotify** to get access to your top 50 most played tracks and artists. Wanna put those top played tracks into their own playlists so you can bump them later? Got you covered. 
+Enter **My Top Spotify**. Connect your Spotify account to My Top Spotify to get access to your top 50 most played tracks and artists. Wanna put those top played tracks into their own playlists so you can bump them later? Got you covered. 
 
 
 ## Data Model
 
 The application will store Users, Tracks, and Tracklists
 
-Users:
+**Users**
 * Can have multiple tracklists based on time or type (via references)
 
-Tracklists:
+**Tracklists**
 * Can contain multiple tracks (by embedding)
 * Can be based on either top played artists or top played tracks
 * Can vary based on desired time scope
 
-Tracks:
+**Tracks**
 * Can contain various amounts of metadata 
 * Can be played via user’s active device
 
