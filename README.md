@@ -2,11 +2,11 @@
 
 ## Overview
 
-Spotify is awesome. You can listen to music on the go, offline, with high quality audio. You get personalized playlists, access to an unparalleled catalog of songs, and a sleek, seamless UI.
+**Spotify** is awesome. You can listen to music on the go, offline, with high quality audio. You get personalized playlists, access to an unparalleled catalog of songs, and a sleek, seamless UI.
 
-But, ever wondered what your most played tracks are? How about your most played artists? Spotify may gave you those stats in their annual "Year Wrapped" feature, but what if you wanted to know right this second? 
+But, ever wondered what your most played tracks are? How about your most played artists? Spotify may gave you those stats in their annual **Year Wrapped** feature, but what if you wanted to know right this second? 
 
-Enter My Top Spotify . Connect your Spotify account to MyTopSpotifyPlays to get access to your top 50 most played tracks and artists. Wanna put those top played tracks into their own playlists so you can bump them later? Got you covered. 
+Enter My Top Spotify . Connect your Spotify account to **My Top Spotify** to get access to your top 50 most played tracks and artists. Wanna put those top played tracks into their own playlists so you can bump them later? Got you covered. 
 
 
 ## Data Model
@@ -22,7 +22,7 @@ Tracklists:
 * Can vary based on desired time scope
 
 Tracks:
-* Can contain varying amounts of metadata 
+* Can contain various amounts of metadata 
 * Can be played via user’s active device
 
 An example User:
@@ -59,21 +59,21 @@ An example Track:
 }
 ```
 
-## [Link to Commented First Draft Schema](db.js) 
+## [Link to Commented First Draft Schema](src/db.js) 
 
 ## Wireframes
 
 / - home page for user to connect to their Spotify account
 
-![](documentation/wireframe-login.png)
+![/](documentation/wireframe-login.png)
 
 /top-plays - page for showing user's top played artists and tracks
 
-![top-plays](documentation/wireframe-top-plays.png)
+![/top-plays](documentation/wireframe-top-plays.png)
 
 ## Site map
 
-LINK
+![site map](documentation/sitemap.png)
 
 ## User Stories or Use Cases
 
@@ -86,23 +86,22 @@ LINK
 
 ## Research Topics
 
-* (2 points) Node.js wrapper library for Spotify's Web API
-  * WHAT: Handy Node.js library that simplifies a lot of the low level request-response handling with Spotify's Web API. Puts a layer of abstraction over retreiving JSON metadata about music, artists, albums, and tracks, directly from the Spotify Data Catalogue. Includes helper functions to retreive music metadata, perform searches, gather user info, and more. 
-  * WHY: Abstraction the library provides allows time for focusing on other aspects of the project rather than just dealing with Spotify's Web API. Additionally, the library functions are built with a strong focus on callbacks. We have been using callbacks heavily in this course, so it's nice to be able to put them to use here too.  
-* (1 points) Spotify Web API
-  * WHAT: Based on simple REST principles, the Spotify Web API endpoints return JSON metadata about music, artists, albums, and tracks, directly from the Spotify Data Catalogue. Web API also provides access to user related data, like playlists and music that the user saves in the "Your Music" library. Such access is enabled through selective authorization, by the user.
-  * WHY: As fate would have it, one of the only functions the Node.js wrapper library mentioned above doesn't have is one to retrieve top played tracks/artists. Therefore, will have to use the Spotify Web API directly to do that. Not complaining! Will be nice to see the similarities/differences between implementation of the wrapper vs direct API. 
-* (4 points) Vue
-    * WHAT: JS framework with various optional tools for building UIs. Adds JS functionality within HTML documents. Small size, simple integration and detailed documentation.
-    * WHY: Frontend frameworks are all the rage these days. I've fiddled with Vue a LITTLE before, but yet to build a full-fledged app out of it. Would love to change that with this project.
-* (2 points) Bootstrap
-  * WHAT: Arguably the best CSS framework around for responsive design. It has great templates for typography, forms, buttons, tables, navigation, modals, image carousels, and other elements. Built by Twitter engineers!
-  * WHY: CSS isn't my strong suit. So, of course, Bootstrap is my saviour! It's easy to use, responsive to different devices, and has great documentation.
+* **(2 points) Node.js wrapper library for Spotify's Web API**
+  * **WHAT**: Handy Node.js library that simplifies a lot of the low level request-response handling with Spotify's Web API. Puts a layer of abstraction over retreiving JSON metadata about music, artists, albums, and tracks, directly from the Spotify Data Catalogue. Includes helper functions to retreive music metadata, perform searches, gather user info, and more. 
+  * **WHY**: Abstraction the library provides allows time for focusing on other aspects of the project rather than just dealing with Spotify's Web API. Additionally, the library functions are built with a strong focus on callbacks. We have been using callbacks heavily in this course, so it's nice to be able to put them to use here too.  
+* **(1 points) Spotify Web API**
+  * **WHAT**: Based on simple REST principles, the Spotify Web API endpoints return JSON metadata about music, artists, albums, and tracks, directly from the Spotify Data Catalogue. Web API also provides access to user related data, like playlists and music that the user saves in the "Your Music" library. Such access is enabled through selective authorization, by the user.
+  * **WHY**: As fate would have it, one of the only functions the Node.js wrapper library mentioned above doesn't have is one to retrieve top played tracks/artists. Therefore, will have to use the Spotify Web API directly to do that. Not complaining! Will be nice to see the similarities/differences between implementation of the wrapper vs direct API. 
+* **(4 points) Vue**
+    * **WHAT**: JS framework with various optional tools for building UIs. Adds JS functionality within HTML documents. Small size, simple integration and detailed documentation.
+    * **WHY**: Frontend frameworks are all the rage these days. I've fiddled with Vue a LITTLE before, but yet to build a full-fledged app out of it. Would love to change that with this project.
+* **(2 points) Bootstrap**
+  * **WHAT**: Arguably the best CSS framework around for responsive design. It has great templates for typography, forms, buttons, tables, navigation, modals, image carousels, and other elements. Built by Twitter engineers!
+  * **WHY**: CSS isn't my strong suit. So, of course, Bootstrap is my saviour! It's easy to use, responsive to different devices, and has great documentation.
 
-9 points total out of 8 required points
+*9 points total out of 8 required points*
 
-///
-## [Link to Initial Main Project File](app.js) 
+## [Link to Initial Main Project File](src/app.js) 
 
 ## Annotations / References Used
 
