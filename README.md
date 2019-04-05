@@ -83,6 +83,8 @@ LINK
 4. as a user, I can filter my top played artists by time
 5. as a user, I can filter my top played tracks by time
 6. as a user, I can make a new Spotify playlist out of my top played tracks
+7. as a user, I can view specific metadata about one of my top played tracks
+8. as a user, I can view specific metadata about one of my top played artists
 
 ## Research Topics
 
