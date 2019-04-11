@@ -28,7 +28,7 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const spotifyApi = new SpotifyWebApi({
   clientId: '0c924357971d47e5aac6b63298953b7b',
   clientSecret: process.env.CLIENT_SECRET,
-  redirectUri: 'http://localhost:3000/login'
+  redirectUri: process.env.REDIRECTURI || 'http://localhost:3000/login'
 });
 
 
