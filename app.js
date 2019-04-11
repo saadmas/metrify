@@ -30,7 +30,7 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const spotifyApi = new SpotifyWebApi({
   clientId: '0c924357971d47e5aac6b63298953b7b',
   clientSecret: process.env.CLIENT_SECRET,
-  redirectUri: 'https://metrify-me.herokuapp.com/login'  //http://localhost:3000/login
+  redirectUri: 'http://localhost:3000/login'  //
 });
 
 
@@ -68,6 +68,8 @@ app.get("/spotify-auth", (req, res) => {
 app.get("/login", (req, res) => {
     authCode = req.query.code;
 
+
+    console.log("\n\n"+"CODE IS : "+authCode+"\n\n");
     spotifyApi.authorizationCodeGrant(authCode).then(
         (data) => {
             console.log('The token expires in ' + data.body['expires_in']);
