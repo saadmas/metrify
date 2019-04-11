@@ -1,3 +1,12 @@
 <h1>Top Tracks</h1>
 
+<ol>
+{{#each this.items}}
+        <li>{{this.name}}</li>
+{{/each}}
+</ol>
 
+
+<form method="POST" action="/top-tracks" class="form">
+    <input type="submit" value="Create Playlist">
+</form>
