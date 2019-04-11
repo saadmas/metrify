@@ -1,24 +1,11 @@
 const mongoose = require('mongoose');
 //const URLSlugs = require('mongoose-url-slugs');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 
 // Schemas //
-
-const UserSchema = new mongoose.Schema({
-    username: {type: String, required: true},
-    hash: {type: String, required: true},
-    tracklists: [TracklistSchema]
-});
-mongoose.model('User', UserSchema);
-
-
-const TracklistSchema = new mongoose.Schema({
-    title: {type: String, required: true},
-    user: {type: UserSchema, required: true},
-    tracks: [TrackSchema]
-});
-mongoose.model('Tracklist', TracklistSchema);
-
 
 const TrackSchema = new mongoose.Schema({
     title: {type: String, required: true},
@@ -28,5 +15,31 @@ const TrackSchema = new mongoose.Schema({
 mongoose.model('Track', TrackSchema);
 
 
+const TracklistSchema = new mongoose.Schema({
+    title: {type: String, required: true},
+    tracks: [TrackSchema]
+});
+mongoose.model('Tracklist', TracklistSchema);
 
-mongoose.connect('mongodb://localhost/mytopspotify');
+
+const UserSchema = new mongoose.Schema({
+    username: {type: String, required: true},
+    hash: {type: String, required: true},
+    tracklists: [TracklistSchema]
+});
+mongoose.model('User', UserSchema);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mongoose.connect(process.env.CONNSTRING || 'mongodb://localhost/metrify');
