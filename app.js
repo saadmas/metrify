@@ -9,7 +9,7 @@ require('dotenv').config();
 // db
 require('./db.js');
 const mongoose = require('mongoose');
-const sanitize = require("mongo-sanitize"); //? sanitize 
+const sanitize = require('mongo-sanitize'); //? sanitize 
 mongoose.set('useFindAndModify', false);
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
