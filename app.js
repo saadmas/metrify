@@ -65,7 +65,7 @@ app.get("/spotify-auth", (req, res) => {
 
 app.get("/login", (req, res) => {
     authCode = req.query.code;
-    
+
     spotifyApi.authorizationCodeGrant(authCode).then(
         (data) => {
             console.log('The token expires in ' + data.body['expires_in']);
