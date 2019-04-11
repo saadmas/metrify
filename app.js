@@ -10,7 +10,7 @@ require('dotenv').config();
 /*
 require('./db.js');
 const mongoose = require('mongoose');
-const sanitize = require('mongo-sanitize'); //? sanitize 
+const sanitize = require('mongo-sanitize'); 
 mongoose.set('useFindAndModify', false);
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
@@ -23,6 +23,8 @@ const Tracklist = mongoose.model("Tracklist");
 // express
 const express = require('express');
 const app = express();
+const session = require("express-session");
+const bodyParser = require("body-parser");
 app.set('view engine', 'hbs');
 
 // spotify web API node wrapper
@@ -37,8 +39,6 @@ const spotifyApi = new SpotifyWebApi({
 
 // Middleware //
 
-// body parser
-app.use(express.urlencoded({ extended: false }));
 
 // static files
 const publicPath = path.join(__dirname, '../public');
@@ -48,11 +48,29 @@ app.use(express.static(publicPath));
 app.use('/css', express.static(__dirname + '../node_modules/bootstrap/dist/css'));
 
 
+// session
+app.use(session({ secret: "cats" }));
+
+// body parser
+app.use(bodyParser.express.urlencoded({ extended: false }));
+
+//passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+  });
+  
+passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+    done(err, user);
+    });
+});
+
 // Globals //
 let authCode;
 let authURL = getSpotifyAuthURL();
-let tokenExpiryTime;
-
 
 // Routes //
 app.get("/", (req, res) => {
@@ -67,9 +85,7 @@ app.get("/spotify-auth", (req, res) => {
 
 app.get("/login", (req, res) => {
     authCode = req.query.code;
-
-
-    console.log("\n\n"+"CODE IS : "+authCode+"\n\n");
+    
     spotifyApi.authorizationCodeGrant(authCode).then(
         (data) => {
             console.log('The token expires in ' + data.body['expires_in']);
@@ -90,10 +106,6 @@ app.get("/login", (req, res) => {
                 }, 
                 (err) => {
                 console.log('Cannot get authenticated user info: ', err);
-                }
-            ).then( () => {
-                tokenExpiryTime = data.body['expires_in'];
-                refreshAccessTokenPeriodically();
                 }
             );
 
@@ -187,27 +199,6 @@ function getSpotifyAuthURL() {
     return spotifyApi.createAuthorizeURL(scopes);
 }
 
-
-function refreshAccessTokenPeriodically(spotifyID) {
-    setInterval(refreshAccessToken, tokenExpiryTime);
-}
-
-function refreshAccessToken() {
-    spotifyApi.refreshAccessToken().then(
-        (data) => {
-            console.log('The access token has been refreshed!');
-            
-            // Save access token in db 
-            //db_updateAccessToken(spotifyAPI.getAccessToken(), spotifyID);
-            // Save the access token so that it's used in future calls
-            spotifyApi.setAccessToken(data.body['access_token']);
-            tokenExpiryTime = data.body['expires_in'];
-        },
-        (err) =>{
-          console.log('Could not refresh access token', err);
-        }
-    );
-}
 
 // DB functions //
 function db_storeUser(id) {
