@@ -7,6 +7,7 @@ const path = require("path");
 require('dotenv').config();
 
 // db
+/*
 require('./db.js');
 const mongoose = require('mongoose');
 const sanitize = require('mongo-sanitize'); //? sanitize 
@@ -17,6 +18,7 @@ mongoose.set('useCreateIndex', true);
 const User = mongoose.model('User');
 const Track = mongoose.model("Track");
 const Tracklist = mongoose.model("Tracklist");
+*/
 
 // express
 const express = require('express');
