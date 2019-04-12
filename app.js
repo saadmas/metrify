@@ -1,16 +1,15 @@
 // Setup //
 const request = require("request");
-
 const path = require("path");
 
 // enviroment vars
 require('dotenv').config();
 
 // db
-/*
 require('./db.js');
 const mongoose = require('mongoose');
 const sanitize = require('mongo-sanitize'); 
+
 mongoose.set('useFindAndModify', false);
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
@@ -18,14 +17,16 @@ mongoose.set('useCreateIndex', true);
 const User = mongoose.model('User');
 const Track = mongoose.model("Track");
 const Tracklist = mongoose.model("Tracklist");
-*/
+
 
 // express
 const express = require('express');
-const app = express();
-const session = require("express-session");
+const session = require("express-session"); 
 const bodyParser = require("body-parser");
+
+const app = express();
 app.set('view engine', 'hbs');
+
 
 // spotify web API node wrapper
 const SpotifyWebApi = require('spotify-web-api-node');
@@ -36,6 +37,10 @@ const spotifyApi = new SpotifyWebApi({
 });
 
 
+// passport 
+const passport = require('passport');
+const SpotifyStrategy = require('passport-spotify').Strategy;
+
 
 // Middleware //
 
@@ -44,33 +49,79 @@ const spotifyApi = new SpotifyWebApi({
 const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));
 
+// session
+app.use(session({ secret: generateKey(), resave: true, saveUninitialized: true }));
+
 //? bootstrap via CDN 
 app.use('/css', express.static(__dirname + '../node_modules/bootstrap/dist/css'));
 
-
-// session
-app.use(session({ secret: "cats" }));
-
 // body parser
-app.use(bodyParser.express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
-//passport
+// passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser( (user, done) => {
     done(null, user.id);
   });
+
   
-passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
-    done(err, user);
+  
+passport.deserializeUser( (id, done) => {
+    User.find({spotifyID: id}, (err, user) => {
+        done(err, user);
     });
 });
 
+
+
+passport.use(
+    new SpotifyStrategy(
+      {
+        clientID: '0c924357971d47e5aac6b63298953b7b',
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: 'http://localhost:3000/login'  //https://metrify-me.herokuapp.com/login
+      },
+      (accessToken, refreshToken, expires_in, profile, done) => {
+        console.log('in here');
+        User.findOne({spotifyID: profile.id }, (err, user) => {
+
+            if (err) {
+                console.log(err);
+                return done(err);
+            }
+
+            //No user found: create a new user 
+            if (!user) {
+
+                const user = new User({spotifyID: profile.id, token: accessToken});
+
+                user.save( (err) => {
+                    if (err) console.log(err);
+                    console.log('saving saad');
+                    return done(err, user);
+                });
+
+            } else {
+                // found user!
+                return done(err, user);
+            }
+        });
+      }
+    )
+);
+
+
+
+
 // Globals //
-let authCode;
-let authURL = getSpotifyAuthURL();
+const scopes = ['user-read-private', 'user-read-email', 'user-top-read', 'playlist-modify-private'];
+//? state 
+const authURL = spotifyApi.createAuthorizeURL(scopes);
+
+
+
 
 // Routes //
 app.get("/", (req, res) => {
@@ -78,15 +129,15 @@ app.get("/", (req, res) => {
 }); 
 
 
-app.get("/spotify-auth", (req, res) => {
-    res.redirect(authURL);
+app.get("/spotify-auth", passport.authenticate('spotify', {scopes, showDialog: true}), (req, res) => {
+    // spotify will redirect to callback URL
 }); 
 
 
 app.get("/login", (req, res) => {
-    authCode = req.query.code;
-    
-    spotifyApi.authorizationCodeGrant(authCode).then(
+    res.redirect("/home");
+    /*
+    spotifyApi.authorizationCodeGrant(req.query.code).then(
         (data) => {
             console.log('The token expires in ' + data.body['expires_in']);
             console.log('The access token is ' + data.body['access_token']);
@@ -115,6 +166,7 @@ app.get("/login", (req, res) => {
         console.log('Something went wrong with authorizing code grant!', err);
         }
     );
+    */
 }); 
 
 
@@ -136,7 +188,7 @@ app.get('/get-metric', (req, res) => {
         const options = {
             url: `https://api.spotify.com/v1/me/top/${target}?time_range=${timeRange}&limit=50`,
             headers: {
-                "Authorization": "Bearer " + spotifyApi.getAccessToken()
+                "Authorization": "Bearer " + req.user.token
             } 
         };
 
@@ -193,12 +245,16 @@ app.post("/top-tracks", (req, res) => {
 
 // Helper functions //
 
-function getSpotifyAuthURL() {
-    const scopes = ['user-read-private', 'user-read-email', 'user-top-read', 'playlist-modify-private'];
-    //? state 
-    return spotifyApi.createAuthorizeURL(scopes);
-}
+function generateKey() {
+        let key = '';
+        const possChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      
+        for (let i = 0; i < 10; i++) {
+            key += possChars.charAt(Math.floor(Math.random() * possChars.length));
+        }
 
+        return key;
+}
 
 // DB functions //
 function db_storeUser(id) {
@@ -210,7 +266,7 @@ function db_storeUser(id) {
 
             const user = new User({
                 spotifyID: spotifyID,
-                accessToken: spotifyAPI.getAccessToken()
+                token: spotifyAPI.getAccessToken()
             });
 
             user.save( (err) => {

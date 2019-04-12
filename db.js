@@ -28,6 +28,8 @@ mongoose.model('Tracklist', TracklistSchema);
 
 const UserSchema = new mongoose.Schema({
     spotifyID: {type: String, required: true},
+    token: {type: String, required: true},
+    name: String,
     tracklists: [TracklistSchema]
 });
 mongoose.model('User', UserSchema);
