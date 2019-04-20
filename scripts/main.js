@@ -3,6 +3,7 @@ require('./app.js');
 
 // ensure elements are present before running scripts on 'em ...
 document.addEventListener("DOMContentLoaded", DOMContentLoaded);
+
 function DOMContentLoaded() {
 
     const loginButton = document.querySelector(".login-btn");

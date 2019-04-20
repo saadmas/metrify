@@ -128,7 +128,7 @@ app.get('/get-metric', async (req, res) => {
     // if requested data is already in db - use it instead of making spotify API call
     if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
         console.log("spit from db");///
-        res.render(`top-${target}`, {metricData: db_metricData});
+        res.render(`top-${target}`, {metricData: db_metricData, timeRange: normalizeTimeRange(timeRange)});
 
     } else {
 
@@ -157,7 +157,7 @@ app.get('/get-metric', async (req, res) => {
             }
 
             db_metricData = await db_getMetricData(req.session.spotifyId, timeRange, target);
-            res.render(`top-${target}`, {metricData: db_metricData});
+            res.render(`top-${target}`, {metricData: db_metricData, timeRange: timeRange});
         };
 
         // get metric data directly from Spotify API 
@@ -175,24 +175,29 @@ app.post("/top-artists", (req, res) => {
     res.render("top-tracks". topTracksObj);
 });
 
-app.post("/top-tracks", (req, res) => {
+app.post("/create-top-tracks-playlist", (req, res) => {
+    //? no need to pass access token .. is api obj ok ?
     // Create a private playlist
-    spotifyApi.createPlaylist(`My Top 50 Tracks (${req.body.timeRange})`, {'public' : false }).then( 
+    spotifyApi.createPlaylist(`My Top 50 Tracks (${req.body.timeRange})`, {'public' : false })
+    .then( 
         (playlistData) => {
             console.log(`Created Top 50 Tracks (${req.body.timeRange}) playlist!`);
             // Add tracks to playlist
-            spotifyApi.addTracksToPlaylist(playlistData.id, ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh", "spotify:track:1301WleyT98MSxVHPZCA6M"]).then(
+            spotifyApi.addTracksToPlaylist(playlistData.id, [...req.body.spotifyTrackIDs]) /// tracksArr
+            .then(
                 (addTrackData) => {
                     console.log('Added tracks to playlist!');
-                    res.render("top-tracks");
+                    res.json("Succesfully created playlist!");
                 }, 
                 (err) => {
-                console.log('Something went wrong adding tracks to playlist: ', err);
+                console.log('Error adding tracks to playlist: ', err);
+                res.json("Error occured. Could not create playlist!");
                 }
             );
         }, 
         (err) => {
-            console.log('Something went wrong!', err);
+            console.log('Error creating playlist: ', err);
+            res.json("Error occured. Could not create playlist!");
         }
     );
 });
@@ -353,4 +358,17 @@ function db_saveTopArtistsData(id, time, items) {
 
 }
 
+function normalizeTimeRange(timeRange) {
+    switch (time) {
+        case "long_term":
+            return "of All Time";
+        case "medium_term":
+            return "of Last 6 Months";
+        case "short_term":
+            return "of Last Month";
+    }
+}
 app.listen(process.env.PORT || 3000);
+
+
+//? remove .then ?
