@@ -155,7 +155,7 @@ app.get('/get-metric', async (req, res) => {
             }
 
             db_metricData = await db_getMetricData(req.session.spotifyId, timeRange, target);
-            res.render(`top-${target}`, {metricData: db_metricData, timeRange: timeRange});
+            res.render(`top-${target}`, {metricData: db_metricData, timeRange: normalizeTimeRange(timeRange)});
         };
 
         // get metric data directly from Spotify API 
