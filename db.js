@@ -8,28 +8,31 @@ dotenv.config();
 // Schemas //
 
 const TrackSchema = new mongoose.Schema({
-    title: {type: String, required: true}, // top
-    spotifyID: {type: String, required: true}, // top (id)
-    artists: {type: String, required: true}, // artist obj
-    album: {type: String},  // album obj
-    releaseDate: {type: String, required: true}, // album obj
-    APIEndpoint: {type: String, required: true}, // top (href)
-    popularity: {type: String, required: true}, // top 
+    title: {type: String, required: true}, 
+    spotifyID: {type: String, required: true},
+    artists: {type: [String], required: true},
+    album: {type: String},  
+    releaseDate: {type: String, required: true}, 
 });
 mongoose.model('Track', TrackSchema);
 
-
-const TracklistSchema = new mongoose.Schema({
-    timeRange: {type: String, required: true},
-    tracks: [TrackSchema]
+const ArtistSchema = new mongoose.Schema({
+    name: {type: String, required: true},
+    spotifyID: {type: String, required: true},
 });
-mongoose.model('Tracklist', TracklistSchema);
-
+mongoose.model('Artist', ArtistSchema);
 
 const UserSchema = new mongoose.Schema({
     spotifyID: {type: String, required: true},
     name: String,
-    tracklists: [TracklistSchema]
+    
+    topTracks_long: [TrackSchema],
+    topTracks_med: [TrackSchema],
+    topTracks_short: [TrackSchema],
+
+    topArtists_long: [ArtistSchema],
+    topArtists_med: [ArtistSchema],
+    topArtists_short: [ArtistSchema],
 });
 mongoose.model('User', UserSchema);
 
@@ -46,4 +49,4 @@ mongoose.model('User', UserSchema);
 
 
 
-mongoose.connect(process.env.CONNSTRING || 'mongodb://localhost/metrify');
+mongoose.connect(process.env.CONNSTRING || 'mongodb://localhost/metrify', { useNewUrlParser: true });
