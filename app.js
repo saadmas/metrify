@@ -4,7 +4,7 @@ const path = require("path");
 // enviroment vars //
 require('dotenv').config();
  
-// db setup //
+// db setup // //? maybe move some stuff to db.js ?
 require('./db.js');
 const mongoose = require('mongoose');
 const sanitize = require('mongo-sanitize'); //?
@@ -38,7 +38,7 @@ const spotifyApi = new SpotifyWebApi({
 // Middleware //
 
 // static files
-const publicPath = path.join(__dirname, '../public');
+const publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
 
 // session
@@ -51,10 +51,10 @@ app.use(session({
     cookie: {httpOnly: true, maxAge: 216000} //? secure: false
 }));
 
-//? bootstrap via CDN (assets too LATER) app.use('/css', express.static(__dirname + '../node_modules/bootstrap/dist/css'));
-
 // body parser
 app.use(bodyParser.urlencoded({ extended: false }));
+// json
+app.use(express.json());
 
 
 // Globals //
@@ -123,7 +123,6 @@ app.get('/get-metric', async (req, res) => {
     const target = req.query.target;
     const timeRange = req.query.timeRange;
     let db_metricData = await db_getMetricData(req.session.spotifyId, timeRange, target);
-    console.log("here: "+db_metricData); ///
 
     // if requested data is already in db - use it instead of making spotify API call
     if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
@@ -175,15 +174,17 @@ app.post("/top-artists", (req, res) => {
     res.render("top-tracks". topTracksObj);
 });
 
-app.post("/create-top-tracks-playlist", (req, res) => {
+app.post("/create-top-tracks-playlist", async (req, res) => {
+    const data = req.body;
     //? no need to pass access token .. is api obj ok ?
     // Create a private playlist
-    spotifyApi.createPlaylist(`My Top 50 Tracks (${req.body.timeRange})`, {'public' : false })
+    const spotifyID = await getSpotifyID();
+    spotifyApi.createPlaylist(spotifyID, `My Top 50 Tracks ${data.timeRange}`, {'public' : false })
     .then( 
         (playlistData) => {
-            console.log(`Created Top 50 Tracks (${req.body.timeRange}) playlist!`);
+            console.log(`Created Top 50 Tracks ${data.timeRange} playlist!`);
             // Add tracks to playlist
-            spotifyApi.addTracksToPlaylist(playlistData.id, [...req.body.spotifyTrackIDs]) /// tracksArr
+            spotifyApi.addTracksToPlaylist(playlistData.body.id, normalizeTrackIDsForPlaylist(data.spotifyTrackIDs))
             .then(
                 (addTrackData) => {
                     console.log('Added tracks to playlist!');
@@ -251,7 +252,6 @@ async function db_getMetricData(id, time, target) {
         } 
     }).exec();
 
-    console.log(user); ///
     if (target==="tracks") {
         switch (time) {
             case "long_term":
@@ -359,7 +359,7 @@ function db_saveTopArtistsData(id, time, items) {
 }
 
 function normalizeTimeRange(timeRange) {
-    switch (time) {
+    switch (timeRange) {
         case "long_term":
             return "of All Time";
         case "medium_term":
@@ -368,7 +368,15 @@ function normalizeTimeRange(timeRange) {
             return "of Last Month";
     }
 }
+
+function normalizeTrackIDsForPlaylist(arr) {
+    return arr.map((val) => "spotify:track:"+val);
+}
+
+//? get ID from API or session
+async function getSpotifyID() {
+      const userData = await spotifyApi.getMe();
+      return userData.body.id;
+}
+
 app.listen(process.env.PORT || 3000);
-
-
-//? remove .then ?

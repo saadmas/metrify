@@ -14,18 +14,14 @@ function init_CreatePlayListBtn() {
 
 async function createSpotifyPlaylist() {
     const trackIDs = [];
-    const trackElems = document.querySelectorAll("ol");
+    const trackElems = document.querySelectorAll("li");
 
     for (track of trackElems) {
         trackIDs.push(track.id);
     }
 
     const timeRange = document.querySelector("h1").id;
-    ///
-    console.log(timeRange);
-    console.log(trackIDs);
-    console.log(trackIDs.length);
-
+    
     /// change url
     const res = await fetch("http://localhost:3000/create-top-tracks-playlist", {
           method: 'POST',
@@ -35,5 +31,10 @@ async function createSpotifyPlaylist() {
           },
           body: JSON.stringify({spotifyTrackIDs: trackIDs, timeRange: timeRange})
         });
-    const content = await res.json();   
+    const resText = await res.json();   
+
+    const resultElem = document.createElement("p");
+    resultElem.innerText = resText;
+    const createPlaylistBtn = document.querySelector(".container");
+    createPlaylistBtn.appendChild(resultElem);
 }
