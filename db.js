@@ -49,4 +49,4 @@ mongoose.model('User', UserSchema);
 
 
 
-mongoose.connect(process.env.CONNSTRING || 'mongodb://localhost/metrify', { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/metrify', { useNewUrlParser: true });

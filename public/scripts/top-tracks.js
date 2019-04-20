@@ -21,9 +21,9 @@ async function createSpotifyPlaylist() {
     }
 
     const timeRange = document.querySelector("h1").id;
-    
-    /// change url
-    const res = await fetch("http://localhost:3000/create-top-tracks-playlist", {
+
+    /// change url b/w herokou and local http://localhost:3000/create-top-tracks-playlist 
+    const res = await fetch("https://metrify-me.herokuapp.com/create-top-tracks-playlist", {
           method: 'POST',
           headers: {
             'Accept': 'application/json',

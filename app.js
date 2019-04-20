@@ -30,7 +30,7 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const spotifyApi = new SpotifyWebApi({
   clientId: '0c924357971d47e5aac6b63298953b7b',
   clientSecret: process.env.CLIENT_SECRET,
-  redirectUri: 'http://localhost:3000/login'  //https://metrify-me.herokuapp.com/login
+  redirectUri: process.env.REDIRECTURI || "http://localhost:3000/login"
 });
 
 
@@ -126,9 +126,8 @@ app.get('/get-metric', async (req, res) => {
 
     // if requested data is already in db - use it instead of making spotify API call
     if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
-        console.log("spit from db");///
+        console.log("retrieved metric data from db");///
         res.render(`top-${target}`, {metricData: db_metricData, timeRange: normalizeTimeRange(timeRange)});
-
     } else {
 
         // options and callback for making request to Spotify API DIRECTLY
