@@ -360,11 +360,11 @@ function db_saveTopArtistsData(id, time, items) {
 function normalizeTimeRange(timeRange) {
     switch (timeRange) {
         case "long_term":
-            return "of All Time";
+            return "(All Time)";
         case "medium_term":
-            return "of Last 6 Months";
+            return "(Last 6 Months)";
         case "short_term":
-            return "of Last Month";
+            return "(Last Month)";
     }
 }
 

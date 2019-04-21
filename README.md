@@ -1,4 +1,4 @@
-#  My Top Spotify
+#  Metrify
 
 ## Overview
 
@@ -6,46 +6,43 @@
 
 But, ever wondered what your most played tracks are? How about your most played artists? Spotify may gave you those stats in their annual "Year Wrapped" feature, but what if you wanted to know right this second? 
 
-Enter **My Top Spotify** . Connect your Spotify account to My Top Spotify to get access to your top 50 most played tracks and artists. Wanna put those top played tracks into their own playlists so you can bump them later? Got you covered. 
+Enter **Metrify** . Connect your Spotify account to Metrify to get access to your top 50 most played tracks and artists. Wanna put those top played tracks into their own Spotify playlists so you can bump them later? Got you covered. 
 
 
 ## Data Model
 
-The application will store Users, Tracks, and Tracklists
+The application will store Users, Tracks, and Artists
 
 **Users**
-* Can have multiple tracklists based on time or type (via references)
-
-**Tracklists**
-* Can contain multiple tracks (by embedding)
-* Can be based on either top played artists or top played tracks
-* Can vary based on desired time scope
+* Can have multiple tracklists based on time and type 
+* Tracklists are stored by embedding tracks within an array 
 
 **Tracks**
 * Can contain varying amounts of metadata 
-* Can be played via user’s active device
+
+**Artistss**
+* Can contain varying amounts of metadata 
 
 An example User:
 
 ```javascript
 {
-  username: "technojunkie",
-  hash: // a password hash,
-  tracklists: // an array of references to Tracklist documents
+  spotifyID: "technojunkie",
+  topTracks_long: [TrackSchema],
+  topTracks_med: [TrackSchema],
+  topTracks_short: [TrackSchema],
+
+  topArtists_long: [ArtistSchema],
+  topArtists_med: [ArtistSchema],
+  topArtists_short: [ArtistSchema],
 }
 ```
 
-An example Tracklist with embedded items:
+An example Artist:
 
 ```javascript
 {
-  user: // a reference to a User object
-  title: "Top 50 Played Tracks",
-  tracks: [
-    { title: "Sad Machine", artist: "Porter Robinson", album: "Worlds"},
-    { title: "Zulu", artist: "Stephan Bodzin", album: "Powers of Ten"},
-    // ... continues with additional unique tracks till 50 track limit
-  ]
+  name: "Stephan Bodzin" 
 }
 ```
 
@@ -59,7 +56,7 @@ An example Track:
 }
 ```
 
-## [Link to Commented First Draft Schema](src/db.js) 
+## [Link to Commented Third Draft Schema](db.js) 
 
 ## Wireframes
 
@@ -105,7 +102,7 @@ An example Track:
 *9 points total out of 8 required points*
 
 
-## [Link to Initial Main Project File](src/app.js) 
+## [Link to Main Project File](app.js) 
 
 ## Annotations / References Used
 
