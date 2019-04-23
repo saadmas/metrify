@@ -37,6 +37,19 @@ const spotifyApi = new SpotifyWebApi({
 
 // Middleware //
 
+/// ensuring Spotify auth
+app.use( (req, res, next) => {
+    if (req.url==="/top-tracks" || req.url==="/top-artists") {
+        if (spotifyApi.getAccessToken()===undefined) {
+            res.redirect("/");
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
+});
+
 // static files
 const publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
@@ -55,6 +68,7 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: false }));
 // json
 app.use(express.json());
+
 
 
 // Globals //
@@ -87,18 +101,13 @@ app.get("/login", (req, res) => {
             spotifyApi.setAccessToken(data.body['access_token']);
             spotifyApi.setRefreshToken(data.body['refresh_token']);
 
-            // Store the authenticated user in db + session
+            // Store the authenticated user in db 
             spotifyApi.getMe().then(
                 (data) => {
                     console.log('Some information about the authenticated user', data.body);
-
                     db_storeUser(data.body.id);
 
-                    req.session.spotifyId = data.body.id;
-                    req.session.token = spotifyApi.getAccessToken();
-                    // req.session.save();
-                    
-                    res.redirect("/home");
+                    res.redirect("/top-tracks");
                 }, 
                 (err) => {
                 console.log('Cannot get authenticated user info: ', err);
@@ -111,30 +120,70 @@ app.get("/login", (req, res) => {
     );
 }); 
 
-
-app.get("/home", (req, res) => {
-    res.render("home");
-});
-
-
 app.get('/get-metric', async (req, res) => {
-
 
     const target = req.query.target;
     const timeRange = req.query.timeRange;
-    let db_metricData = await db_getMetricData(req.session.spotifyId, timeRange, target);
+    const spotifyID = await getSpotifyID();
+
+    let db_metricData = await db_getMetricData(spotifyID, timeRange, target);
 
     // if requested data is already in db - use it instead of making spotify API call
     if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
-        console.log("retrieved metric data from db");///
-        res.render(`top-${target}`, {metricData: db_metricData, timeRange: normalizeTimeRange(timeRange)});
+        console.log(`retrieved metric data for ${target} - ${timeRange} from db`);
+        res.json(db_metricData);
+    } else {
+        // options and callback for making request to Spotify API DIRECTLY
+        // (NOT through Node.js wrapper library)
+        const options = {
+            url: `https://api.spotify.com/v1/me/top/${target}?time_range=${timeRange}&limit=50`,
+            headers: {"Authorization": "Bearer " + spotifyApi.getAccessToken()} 
+        };
+
+        /// would this count as HOF?
+        const topMetricsCB = async (error, response, body) => {
+            let pagingObj;
+
+            // parse response
+            if (!error && response.statusCode == 200) {
+                pagingObj = JSON.parse(body);
+            } else {
+                console.log(`Error getting top ${target}: ${error}`)
+            }
+
+            // save metric data in db
+            if (target==="tracks") {
+                await db_saveTopTracksData(spotifyID, timeRange, pagingObj.items);
+            } else if (target==="artists") {
+                await db_saveTopArtistsData(spotifyID, timeRange, pagingObj.items);
+            }
+
+            db_metricData = await db_getMetricData(spotifyID, timeRange, target);
+            res.json(db_metricData);
+        };
+
+        // get metric data directly from Spotify API 
+        request(options, topMetricsCB); 
+    }
+});
+ 
+
+app.get("/top-tracks", async (req, res) => {
+
+    const spotifyID = await getSpotifyID();
+    let db_metricData = await db_getMetricData(spotifyID, "long_term", "tracks");
+
+    // if requested data is already in db - use it instead of making spotify API call
+    if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
+        console.log("retrieved top tracks (all time) data from db"); 
+        res.render(`top-tracks`, {metricData: db_metricData}); 
     } else {
 
         // options and callback for making request to Spotify API DIRECTLY
         // (NOT through Node.js wrapper library)
         const options = {
-            url: `https://api.spotify.com/v1/me/top/${target}?time_range=${timeRange}&limit=50`,
-            headers: {"Authorization": "Bearer " + req.session.token} 
+            url: `https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=50`,
+            headers: {"Authorization": "Bearer " + spotifyApi.getAccessToken()} 
         };
 
         const topMetricsCB = async (error, response, body) => {
@@ -148,29 +197,56 @@ app.get('/get-metric', async (req, res) => {
             }
 
             // save metric data in db
-            if (target==="tracks") {
-                await db_saveTopTracksData(req.session.spotifyId, timeRange, pagingObj.items);
-            } else if (target==="artists") {
-                db_saveTopArtistsData(req.session.spotifyId, timeRange, pagingObj.items);
-            }
+            await db_saveTopTracksData(spotifyID, "long_term", pagingObj.items);
 
-            db_metricData = await db_getMetricData(req.session.spotifyId, timeRange, target);
-            res.render(`top-${target}`, {metricData: db_metricData, timeRange: normalizeTimeRange(timeRange)});
+            // retrive data from db and render 
+            db_metricData = await db_getMetricData(spotifyID, "long_term", "tracks");
+            res.render(`top-tracks`, {metricData: db_metricData});
         };
 
         // get metric data directly from Spotify API 
         request(options, topMetricsCB); 
     }
 });
- 
-app.get("/top-artists", (req, res) => {
-    let topArtistsObj = {};
-    res.render("top-artists", topArtistsObj);
-});
 
-app.post("/top-artists", (req, res) => {
-    let topTracksObj = {};
-    res.render("top-tracks". topTracksObj);
+app.get("/top-artists", async (req, res) => {
+    const spotifyID = await getSpotifyID();
+    let db_metricData = await db_getMetricData(spotifyID, "long_term", "artists");
+
+    // if requested data is already in db - use it instead of making spotify API call
+    if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
+        console.log("retrieved top ARTISTS (all time) data from db"); 
+        res.render(`top-artists`, {metricData: db_metricData}); 
+    } else {
+
+        // options and callback for making request to Spotify API DIRECTLY
+        // (NOT through Node.js wrapper library)
+        const options = {
+            url: `https://api.spotify.com/v1/me/top/artists?time_range=long_term&limit=50`,
+            headers: {"Authorization": "Bearer " + spotifyApi.getAccessToken()} 
+        };
+
+        const topMetricsCB = async (error, response, body) => {
+            let pagingObj;
+
+            // parse response
+            if (!error && response.statusCode == 200) {
+                pagingObj = JSON.parse(body);
+            } else {
+                console.log(`Error getting top artists: ${error}`)
+            }
+
+            // save metric data in db
+            await db_saveTopArtistsData(spotifyID, "long_term", pagingObj.items);
+
+            // retrive data from db and render 
+            db_metricData = await db_getMetricData(spotifyID, "long_term", "artists");
+            res.render(`top-artists`, {metricData: db_metricData});
+        };
+
+        // get metric data directly from Spotify API 
+        request(options, topMetricsCB); 
+    }
 });
 
 app.post("/create-top-tracks-playlist", async (req, res) => {
@@ -178,20 +254,20 @@ app.post("/create-top-tracks-playlist", async (req, res) => {
     //? no need to pass access token .. is api obj ok ?
     // Create a private playlist
     const spotifyID = await getSpotifyID();
-    spotifyApi.createPlaylist(spotifyID, `My Top 50 Tracks ${data.timeRange}`, {'public' : false })
+    spotifyApi.createPlaylist(spotifyID, `My Top Tracks ${data.timeRange}`, {'public' : false })
     .then( 
         (playlistData) => {
-            console.log(`Created Top 50 Tracks ${data.timeRange} playlist!`);
+            console.log(`Created Top Tracks ${data.timeRange} playlist!`);
             // Add tracks to playlist
             spotifyApi.addTracksToPlaylist(playlistData.body.id, normalizeTrackIDsForPlaylist(data.spotifyTrackIDs))
             .then(
                 (addTrackData) => {
                     console.log('Added tracks to playlist!');
-                    res.json("Succesfully created playlist!");
+                    res.json(`Succesfully created playlist "My Top Tracks ${data.timeRange}" \n View and listen to the playlist on your Spotify connected device!`);
                 }, 
                 (err) => {
                 console.log('Error adding tracks to playlist: ', err);
-                res.json("Error occured. Could not create playlist!");
+                res.json("Error occured. Could not create playlist! Please try again.");
                 }
             );
         }, 
@@ -237,7 +313,7 @@ function db_storeUser(id) {
                 }
             });
         } else {    
-            console.log("User already exists! "+ err);
+            console.log("User already exists in db!");
         }
     });
 }
@@ -261,7 +337,14 @@ async function db_getMetricData(id, time, target) {
                 return user.topTracks_short === undefined ? null : user.topTracks_short;
         }
     } else if (target==="artists") {
-
+        switch (time) {
+            case "long_term":
+                return user.topArtists_long === undefined ? null : user.topArtists_long;
+            case "medium_term":
+                return user.topArtists_med === undefined ? null : user.topArtists_med;
+            case "short_term":
+                return user.topArtists_short === undefined ? null : user.topArtists_short;
+        }
     }
 }
 
@@ -274,9 +357,9 @@ async function db_saveTopTracksData(id, time, items) {
                 {new: true, runValidators: true}, 
                 (err, user) => {
                 if (err) {
-                    console.log("Error saving top-track data: "+err);
+                    console.log("Error saving long_term top-track data: "+err);
                 } else if (user) {
-                    console.log("Found User. Stored long_term tracklist");
+                    console.log("Found User. Stored short_term tracklist");
                 }
             });
             break;
@@ -287,7 +370,9 @@ async function db_saveTopTracksData(id, time, items) {
                 {$set: {topTracks_med: await parseAndStoreTracks(items)}}, 
                 (err, user) => {
                 if (err) {
-                    console.log("Error saving top-track data: "+err);
+                    console.log("Error saving med_term top-track data: "+err);
+                } else if (user) {
+                    console.log("Found User. Stored med_term tracklist");
                 }
             });
             break;
@@ -298,7 +383,9 @@ async function db_saveTopTracksData(id, time, items) {
                 {$set: {topTracks_short: await parseAndStoreTracks(items)}}, 
                 (err, user) => {
                 if (err) {
-                    console.log("Error saving top-track data: "+err);
+                    console.log("Error saving short_term top-track data: "+err);
+                } else if (user) {
+                    console.log("Found User. Stored short_term tracklist");
                 }
             });
             break;
@@ -327,11 +414,6 @@ async function parseAndStoreTracks(items) {
     }
 
     return arr;
-    /*
-    return new Promise((resolve) => {
-        resolve(arr);
-    });
-    */
 }
 
 function db_createTrack(currTrack) {
@@ -353,18 +435,79 @@ function parseArtistsFromTrackObj(track) {
     return result;
 }
 
-function db_saveTopArtistsData(id, time, items) {
+async function db_saveTopArtistsData(id, time, items) {
+    switch (time) {
+        case "long_term":
+            await User.findOneAndUpdate(
+                {spotifyID: id},
+                {$set: {topArtists_long: await parseAndStoreArtists(items)}}, 
+                {new: true, runValidators: true}, 
+                (err, user) => {
+                if (err) {
+                    console.log("Error saving long_term top-artist  data: "+err);
+                } else if (user) {
+                    console.log("Found User. Stored long_term artists");
+                }
+            });
+            break;
 
+        case "medium_term":
+            await User.findOneAndUpdate(
+                {spotifyID: id},
+                {$set: {topArtists_med: await parseAndStoreArtists(items)}}, 
+                (err, user) => {
+                if (err) {
+                    console.log("Error saving med_term top-artists data: "+err);
+                } else if (user) {
+                    console.log("Found User. Stored med_term artists");
+                }
+            });
+            break;
+
+        case "short_term":
+            await User.findOneAndUpdate(
+                {spotifyID: id},
+                {$set: {topArtists_short: await parseAndStoreArtists(items)}}, 
+                (err, user) => {
+                if (err) {
+                    console.log("Error saving short_term top-artists data: "+err);
+                } else if (user) {
+                    console.log("Found User. Stored short_term artists");
+                }
+            });
+            break;
+    }
 }
 
-function normalizeTimeRange(timeRange) {
-    switch (timeRange) {
-        case "long_term":
-            return "(All Time)";
-        case "medium_term":
-            return "(Last 6 Months)";
-        case "short_term":
-            return "(Last Month)";
+async function parseAndStoreArtists(items) {
+    const arr = [];
+    for (let i=0; i<items.length; i++) {
+        const currArtist = items[i];
+
+        await Artist.findOneAndUpdate(
+            {spotifyID: currArtist.id}, 
+            db_createArtist(currArtist), 
+            {upsert: true, new: true, runValidators: true}, // store artist if they don't exist in db
+            (err, doc) => {
+            if (err) {
+                console.log("error saving new artist: "+err);
+
+            // return from db if track already exists
+            } else if (doc) {
+                console.log("saved new artist to db: "+ doc.name);
+                arr.push(doc);
+            }
+        });
+    }
+
+    return arr;
+}
+
+function db_createArtist(rawArtist) {
+    return {
+        name: rawArtist.name,
+        spotifyID: rawArtist.id, 
+        popularity: rawArtist.popularity
     }
 }
 
@@ -372,7 +515,7 @@ function normalizeTrackIDsForPlaylist(arr) {
     return arr.map((val) => "spotify:track:"+val);
 }
 
-//? get ID from API or session
+
 async function getSpotifyID() {
       const userData = await spotifyApi.getMe();
       return userData.body.id;

@@ -1,0 +1,136 @@
+/* global */
+.page-heading {
+    font-weight: black;
+}
+
+#long_term, #medium_term, #short_term {
+    font-size: 14px;
+}
+
+/* tracks + artists */
+.metric-heading {
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.btn-toolbar {
+    margin-top: 20px;
+}
+
+#time-query-group {
+    float: left;
+}
+
+table {
+    margin-top: 10px;
+    font-size: 15px;
+}
+
+/* tracks only */
+#create-playlist {
+    margin-left: 500px;
+    font-size: 14px;
+    font-weight: Extra-Bold;
+}
+
+#show-modal-button {
+    display: none;
+}
+
+/* index */
+#welcome-div {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.welcome-details {
+    margin-top: 1em;
+}
+
+#login-btn {
+    margin-top: 1.1em;
+    width: 25em;
+    height: 2.6em;
+    font-size: 20px;
+}
+
+#spotify-logo {
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+    
+}
+
+.music-notes-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+  }
+  
+.music-notes {
+    display: block;
+    margin: auto;
+    position: relative;
+    width: 50%;
+    min-width: 300px;
+    height: 200px;
+    border: 0px solid #000;
+    margin-top: 100px;
+  }
+  
+  .note-1,
+  .note-2,
+  .note-3,
+  .note-4 {
+    position: absolute;
+    animation: notes 2s infinite linear;
+    font-size: 35px;
+    opacity: 0;
+  }
+  
+  .note-1 {
+    top: 60px;
+    left: 0;
+    animation-delay: 0.5s;
+  }
+  
+  .note-2 {
+    top: 30px;
+    left: 30%;
+    animation-delay: 1s;
+  }
+  
+  .note-3 {
+    top: 90px;
+    left: 60%;
+    animation-delay: 1.5s;
+  }
+  
+  .note-4 {
+    top: 40px;
+    left: 90%;
+    animation-delay: 2s;
+  }
+  
+  @keyframes notes {
+    0% {
+      transform: scale(1) translate(0, 0);
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.5) translate(50%, -50%);
+    }
+    80% {
+      opacity: 0;
+      transform: scale(1.5) translate(100%, -100%);
+    }
+    100% {
+      transform: scale(1.5) translate(100%, -100%);
+      opacity: 0;
+    }
+  }
+  

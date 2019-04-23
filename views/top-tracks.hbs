@@ -1,12 +1,122 @@
-<h1 id='{{timeRange}}'> My Top Spotify Tracks {{timeRange}}</h1>
+<nav class="navbar navbar-expand-lg navbar-toggler">
+  <span class="navbar-brand">Metrify</span>
 
-<ol>
-{{#each metricData}}
-        <li id={{spotifyID}}>{{title}}  -  {{artists}}</li>
-{{/each}}
-</ol>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost:3000/top-tracks">Tracks</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost:3000/top-artists">Artists</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
+<h3 class="page-heading metric-heading">My Top Spotify Tracks (All Time)</h3>  
 
-<button id="create-playlist">Create Spotify Playlist</button>
+<!-- options: query tracks by time, create playlist -->
+<div class="row">
+  <div class="col">
+    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 
+      <!-- time query -->
+      <div class="btn-group mr-2" role="group" aria-label="Time Query" id="time-query-group">
+        <button type="button" class="btn btn-outline-primary active" id="long_term" data-toggle="button"> All Time </button>
+        <button type="button" class="btn btn-outline-primary" id="medium_term" data-toggle="button"> Last 6 Months </button>
+        <button type="button" class="btn btn-outline-primary" id="short_term" data-toggle="button">Last Month</button>
+      </div>
+
+      <!-- filter tracks -->
+      <div class="btn-group mr-2  dropright" role="group" aria-label="Time Query" id="time-query-group">
+        <button type="button" class="btn btn-primary" id="filter-info" data-toggle="modal" data-target="#filter-info-modal">Filter</button>
+        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+          <button class="dropdown-item" id="affinity-filter">Affinity</button>
+          <button class="dropdown-item" id="popularity-filter">Popularity</button>
+        </div>
+      </div>
+      
+      <!-- create Spotify playlist -->
+      <div class="btn-group mr-2" role="group" aria-label="First group">
+        <button id="create-playlist" class="btn btn-primary">Create Spotify Playlist</button>
+      </div>
+      
+      </div>                
+  </div>
+</div>
+
+<!-- list of tracks -->
+<div class="row">
+  <div class="col">
+    <table class="table table-striped">
+      
+      <thead>
+        <tr>
+          <th scope="col">Rank</th>
+          <th scope="col">Title</th>
+          <th scope="col">Artists</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each metricData}}
+          <tr>
+            <th class="track-rank" scope="row"></th>
+            <td class="track-title" id={{spotifyID}}>{{title}}</td>
+            <td class="track-artist">{{artists}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- filter info modal -->
+<div class="modal fade" id="filter-info-modal" tabindex="-1" role="dialog" aria-labelledby="filter-info-modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Filter Information</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>You can filter your top played Spotify tracks in 2 ways: </p>
+        <p> 1) Affinity - This option is chosen by default.   </p>
+        <p> 2) Popularity - Filters your most played tracks by their general popularity on Spotify.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create playlist Modal -->
+<div class="modal fade" id="create-playlist-modal" tabindex="-1" role="dialog" aria-labelledby="create-playlist-modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Spotify Playlist Creation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-playlist-modal" id="show-modal-button">
+  Launch demo modal
+</button>
 <script type='text/javascript' src="scripts/top-tracks.js"></script>

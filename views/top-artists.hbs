@@ -1,3 +1,70 @@
-<h1>Top Artists</h1>
+<nav class="navbar navbar-expand-lg navbar-toggler">
+  <span class="navbar-brand">Metrify</span>
 
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost:3000/top-tracks">Tracks</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost:3000/top-artists">Artists</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
+<h3 class="page-heading metric-heading">My Top Spotify Artists (All Time)</h3>  
+
+<!-- options: query tracks by time, create playlist -->
+<div class="row">
+  <div class="col">
+    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+       <!-- time query -->
+      <div class="btn-group mr-2" role="group" aria-label="Time Query" id="time-query-group">
+        <button type="button" class="btn btn-outline-primary active" id="long_term" data-toggle="button"> All Time </button>
+        <button type="button" class="btn btn-outline-primary" id="medium_term" data-toggle="button"> Last 6 Months </button>
+        <button type="button" class="btn btn-outline-primary" id="short_term" data-toggle="button">Last Month</button>
+      </div>
+
+      <!-- filter tracks -->
+      <div class="btn-group mr-2  dropright" role="group" aria-label="Time Query" id="time-query-group">
+        <button type="button" class="btn btn-primary" id="filter-info" data-toggle="modal" data-target="#filter-info-modal">Filter</button>
+        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+          <button class="dropdown-item" id="affinity-filter">Affinity</button>
+          <button class="dropdown-item" id="popularity-filter">Popularity</button>
+        </div>
+      </div>
+      
+      </div>                
+  </div>
+</div>
+
+<!-- list of artists -->
+<div class="row">
+  <div class="col">
+    <table class="table table-striped">
+      
+      <thead>
+        <tr>
+          <th scope="col">Rank</th>
+          <th scope="col">Name</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each metricData}}
+          <tr>
+            <th class="artist-rank" scope="row"></th>
+            <td class="artist-title" id={{spotifyID}}>{{name}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script type='text/javascript' src="scripts/top-artists.js"></script>

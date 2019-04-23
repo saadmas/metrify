@@ -19,6 +19,7 @@ mongoose.model('Track', TrackSchema);
 const ArtistSchema = new mongoose.Schema({
     name: {type: String, required: true},
     spotifyID: {type: String, required: true},
+    popularity: String
 });
 mongoose.model('Artist', ArtistSchema);
 
