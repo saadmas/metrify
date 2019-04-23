@@ -140,9 +140,9 @@ function reCreateTable(data) {
     parent.removeChild(table);
 
     // create new table
-    const newTable = createElement("table", {class: "table table-striped"});
+    const newTable = createElement("table", {class: "table table-striped animated fadeInUpBig fast"});
     
-    const thead = createElement("thead", {class: "page-heading metric-heading animated fadeInUpBig fast"});
+    const thead = createElement("thead");
     const tr = createElement("tr");
     const th1 = createElement("th", {scope: "col"}, "Rank");
     const th2 = createElement("th", {scope: "col"}, "Title");
@@ -153,7 +153,7 @@ function reCreateTable(data) {
     thead.appendChild(tr);
     newTable.appendChild(thead);
 
-    const newBody = createElement("tbody", {class: "page-heading metric-heading animated fadeInUpBig fast"});
+    const newBody = createElement("tbody", {class: "page-heading metric-heading"});
     
     // fill in new body with new data
     for (let i=0; i<data.length; i++) {

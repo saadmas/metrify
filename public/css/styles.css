@@ -26,6 +26,10 @@
     float: left;
 }
 
+#user-name {
+    display: none;
+}
+
 table {
     margin-top: 10px;
     font-size: 15px;

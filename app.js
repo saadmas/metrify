@@ -105,7 +105,7 @@ app.get("/login", (req, res) => {
             spotifyApi.getMe().then(
                 (data) => {
                     console.log('Some information about the authenticated user', data.body);
-                    db_storeUser(data.body.id);
+                    db_storeUser(data.body.id, data.body["display_name"]);
 
                     res.redirect("/top-tracks");
                 }, 
@@ -169,16 +169,20 @@ app.get('/get-metric', async (req, res) => {
  
 
 app.get("/top-tracks", async (req, res) => {
-
+    const userName = await getDisplayName();
     const spotifyID = await getSpotifyID();
     let db_metricData = await db_getMetricData(spotifyID, "long_term", "tracks");
 
     // if requested data is already in db - use it instead of making spotify API call
     if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
         console.log("retrieved top tracks (all time) data from db"); 
-        res.render(`top-tracks`, {metricData: db_metricData}); 
+        
+        if (userName===null || userName=== undefined || userName === "") {
+            res.render(`top-tracks`, {metricData: db_metricData, name: "no-name"});
+        } else {
+            res.render(`top-tracks`, {metricData: db_metricData, name: userName});
+        }
     } else {
-
         // options and callback for making request to Spotify API DIRECTLY
         // (NOT through Node.js wrapper library)
         const options = {
@@ -201,7 +205,13 @@ app.get("/top-tracks", async (req, res) => {
 
             // retrive data from db and render 
             db_metricData = await db_getMetricData(spotifyID, "long_term", "tracks");
-            res.render(`top-tracks`, {metricData: db_metricData});
+
+            if (userName===null || userName=== undefined || userName === "") {
+                res.render(`top-tracks`, {metricData: db_metricData, name: "no-name"});
+            } else {
+                res.render(`top-tracks`, {metricData: db_metricData, name: userName});
+            }   
+            
         };
 
         // get metric data directly from Spotify API 
@@ -211,12 +221,19 @@ app.get("/top-tracks", async (req, res) => {
 
 app.get("/top-artists", async (req, res) => {
     const spotifyID = await getSpotifyID();
+    const userName = await getDisplayName();
     let db_metricData = await db_getMetricData(spotifyID, "long_term", "artists");
 
     // if requested data is already in db - use it instead of making spotify API call
     if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
         console.log("retrieved top ARTISTS (all time) data from db"); 
-        res.render(`top-artists`, {metricData: db_metricData}); 
+
+        if (userName===null || userName=== undefined || userName === "") {
+            res.render(`top-artists`, {metricData: db_metricData, name: "no-name"}); 
+        } else {
+            res.render(`top-artists`, {metricData: db_metricData, name: userName}); 
+        }
+        
     } else {
 
         // options and callback for making request to Spotify API DIRECTLY
@@ -241,7 +258,12 @@ app.get("/top-artists", async (req, res) => {
 
             // retrive data from db and render 
             db_metricData = await db_getMetricData(spotifyID, "long_term", "artists");
-            res.render(`top-artists`, {metricData: db_metricData});
+
+            if (userName===null || userName=== undefined || userName === "") {
+                res.render(`top-artists`, {metricData: db_metricData, name: "no-name"}); 
+            } else {
+                res.render(`top-artists`, {metricData: db_metricData, name: userName}); 
+            }
         };
 
         // get metric data directly from Spotify API 
@@ -296,7 +318,8 @@ function generateKey() {
 
 
 // DB functions //
-function db_storeUser(id) {
+function db_storeUser(id, name) {
+
     // check if user already exists
     User.find({spotifyID: id}, (err, findResult) => {
 
@@ -304,7 +327,14 @@ function db_storeUser(id) {
             // create user in db 
             console.log("User does not exist. Storing user in db now ...");
 
-            const user = new User({spotifyID: id});
+            let user;
+            // store name if given
+            if (name===null) {
+                user = new User({spotifyID: id});
+            } else {
+                user = new User({spotifyID: id, name: name});
+            }
+
             user.save((err) => {
                 if (err) {
                     console.log("Error storing user in db: "+err);
@@ -519,6 +549,11 @@ function normalizeTrackIDsForPlaylist(arr) {
 async function getSpotifyID() {
       const userData = await spotifyApi.getMe();
       return userData.body.id;
+}
+
+async function getDisplayName() {
+    const userData = await spotifyApi.getMe();
+    return userData.body["display_name"];
 }
 
 app.listen(process.env.PORT || 3000);

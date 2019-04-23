@@ -46,16 +46,16 @@
 <!-- list of artists -->
 <div class="row">
   <div class="col" id="table-container">
-    <table class="table table-striped">
+    <table class="table table-striped animated fadeInUpBig fast">
       
-      <thead class="animated fadeInUpBig fast">
+      <thead>
         <tr>
           <th scope="col">Rank</th>
           <th scope="col">Name</th>
         </tr>
       </thead>
 
-      <tbody class= "animated fadeInUpBig fast">
+      <tbody>
         {{#each metricData}}
           <tr>
             <th class="artist-rank" scope="row"></th>
@@ -67,4 +67,5 @@
   </div>
 </div>
 
+<p id="user-name">{{name}}</p>
 <script type='text/javascript' src="scripts/top-artists.js"></script>

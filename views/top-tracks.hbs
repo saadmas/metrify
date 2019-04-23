@@ -13,7 +13,7 @@
   </div>
 </nav>
 
-<h3 class="page-heading metric-heading animated bounceIn">My Top Spotify Tracks (All Time)</h3>  
+<h3 class="page-heading metric-heading animated bounceIn" id={{name}}> Top Spotify Tracks (All Time)</h3>  
 
 <!-- options: query tracks by time, create playlist -->
 <div class="row" id="top-tracks-row">
@@ -51,9 +51,9 @@
 <!-- list of tracks -->
 <div class="row">
   <div class="col" id="table-container">
-    <table class="table table-striped" id="tracks-table">
+    <table class="table table-striped" id="tracks-table animated fadeInUpBig fast">
       
-      <thead class="animated fadeInUpBig fast">
+      <thead>
         <tr>
           <th scope="col">Rank</th>
           <th scope="col">Title</th>
@@ -61,7 +61,7 @@
         </tr>
       </thead>
 
-      <tbody class="animated fadeInUpBig fast">
+      <tbody>
         {{#each metricData}}
           <tr>
             <th class="track-rank" scope="row"></th>

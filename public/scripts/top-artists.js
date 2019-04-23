@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", main);
+let name;
 
 function main() {
+
+    parseName(document.querySelector("#user-name").innerText);
+    createHeading("(All Time)");
     addRankNumbersToTable();
     init_timeQueryBtns();
 }
@@ -37,15 +41,15 @@ async function timeQuery() {
 
     switch (this.id) {
         case "long_term":
-            reCreateHeading("My Top Spotify Artists (All Time)");
+            createHeading("(All Time)");
             deActivateBtns(["medium_term", "short_term"]);
             break;
         case "medium_term":
-            reCreateHeading("My Top Spotify Artists (Last 6 Months)");
+            createHeading("(Last 6 Months)");
             deActivateBtns(["long_term", "short_term"]);
             break;
         case "short_term":
-            reCreateHeading("My Top Spotify Artists (Last Month)");
+            createHeading("(Last Month)");
             deActivateBtns(["medium_term", "long_term"]);
             break;
     }
@@ -75,14 +79,23 @@ function createElement(elemName, attrs, txt) {
     return resultElem;
 }
 
-function reCreateHeading(txt) {
+function parseName (rawName) {
+    if (rawName==="no-name") {
+        name = "My";
+    } else if (rawName[rawName.length-1]==="s") {
+        name = rawName+"'"
+    } else {
+        name = rawName+"'s";
+    }
+}
+function createHeading(txt) {
     // remove old heading
     const prevHeading = document.querySelector("h3");
     const parent = prevHeading.parentNode;
     parent.removeChild(prevHeading);
 
     // create new heading
-    const newHeading = createElement("h3", {class: "page-heading metric-heading animated bounceIn"}, txt);
+    const newHeading = createElement("h3", {class: "page-heading metric-heading animated bounceIn"}, name+" Top Spotify Artists "+txt);
     parent.insertBefore(newHeading, document.querySelector("#top-artists-row"));
 }
 
@@ -94,9 +107,9 @@ function reCreateTable(data) {
     parent.removeChild(table);
 
     // create new table
-    const newTable = createElement("table", {class: "table table-striped"});
+    const newTable = createElement("table", {class: "table table-striped animated fadeInUpBig fast"});
     
-    const thead = createElement("thead", {class: "animated fadeInUpBig fast"});
+    const thead = createElement("thead");
     const tr = createElement("tr");
     const th1 = createElement("th", {scope: "col"}, "Rank");
     const th2 = createElement("th", {scope: "col"}, "Name");
@@ -105,7 +118,7 @@ function reCreateTable(data) {
     thead.appendChild(tr);
     newTable.appendChild(thead);
 
-    const newBody = createElement("tbody", {class: "animated fadeInUpBig fast"});
+    const newBody = createElement("tbody");
     // fill in new body with new data
     for (let i=0; i<data.length; i++) {
         const currArtist = data[i];
