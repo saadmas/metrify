@@ -19,7 +19,6 @@
   "homepage": "https://github.com/nyu-csci-ua-0480-008-spring-2019/saadmasood96-final-project#readme",
   "devDependencies": {},
   "dependencies": {
-    "animate.css": "^3.7.0",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "express-session": "^1.16.1",

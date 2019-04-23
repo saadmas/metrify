@@ -40,20 +40,17 @@ async function timeQuery() {
     const timeForPlaylistCreation = document.querySelector("#time-for-playlist-creation");
     switch (this.id) {
         case "long_term":
-            // update heading 
-            document.querySelector("h3").innerText = "My Top Spotify Tracks (All Time)";
+            reCreateHeading("My Top Spotify Tracks (All Time)");
             deActivateBtns(["medium_term", "short_term"]);
             timeForPlaylistCreation.value = "(All Time)";
             break;
         case "medium_term":
-            // update heading 
-            document.querySelector("h3").innerText = "My Top Spotify Tracks (Last 6 Months)";
+            reCreateHeading("My Top Spotify Tracks (Last 6 Months)");
             deActivateBtns(["long_term", "short_term"]);
             timeForPlaylistCreation.value = "(Last 6 Months)";
             break;
         case "short_term":
-            // update heading 
-            document.querySelector("h3").innerText = "My Top Spotify Tracks (Last Month)";
+            reCreateHeading("My Top Spotify Tracks (Last Month)");
             deActivateBtns(["medium_term", "long_term"]);
             timeForPlaylistCreation.value = "(Last Month)";
             break;
@@ -64,38 +61,7 @@ async function timeQuery() {
     const res = await rawRes.json();   
 
     // update table body //
-    
-    // remove old body
-    const tableBody = document.querySelector("tbody");
-    tableBody.parentNode.removeChild(tableBody);
-
-    // create new body
-    const table = document.querySelector("table");
-    const newBody = createElement("tbody");
-    
-    // fill in new body with new data
-    for (let i=0; i<res.length; i++) {
-        const currTrack = res[i];
-
-        const tr = createElement("tr");
-
-        const thRank = createElement("th", {class: "track-rank", scope:"row"});
-
-        const tdTrack = createElement("td", {class: "track-title", id: currTrack.spotifyID});
-        tdTrack.innerText = currTrack.title;
-
-        const tdArtists = createElement("td", {class: "track-artist"});
-        tdArtists.innerText = currTrack.artists;
-
-        tr.appendChild(thRank);
-        tr.appendChild(tdTrack);
-        tr.appendChild(tdArtists);
-        newBody.appendChild(tr);
-    }
-
-    table.appendChild(newBody);
-    addRankNumbersToTable();
-    
+    reCreateTable(res);
 }
 
 function deActivateBtns(arr) {
@@ -134,19 +100,80 @@ async function createSpotifyPlaylist() {
     const resText = await res.json();   
     
     // show result in modal
-    const modalBody = document.querySelector(".modal-body");
+    const modalBody = document.querySelector("#create-playlist-result");
     modalBody.innerText = resText;
 
     const modalShowBtn = document.querySelector("#show-modal-button");
     modalShowBtn.click();
 }
 
-function createElement(elemName, attrs) {
+function createElement(elemName, attrs, txt) {
     const resultElem = document.createElement(elemName);
     
     for (const key in attrs) {
         resultElem.setAttribute(key, attrs[key]);
     }
 
+    if (txt) {
+        resultElem.innerText = txt;
+    }
+
     return resultElem;
+}
+
+function reCreateHeading(txt) {
+    // remove old heading
+    const prevHeading = document.querySelector("h3");
+    const parent = prevHeading.parentNode;
+    parent.removeChild(prevHeading);
+
+    // create new heading
+    const newHeading = createElement("h3", {class: "page-heading metric-heading animated bounceIn"}, txt);
+    parent.insertBefore(newHeading, document.querySelector("#top-tracks-row"));
+}
+
+function reCreateTable(data) {
+
+    // remove old table
+    const table = document.querySelector("table");
+    const parent = table.parentNode;
+    parent.removeChild(table);
+
+    // create new table
+    const newTable = createElement("table", {class: "table table-striped"});
+    
+    const thead = createElement("thead", {class: "page-heading metric-heading animated fadeInUpBig fast"});
+    const tr = createElement("tr");
+    const th1 = createElement("th", {scope: "col"}, "Rank");
+    const th2 = createElement("th", {scope: "col"}, "Title");
+    const th3 = createElement("th", {scope: "col"}, "Artists");
+    tr.appendChild(th1);
+    tr.appendChild(th2);
+    tr.appendChild(th3);
+    thead.appendChild(tr);
+    newTable.appendChild(thead);
+
+    const newBody = createElement("tbody", {class: "page-heading metric-heading animated fadeInUpBig fast"});
+    
+    // fill in new body with new data
+    for (let i=0; i<data.length; i++) {
+        const currTrack = data[i];
+
+        const tr = createElement("tr");
+
+        const thRank = createElement("th", {class: "track-rank", scope:"row"});
+
+        const tdTrack = createElement("td", {class: "track-title", id: currTrack.spotifyID}, currTrack.title);
+
+        const tdArtists = createElement("td", {class: "track-artist"}, currTrack.artists);
+
+        tr.appendChild(thRank);
+        tr.appendChild(tdTrack);
+        tr.appendChild(tdArtists);
+        newBody.appendChild(tr);
+    }
+
+    newTable.appendChild(newBody);
+    document.querySelector("#table-container").appendChild(newTable);
+    addRankNumbersToTable();
 }

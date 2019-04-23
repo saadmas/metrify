@@ -13,10 +13,10 @@
   </div>
 </nav>
 
-<h3 class="page-heading metric-heading">My Top Spotify Tracks (All Time)</h3>  
+<h3 class="page-heading metric-heading animated bounceIn">My Top Spotify Tracks (All Time)</h3>  
 
 <!-- options: query tracks by time, create playlist -->
-<div class="row">
+<div class="row" id="top-tracks-row">
   <div class="col">
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 
@@ -50,10 +50,10 @@
 
 <!-- list of tracks -->
 <div class="row">
-  <div class="col">
-    <table class="table table-striped">
+  <div class="col" id="table-container">
+    <table class="table table-striped" id="tracks-table">
       
-      <thead>
+      <thead class="animated fadeInUpBig fast">
         <tr>
           <th scope="col">Rank</th>
           <th scope="col">Title</th>
@@ -61,7 +61,7 @@
         </tr>
       </thead>
 
-      <tbody>
+      <tbody class="animated fadeInUpBig fast">
         {{#each metricData}}
           <tr>
             <th class="track-rank" scope="row"></th>
@@ -106,7 +106,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="create-playlist-result">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

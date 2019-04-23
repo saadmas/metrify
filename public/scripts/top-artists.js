@@ -37,51 +37,21 @@ async function timeQuery() {
 
     switch (this.id) {
         case "long_term":
-            // update heading 
-            document.querySelector("h3").innerText = "My Top Spotify Artists (All Time)";
+            reCreateHeading("My Top Spotify Artists (All Time)");
             deActivateBtns(["medium_term", "short_term"]);
             break;
         case "medium_term":
-            // update heading 
-            document.querySelector("h3").innerText = "My Top Spotify Artists (Last 6 Months)";
+            reCreateHeading("My Top Spotify Artists (Last 6 Months)");
             deActivateBtns(["long_term", "short_term"]);
             break;
         case "short_term":
-            // update heading 
-            document.querySelector("h3").innerText = "My Top Spotify Artists (Last Month)";
+            reCreateHeading("My Top Spotify Artists (Last Month)");
             deActivateBtns(["medium_term", "long_term"]);
             break;
     }
 
-    // update table body //
-    
-    // remove old body
-    const tableBody = document.querySelector("tbody");
-    tableBody.parentNode.removeChild(tableBody);
 
-    // create new body
-    const table = document.querySelector("table");
-    const newBody = createElement("tbody");
-    
-    // fill in new body with new data
-    for (let i=0; i<res.length; i++) {
-        const currArtist = res[i];
-
-        const tr = createElement("tr");
-
-        const thRank = createElement("th", {class: "artist-rank", scope:"row"});
-
-        const tdArtist = createElement("td", {class: "artist-name", id: currArtist.spotifyID});
-        tdArtist.innerText = currArtist.name;
-
-
-        tr.appendChild(thRank);
-        tr.appendChild(tdArtist);
-        newBody.appendChild(tr);
-    }
-
-    table.appendChild(newBody);
-    addRankNumbersToTable();
+    reCreateTable(res);
 }
 
 function deActivateBtns(arr) {
@@ -91,12 +61,65 @@ function deActivateBtns(arr) {
     }
 }
 
-function createElement(elemName, attrs) {
+function createElement(elemName, attrs, txt) {
     const resultElem = document.createElement(elemName);
     
     for (const key in attrs) {
         resultElem.setAttribute(key, attrs[key]);
     }
 
+    if (txt) {
+        resultElem.innerText = txt;
+    }
+
     return resultElem;
+}
+
+function reCreateHeading(txt) {
+    // remove old heading
+    const prevHeading = document.querySelector("h3");
+    const parent = prevHeading.parentNode;
+    parent.removeChild(prevHeading);
+
+    // create new heading
+    const newHeading = createElement("h3", {class: "page-heading metric-heading animated bounceIn"}, txt);
+    parent.insertBefore(newHeading, document.querySelector("#top-artists-row"));
+}
+
+function reCreateTable(data) {
+
+    // remove old table
+    const table = document.querySelector("table");
+    const parent = table.parentNode;
+    parent.removeChild(table);
+
+    // create new table
+    const newTable = createElement("table", {class: "table table-striped"});
+    
+    const thead = createElement("thead", {class: "animated fadeInUpBig fast"});
+    const tr = createElement("tr");
+    const th1 = createElement("th", {scope: "col"}, "Rank");
+    const th2 = createElement("th", {scope: "col"}, "Name");
+    tr.appendChild(th1);
+    tr.appendChild(th2);
+    thead.appendChild(tr);
+    newTable.appendChild(thead);
+
+    const newBody = createElement("tbody", {class: "animated fadeInUpBig fast"});
+    // fill in new body with new data
+    for (let i=0; i<data.length; i++) {
+        const currArtist = data[i];
+
+        const tr = createElement("tr");
+        const thRank = createElement("th", {class: "artist-rank", scope:"row"});
+        const tdArtist = createElement("td", {class: "artist-name", id: currArtist.spotifyID}, currArtist.name);
+        
+        tr.appendChild(thRank);
+        tr.appendChild(tdArtist);
+        newBody.appendChild(tr);
+    }
+
+    newTable.appendChild(newBody);
+    document.querySelector("#table-container").appendChild(newTable);
+    addRankNumbersToTable();
 }

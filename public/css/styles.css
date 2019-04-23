@@ -14,6 +14,10 @@
     font-weight: bold;
 }
 
+#tracks-table {
+    text-align: center;
+}
+
 .btn-toolbar {
     margin-top: 20px;
 }
@@ -86,7 +90,7 @@ table {
   .note-3,
   .note-4 {
     position: absolute;
-    animation: notes 2s infinite linear;
+    animation: notes 3s infinite linear;
     font-size: 35px;
     opacity: 0;
   }

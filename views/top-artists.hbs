@@ -13,10 +13,10 @@
   </div>
 </nav>
 
-<h3 class="page-heading metric-heading">My Top Spotify Artists (All Time)</h3>  
+<h3 class="page-heading metric-heading animated bounceIn">My Top Spotify Artists (All Time)</h3>  
 
 <!-- options: query tracks by time, create playlist -->
-<div class="row">
+<div class="row" id="top-artists-row">
   <div class="col">
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 
@@ -45,17 +45,17 @@
 
 <!-- list of artists -->
 <div class="row">
-  <div class="col">
+  <div class="col" id="table-container">
     <table class="table table-striped">
       
-      <thead>
+      <thead class="animated fadeInUpBig fast">
         <tr>
           <th scope="col">Rank</th>
           <th scope="col">Name</th>
         </tr>
       </thead>
 
-      <tbody>
+      <tbody class= "animated fadeInUpBig fast">
         {{#each metricData}}
           <tr>
             <th class="artist-rank" scope="row"></th>
