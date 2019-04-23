@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", main);
+let name;
 
 function main() {
+
+    parseName(document.querySelector("#user-name").innerText);
+    createHeading("(All Time)");
     addRankNumbersToTable();
     init_timeQueryBtns();
     init_CreatePlayListBtn();
@@ -40,17 +44,17 @@ async function timeQuery() {
     const timeForPlaylistCreation = document.querySelector("#time-for-playlist-creation");
     switch (this.id) {
         case "long_term":
-            reCreateHeading("My Top Spotify Tracks (All Time)");
+            createHeading("(All Time)");
             deActivateBtns(["medium_term", "short_term"]);
             timeForPlaylistCreation.value = "(All Time)";
             break;
         case "medium_term":
-            reCreateHeading("My Top Spotify Tracks (Last 6 Months)");
+            createHeading("(Last 6 Months)");
             deActivateBtns(["long_term", "short_term"]);
             timeForPlaylistCreation.value = "(Last 6 Months)";
             break;
         case "short_term":
-            reCreateHeading("My Top Spotify Tracks (Last Month)");
+            createHeading("(Last Month)");
             deActivateBtns(["medium_term", "long_term"]);
             timeForPlaylistCreation.value = "(Last Month)";
             break;
@@ -121,14 +125,14 @@ function createElement(elemName, attrs, txt) {
     return resultElem;
 }
 
-function reCreateHeading(txt) {
+function createHeading(txt) {
     // remove old heading
     const prevHeading = document.querySelector("h3");
     const parent = prevHeading.parentNode;
     parent.removeChild(prevHeading);
 
     // create new heading
-    const newHeading = createElement("h3", {class: "page-heading metric-heading animated bounceIn"}, txt);
+    const newHeading = createElement("h3", {class: "page-heading metric-heading animated bounceIn"}, name+" Top Spotify Tracks "+txt);
     parent.insertBefore(newHeading, document.querySelector("#top-tracks-row"));
 }
 
@@ -140,7 +144,7 @@ function reCreateTable(data) {
     parent.removeChild(table);
 
     // create new table
-    const newTable = createElement("table", {class: "table table-striped animated fadeInUpBig fast"});
+    const newTable = createElement("table", {class: "table table-striped animated fadeInUpBig fast", id: "tracks-table"});
     
     const thead = createElement("thead");
     const tr = createElement("tr");
@@ -176,4 +180,14 @@ function reCreateTable(data) {
     newTable.appendChild(newBody);
     document.querySelector("#table-container").appendChild(newTable);
     addRankNumbersToTable();
+}
+
+function parseName (rawName) {
+    if (rawName==="no-name") {
+        name = "My";
+    } else if (rawName[rawName.length-1]==="s") {
+        name = rawName+"'"
+    } else {
+        name = rawName+"'s";
+    }
 }

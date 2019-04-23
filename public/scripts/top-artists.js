@@ -88,6 +88,7 @@ function parseName (rawName) {
         name = rawName+"'s";
     }
 }
+
 function createHeading(txt) {
     // remove old heading
     const prevHeading = document.querySelector("h3");

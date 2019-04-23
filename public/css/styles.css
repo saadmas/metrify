@@ -14,10 +14,6 @@
     font-weight: bold;
 }
 
-#tracks-table {
-    text-align: center;
-}
-
 .btn-toolbar {
     margin-top: 20px;
 }
@@ -40,6 +36,10 @@ table {
     margin-left: 500px;
     font-size: 14px;
     font-weight: Extra-Bold;
+}
+
+#tracks-table {
+    text-align: center;
 }
 
 #show-modal-button {
