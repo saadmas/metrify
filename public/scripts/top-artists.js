@@ -33,12 +33,13 @@ function init_timeQueryBtns() {
 }
 
 async function timeQuery() {
+    this.classList.add("active-time");
 
-    
     //* https://metrify-me.herokuapp.com/get-metric?target=tracks&timeRange=${this.id}
     const rawRes = await fetch(`http://localhost:3000/get-metric?target=artists&timeRange=${this.id}`, {method: 'GET'});
     const res = await rawRes.json();   
-
+    /// 
+    console.log("ID: "+this.id);
     switch (this.id) {
         case "long_term":
             createHeading("(All Time)");
@@ -59,9 +60,12 @@ async function timeQuery() {
 }
 
 function deActivateBtns(arr) {
+    ///
+    console.log(arr);
     for (let i=0; i<arr.length; i++) {
         const btn = document.querySelector("#"+arr[i]);
         btn.classList.remove("active");
+        btn.classList.remove("active-time");
     }
 }
 
@@ -126,7 +130,7 @@ function reCreateTable(data) {
 
         const tr = createElement("tr");
         const thRank = createElement("th", {class: "artist-rank", scope:"row"});
-        const tdArtist = createElement("td", {class: "artist-name", id: currArtist.spotifyID}, currArtist.name);
+        const tdArtist = createElement("td", {id: currArtist.spotifyID}, currArtist.name);
         
         tr.appendChild(thRank);
         tr.appendChild(tdArtist);

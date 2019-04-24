@@ -27,13 +27,17 @@
 }
 
 table {
-    margin-top: 10px;
+    margin-top: 20px;
     font-size: 15px;
+}
+
+.active-time {
+    background-color: #15506c !important;
+    color: white !important;
 }
 
 /* tracks only */
 #create-playlist {
-    margin-left: 500px;
     font-size: 14px;
     font-weight: Extra-Bold;
 }
@@ -45,6 +49,9 @@ table {
 #show-modal-button {
     display: none;
 }
+
+/* artists only */
+
 
 /* index */
 #welcome-div {

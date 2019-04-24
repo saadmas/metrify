@@ -1,5 +1,10 @@
-document.addEventListener("DOMContentLoaded", main);
+
+// globals //
 let name;
+
+// functions //
+
+document.addEventListener("DOMContentLoaded", main);
 
 function main() {
 
@@ -40,6 +45,8 @@ function init_timeQueryBtns() {
 
 async function timeQuery() {
 
+    this.classList.add("active-time");
+
     // set create playlist button functionality
     const timeForPlaylistCreation = document.querySelector("#time-for-playlist-creation");
     switch (this.id) {
@@ -66,12 +73,15 @@ async function timeQuery() {
 
     // update table body //
     reCreateTable(res);
+
+    lastClickedBtn = this;
 }
 
 function deActivateBtns(arr) {
     for (let i=0; i<arr.length; i++) {
         const btn = document.querySelector("#"+arr[i]);
         btn.classList.remove("active");
+        btn.classList.remove("active-time");
     }
 }
 

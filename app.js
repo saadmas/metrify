@@ -42,20 +42,17 @@ app.use(session({
 
 
 // ensure Spotify auth
-
 app.use( async (req, res, next) => {
     if (req.url==="/top-tracks" || req.url==="/top-artists") {
         // spotify ID must be present in session 
         if (req.session.spotifyID) {
-            /// token for authenticated MUST be present in db
-            /*
+            // token for authenticated MUST be present in db
             const token = await getToken(req.session.spotifyID);
-            
             if (token === "token-err") {
                 res.redirect("/");
+            } else {
+                next();
             }
-            */
-            next();
         } else {
             res.redirect("/");
         }
@@ -64,20 +61,9 @@ app.use( async (req, res, next) => {
     }   
 });
 
-
 // static files
 const publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
-
-// session
-app.use(session({ 
-    name: "spotifyUser",
-    secret: generateKey(), 
-    resave: false, 
-    saveUninitialized: true,
-    //?store: new FileStore(),
-    cookie: {httpOnly: true, maxAge: 216000} //? secure: false
-}));
 
 // body parser
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -92,7 +78,6 @@ app.get("/", (req, res) => {
 
 app.get("/spotify-auth", (req, res) => {
     const spotifyApi = initSpotifyAPI();
-    /// scope + state
     const authURL = spotifyApi.createAuthorizeURL(['user-read-private', 'user-read-email', 'user-top-read', 'playlist-modify-private']);
     res.redirect(authURL);
 }); 
@@ -134,7 +119,7 @@ app.get('/get-metric', async (req, res) => {
     const target = req.query.target;
     const timeRange = req.query.timeRange;
 
-    const spotifyID = req.session.spotifyID
+    const spotifyID = req.session.spotifyID;
     let db_metricData = await db_getMetricData(spotifyID, timeRange, target);
 
     // if requested data is already in db - use it instead of making spotify API call
@@ -337,31 +322,35 @@ function generateKey() {
 // DB functions //
 async function db_storeUser(id, name, token) {
     // check if user already exists
-    await User.findOne({spotifyID: id}, (err, findResult) => {
+    await User.findOneAndUpdate(
+        {spotifyID: id},
+        {$set: {token: token}},
+        {new: true, runValidators: true}, 
+        (err, user) => {
+            if (err || !user) {
+                // create user in db 
+                console.log("User does not exist. Storing user in db now ...");
 
-        if (err || !findResult) {
-            // create user in db 
-            console.log("User does not exist. Storing user in db now ...");
-
-            let user;
-            // store name if given
-            if (name===null) {
-                user = new User({spotifyID: id, token: token});
-            } else {
-                user = new User({spotifyID: id, name: name, token: token});
-            }
-
-            user.save((err) => {
-                if (err) {
-                    console.log("Error storing user in db: "+err);
+                let user;
+                // store name if given
+                if (name===null) {
+                    user = new User({spotifyID: id, token: token});
                 } else {
-                    console.log("User succesfully saved in db!");
+                    user = new User({spotifyID: id, name: name, token: token});
                 }
-            });
-        } else if (findResult) {    
-            console.log("User already exists in db!");
+
+                user.save((err) => {
+                    if (err) {
+                        console.log("Error storing user in db: "+err);
+                    } else {
+                        console.log("User succesfully saved in db!");
+                    }
+                });
+            } else if (user) {
+                console.log("User already exists in db. Token updated.");
+            }
         }
-    }).exec();
+    ).exec();
 }
 
 async function db_getMetricData(id, time, target) {
@@ -597,14 +586,14 @@ async function getDisplayName(id) {
     if (user) {
         return user.name;
     } else {
-        return "token-err";
+        return "";
     }
 }
 
 //? async-await ?
 function initSpotifyAPI(token) {
     const spotifyApi = new SpotifyWebApi({
-        clientId: '0c924357971d47e5aac6b63298953b7b',
+        clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         redirectUri: process.env.REDIRECTURI || "http://localhost:3000/login"
     });
