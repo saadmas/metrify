@@ -305,6 +305,10 @@ app.get("/error-page", (req,res) => {
     res.render("error-page");
 });
 
+app.get("/about", (req,res) => {
+    res.render("about");
+});
+
 // invalid route handler
 app.get("*", (req, res) => {
     res.redirect("/");

@@ -49,13 +49,28 @@ table {
 /* artists only */
 
 
-/* index, error page */
+/* index, error page, about */
+.about-header {
+    font-weight: bold;
+    text-align: left;
+}
+
+.about-details {
+    text-align: left;
+}
+
+.about-gif {
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+}
+
 #welcome-div, #error-div {
     text-align: center;
     margin-top: 40px;
 }
 
-.welcome-details, .error-details {
+.welcome-details, .error-details, .about-details {
     margin-top: 1em;
 }
 
