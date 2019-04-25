@@ -47,7 +47,7 @@ app.use( async (req, res, next) => {
         // spotify ID must be present in session 
         if (req.session.spotifyID) {
             // token for authenticated MUST be present in db
-            const token = await getToken(req.session.spotifyID);
+            const token = await getToken(req.session.spotifyID, next);
             if (token === "token-err") {
                 res.redirect("/");
             } else {
@@ -70,6 +70,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // json
 app.use(express.json());
 
+// error handling
+app.use( (err, req, res, next) => {
+    // log error
+    console.error("error msg: "+err.message); 
+    console.error("error stack: "+err.stack); 
+    // set status code
+    if (!err.statusCode) { 
+        err.statusCode = 500;
+    }
+    // render error page
+    res.status(err.statusCode).render("error-page", {errMsg: err.message, errStack: err.stack}); 
+});
 
 // Routes //
 app.get("/", (req, res) => {
@@ -82,7 +94,7 @@ app.get("/spotify-auth", (req, res) => {
     res.redirect(authURL);
 }); 
 
-app.get("/login", (req, res) => {
+app.get("/login", (req, res, next) => {
     authCode = req.query.code;
 
     const spotifyApi = initSpotifyAPI();
@@ -97,7 +109,7 @@ app.get("/login", (req, res) => {
                 async (data) => {
                     console.log('Info abt the authenticated user: ', data.body);
 
-                    await db_storeUser(data.body.id, data.body['display_name'], token);
+                    await db_storeUser(data.body.id, data.body['display_name'], token, next);
                     req.session.spotifyID = data.body.id;
                     req.session.save();
 
@@ -105,22 +117,26 @@ app.get("/login", (req, res) => {
                     res.redirect("/top-tracks");
                 }, 
                 (err) => {
-                console.log('Cannot get authenticated user info: ', err);
+                console.error('Cannot get authenticated user info: ', err);
+                const errorDetails = new Error(`Cannot get authenticated user info: ${err}`);
+                next(errorDetails);
                 }
             );
         },
         (err) => {
-        console.log('Something went wrong with authorizing code grant!', err);
+        console.error('Something went wrong with authorizing code grant!', err);
+        const errorDetails = new Error(`Something went wrong with authorizing code grant: ${err}`);
+        next(errorDetails);
         }
     );      
 }); 
 
-app.get('/get-metric', async (req, res) => {
+app.get('/get-metric', async (req, res, next) => {
     const target = req.query.target;
     const timeRange = req.query.timeRange;
 
     const spotifyID = req.session.spotifyID;
-    let db_metricData = await db_getMetricData(spotifyID, timeRange, target);
+    let db_metricData = await db_getMetricData(spotifyID, timeRange, target, next);
 
     // if requested data is already in db - use it instead of making spotify API call
     if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
@@ -129,7 +145,7 @@ app.get('/get-metric', async (req, res) => {
     } else {
         // options and callback for making request to Spotify API DIRECTLY
         // (NOT through Node.js wrapper library)
-        const token = await getToken(spotifyID);
+        const token = await getToken(spotifyID, next);
         const options = {
             url: `https://api.spotify.com/v1/me/top/${target}?time_range=${timeRange}&limit=50`,
             headers: {"Authorization": "Bearer " + token} 
@@ -142,17 +158,19 @@ app.get('/get-metric', async (req, res) => {
             if (!error && response.statusCode == 200) {
                 pagingObj = JSON.parse(body);
             } else {
-                console.log(`Error getting top ${target}: ${error}`)
+                console.error(`Error getting top ${target}: ${error}`)
+                const errorDetails = new Error(`Error getting top ${target}: ${error}`);
+                next(errorDetails);
             }
 
             // save metric data in db
             if (target==="tracks") {
-                await db_saveTopTracksData(spotifyID, timeRange, pagingObj.items);
+                await db_saveTopTracksData(spotifyID, timeRange, pagingObj.items, next);
             } else if (target==="artists") {
-                await db_saveTopArtistsData(spotifyID, timeRange, pagingObj.items);
+                await db_saveTopArtistsData(spotifyID, timeRange, pagingObj.items, next);
             }
 
-            db_metricData = await db_getMetricData(spotifyID, timeRange, target);
+            db_metricData = await db_getMetricData(spotifyID, timeRange, target, next);
             res.json(db_metricData);
         };
 
@@ -162,11 +180,11 @@ app.get('/get-metric', async (req, res) => {
 });
  
 
-app.get("/top-tracks", async (req, res) => {
+app.get("/top-tracks", async (req, res, next) => {
 
     const spotifyID = req.session.spotifyID;
-    const userName = await getDisplayName(spotifyID);
-    let db_metricData = await db_getMetricData(spotifyID, "long_term", "tracks");
+    const userName = await getDisplayName(spotifyID, next);
+    let db_metricData = await db_getMetricData(spotifyID, "long_term", "tracks", next);
 
     // if requested data is already in db - use it instead of making spotify API call
     if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
@@ -174,7 +192,7 @@ app.get("/top-tracks", async (req, res) => {
         res.render(`top-tracks`, {metricData: db_metricData, name: userName});
     } else {
         // options and callback for making request to Spotify API DIRECTLY (NOT through Node.js wrapper library)
-        const token = await getToken(spotifyID);
+        const token = await getToken(spotifyID, next);
         const options = {
             url: `https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=50`,
             headers: {"Authorization": "Bearer " + token} 
@@ -187,14 +205,16 @@ app.get("/top-tracks", async (req, res) => {
             if (!error && response.statusCode == 200) {
                 pagingObj = JSON.parse(body);
             } else {
-                console.log(`Error getting top tracks: ${error}`)
+                console.error(`Error getting top tracks: ${error}`)
+                const errorDetails = new Error(`Error getting top tracks: ${error}`);
+                next(errorDetails);
             }
 
             // save metric data in db
-            await db_saveTopTracksData(spotifyID, "long_term", pagingObj.items);
+            await db_saveTopTracksData(spotifyID, "long_term", pagingObj.items, next);
 
             // retrive data from db and render 
-            db_metricData = await db_getMetricData(spotifyID, "long_term", "tracks");
+            db_metricData = await db_getMetricData(spotifyID, "long_term", "tracks", next);
             
             res.render(`top-tracks`, {metricData: db_metricData, name: userName});  
         };
@@ -204,11 +224,11 @@ app.get("/top-tracks", async (req, res) => {
     }
 });
 
-app.get("/top-artists", async (req, res) => {
+app.get("/top-artists", async (req, res, next) => {
 
     const spotifyID = req.session.spotifyID;
-    const userName = await getDisplayName(spotifyID);
-    let db_metricData = await db_getMetricData(spotifyID, "long_term", "artists");
+    const userName = await getDisplayName(spotifyID, next);
+    let db_metricData = await db_getMetricData(spotifyID, "long_term", "artists", next);
 
     // if requested data is already in db - use it instead of making spotify API call
     if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
@@ -217,7 +237,7 @@ app.get("/top-artists", async (req, res) => {
     } else {
 
         // options and callback for making request to Spotify API DIRECTLY (NOT through Node.js wrapper library)
-        const token = await getToken(spotifyID);
+        const token = await getToken(spotifyID, next);
         const options = {
             url: `https://api.spotify.com/v1/me/top/artists?time_range=long_term&limit=50`,
             headers: {"Authorization": "Bearer " + token} 
@@ -230,14 +250,16 @@ app.get("/top-artists", async (req, res) => {
             if (!error && response.statusCode == 200) {
                 pagingObj = JSON.parse(body);
             } else {
-                console.log(`Error getting top artists: ${error}`)
+                console.error(`Error getting top artists: ${error}`)
+                const errorDetails = new Error(`Error getting top artists: ${error}`);
+                next(errorDetails);
             }
 
             // save metric data in db
-            await db_saveTopArtistsData(spotifyID, "long_term", pagingObj.items);
+            await db_saveTopArtistsData(spotifyID, "long_term", pagingObj.items, next);
 
             // retrive data from db and render 
-            db_metricData = await db_getMetricData(spotifyID, "long_term", "artists");
+            db_metricData = await db_getMetricData(spotifyID, "long_term", "artists", next);
 
             res.render(`top-artists`, {metricData: db_metricData, name: userName}); 
         };
@@ -247,12 +269,12 @@ app.get("/top-artists", async (req, res) => {
     }
 });
 
-app.post("/create-top-tracks-playlist", async (req, res) => {
+app.post("/create-top-tracks-playlist", async (req, res, next) => {
     
     // Create a private playlist
     const data = sanitize(req.body);
     const spotifyID = req.session.spotifyID;
-    const token = await getToken(spotifyID);
+    const token = await getToken(spotifyID, next);
     const spotifyApi = initSpotifyAPI(token);
 
     spotifyApi.createPlaylist(spotifyID, `My Top Tracks ${data.timeRange}`, {'public' : false })
@@ -267,16 +289,20 @@ app.post("/create-top-tracks-playlist", async (req, res) => {
                     res.json(`Succesfully created playlist "My Top Tracks ${data.timeRange}" \n\n View and listen to the playlist on your Spotify connected device!`);
                 }, 
                 (err) => {
-                console.log('Error adding tracks to playlist: ', err);
+                console.error('Error adding tracks to playlist: ', err);
                 res.json("Error occured. Could not create playlist! Please try again.");
                 }
             );
         }, 
         (err) => {
-            console.log('Error creating playlist: ', err);
+            console.error('Error creating playlist: ', err);
             res.json("Error occured. Could not create playlist!");
         }
     );
+});
+
+app.get("/error-page", (req,res) => {
+    res.render("error-page");
 });
 
 // Helper functions //
@@ -293,7 +319,7 @@ function generateKey() {
 
 
 // DB functions //
-async function db_storeUser(id, name, token) {
+async function db_storeUser(id, name, token, next) {
     // check if user already exists
     await User.findOneAndUpdate(
         {spotifyID: id},
@@ -314,7 +340,9 @@ async function db_storeUser(id, name, token) {
 
                 user.save((err) => {
                     if (err) {
-                        console.log("Error storing user in db: "+err);
+                        console.error("Error storing user in db: "+err);
+                        const errorDetails = new Error(`Error storing user in database: ${err}`);
+                        next(errorDetails);
                     } else {
                         console.log("User succesfully saved in db!");
                     }
@@ -326,12 +354,14 @@ async function db_storeUser(id, name, token) {
     ).exec();
 }
 
-async function db_getMetricData(id, time, target) {
+async function db_getMetricData(id, time, target, next) {
 
     // get user from db
     const user = await User.findOne({spotifyID: id}, (err, user) => {
         if (err) {
-            console.log("Error finding user to get metric data: "+err);
+            console.error("Error finding user to get metric data: "+err);
+            const errorDetails = new Error(`Error finding user to get metric data: ${err}`);
+            next(errorDetails);
         } 
     }).exec();
 
@@ -362,16 +392,18 @@ async function db_getMetricData(id, time, target) {
     
 }
 
-async function db_saveTopTracksData(id, time, items) {
+async function db_saveTopTracksData(id, time, items, next) {
     switch (time) {
         case "long_term":
             await User.findOneAndUpdate(
                 {spotifyID: id},
-                {$set: {topTracks_long: await parseAndStoreTracks(items)}},
+                {$set: {topTracks_long: await parseAndStoreTracks(items, next)}},
                 {new: true, runValidators: true}, 
                 (err, user) => {
                 if (err) {
-                    console.log("Error saving long_term top-track data: "+err);
+                    console.error("Error saving long_term top-track data: "+err);
+                    const errorDetails = new Error(`Error saving long_term top-track data:  ${err}`);
+                    next(errorDetails);
                 } else if (user) {
                     console.log("Found User. Stored long_term tracklist");
                 }
@@ -381,10 +413,12 @@ async function db_saveTopTracksData(id, time, items) {
         case "medium_term":
             await User.findOneAndUpdate(
                 {spotifyID: id},
-                {$set: {topTracks_med: await parseAndStoreTracks(items)}}, 
+                {$set: {topTracks_med: await parseAndStoreTracks(items, next)}}, 
                 (err, user) => {
                 if (err) {
-                    console.log("Error saving med_term top-track data: "+err);
+                    console.error("Error saving med_term top-track data: "+err);
+                    const errorDetails = new Error(`Error saving med_term top-track data:  ${err}`);
+                    next(errorDetails);
                 } else if (user) {
                     console.log("Found User. Stored med_term tracklist");
                 }
@@ -394,10 +428,12 @@ async function db_saveTopTracksData(id, time, items) {
         case "short_term":
             await User.findOneAndUpdate(
                 {spotifyID: id},
-                {$set: {topTracks_short: await parseAndStoreTracks(items)}}, 
+                {$set: {topTracks_short: await parseAndStoreTracks(items, next)}}, 
                 (err, user) => {
                 if (err) {
-                    console.log("Error saving short_term top-track data: "+err);
+                    console.error("Error saving short_term top-track data: "+err);
+                    const errorDetails = new Error(`Error saving short_term top-track data:  ${err}`);
+                    next(errorDetails);
                 } else if (user) {
                     console.log("Found User. Stored short_term tracklist");
                 }
@@ -406,7 +442,7 @@ async function db_saveTopTracksData(id, time, items) {
     }
 }
 
-async function parseAndStoreTracks(items) {
+async function parseAndStoreTracks(items, next) {
     const arr = [];
     for (let i=0; i<items.length; i++) {
         const currTrack = items[i];
@@ -417,8 +453,9 @@ async function parseAndStoreTracks(items) {
             {upsert: true, new: true, runValidators: true}, // store track if it doesn't exist
             (err, doc) => {
             if (err) {
-                console.log("error saving new track: "+err);
-
+                console.error("error saving new track: "+err);
+                const errorDetails = new Error(`Error saving new track:  ${err}`);
+                next(errorDetails);
             // return from db if track already exists
             } else {
                 console.log("saved new track to db: "+ doc.title);
@@ -449,7 +486,7 @@ function parseArtistsFromTrackObj(track) {
     return result;
 }
 
-async function db_saveTopArtistsData(id, time, items) {
+async function db_saveTopArtistsData(id, time, items, next) {
     switch (time) {
         case "long_term":
             await User.findOneAndUpdate(
@@ -458,7 +495,9 @@ async function db_saveTopArtistsData(id, time, items) {
                 {new: true, runValidators: true}, 
                 (err, user) => {
                 if (err) {
-                    console.log("Error saving long_term top-artist  data: "+err);
+                    console.error("Error saving long_term top-artist data: "+err);
+                    const errorDetails = new Error(`Error saving long_term top-artist data:  ${err}`);
+                    next(errorDetails);
                 } else if (user) {
                     console.log("Found User. Stored long_term artists");
                 }
@@ -471,7 +510,9 @@ async function db_saveTopArtistsData(id, time, items) {
                 {$set: {topArtists_med: await parseAndStoreArtists(items)}}, 
                 (err, user) => {
                 if (err) {
-                    console.log("Error saving med_term top-artists data: "+err);
+                    console.error("Error saving med_term top-artists data: "+err);
+                    const errorDetails = new Error(`Error saving med_term top-artist data:  ${err}`);
+                    next(errorDetails);
                 } else if (user) {
                     console.log("Found User. Stored med_term artists");
                 }
@@ -484,7 +525,7 @@ async function db_saveTopArtistsData(id, time, items) {
                 {$set: {topArtists_short: await parseAndStoreArtists(items)}}, 
                 (err, user) => {
                 if (err) {
-                    console.log("Error saving short_term top-artists data: "+err);
+                    console.error("Error saving short_term top-artists data: "+err);
                 } else if (user) {
                     console.log("Found User. Stored short_term artists");
                 }
@@ -504,7 +545,7 @@ async function parseAndStoreArtists(items) {
             {upsert: true, new: true, runValidators: true}, // store artist if they don't exist in db
             (err, doc) => {
             if (err) {
-                console.log("error saving new artist: "+err);
+                console.error("error saving new artist: "+err);
 
             // return from db if track already exists
             } else if (doc) {
@@ -531,10 +572,12 @@ function normalizeTrackIDsForPlaylist(arr) {
 }
 
 
-async function getToken(id) {
+async function getToken(id, next) {
     const user = await User.findOne({spotifyID: id}, (err, findResult) => {
         if (err) {
-            console.log("Error. Cannot retrive access token: "+err);
+            console.error("Error. Cannot retrive access token: "+err);
+            const errorDetails = new Error(`Error. Cannot retrive access token:  ${err}`);
+            next(errorDetails);
         } else if (findResult) {    
             console.log("Retrieved access token!");
         }
@@ -547,11 +590,11 @@ async function getToken(id) {
     }
 }
 
-async function getDisplayName(id) {
+async function getDisplayName(id, next) {
     const user = await User.findOne({spotifyID: id}, (err, findResult) => {
         if (err) {
             // create user in db 
-            console.log("Error. Cannot retrive access token: "+err);
+            console.error("Error. Cannot retrive access token: "+err);
         } else if (findResult) {    
             console.log("Retrieved display name!");
         }
@@ -560,7 +603,9 @@ async function getDisplayName(id) {
     if (user) {
         return normalizeName(user.name);
     } else {
-        /// err: no user
+        console.error("Can't find user to retrieve display name.");
+        const errorDetails = new Error(`Can't find user to retrieve display name.`);
+        next(errorDetails);
     }
 }
 

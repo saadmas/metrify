@@ -1,0 +1,16 @@
+<div id="error-div">
+    <h1> Whoops, something went wrong! </h1>
+
+    {{#if errMsg}}
+        <h4 class="error-details">Error Details: <p>{{errMsg}}</p> </h4>
+    {{/if}}
+
+    {{#if errStack}}
+        <h4 class="error-details">Error Trace: <p>{{errStack}}</p> </h4>
+    {{/if}}
+
+    <h4 class="error-details"> Please try again by restarting <a href="http://localhost:3000/">here</a>. </h4>
+    <h4 class="error-details"> If the error persists, contact saad.masood@nyu.edu with error details.</h4>
+
+    <img class="error-details" src="https://media.giphy.com/media/1USKMDPjuH4ovL7J5h/giphy.gif">
+</div>

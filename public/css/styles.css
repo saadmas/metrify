@@ -49,13 +49,13 @@ table {
 /* artists only */
 
 
-/* index */
-#welcome-div {
+/* index, error page */
+#welcome-div, #error-div {
     text-align: center;
     margin-top: 40px;
 }
 
-.welcome-details {
+.welcome-details, .error-details {
     margin-top: 1em;
 }
 
