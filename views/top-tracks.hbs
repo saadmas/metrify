@@ -27,18 +27,6 @@
         <button type="button" class="btn btn-outline-primary" id="short_term" data-toggle="button">Last Month</button>
       </div>
 
-      <!-- filter tracks -->
-      <div class="btn-group mr-2  dropright" role="group" aria-label="Time Query" id="time-query-group">
-        <button type="button" class="btn btn-primary" id="filter-info" data-toggle="modal" data-target="#filter-info-modal">Filter</button>
-        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <div class="dropdown-menu">
-          <button class="dropdown-item" id="affinity-filter">Affinity</button>
-          <button class="dropdown-item" id="popularity-filter">Popularity</button>
-        </div>
-      </div>
-      
       <!-- create Spotify playlist -->
       <div class="btn-group mr-2" role="group" aria-label="First group">
         <button id="create-playlist" class="btn btn-primary">Create Spotify Playlist</button>
@@ -71,28 +59,6 @@
         {{/each}}
       </tbody>
     </table>
-  </div>
-</div>
-
-<!-- filter info modal -->
-<div class="modal fade" id="filter-info-modal" tabindex="-1" role="dialog" aria-labelledby="filter-info-modal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Filter Information</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>You can filter your top played Spotify tracks in 2 ways: </p>
-        <p> 1) Affinity - This option is chosen by default.   </p>
-        <p> 2) Popularity - Filters your most played tracks by their general popularity on Spotify.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
   </div>
 </div>
 
