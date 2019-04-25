@@ -305,6 +305,11 @@ app.get("/error-page", (req,res) => {
     res.render("error-page");
 });
 
+// invalid route handler
+app.get("*", (req, res) => {
+    res.redirect("/");
+});
+
 // Helper functions //
 
 function generateKey() {

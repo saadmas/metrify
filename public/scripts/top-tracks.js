@@ -89,8 +89,6 @@ async function timeQuery() {
     const rawRes = await fetch(`http://localhost:3000/get-metric?target=tracks&timeRange=${this.id}`, {method: 'GET'});
     const res = await rawRes.json();   
 
-    ///
-    console.log(res);
     // update table body //
     reCreateTable(res);
 
