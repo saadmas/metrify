@@ -8,11 +8,29 @@ document.addEventListener("DOMContentLoaded", main);
 
 function main() {
 
-    parseName(document.querySelector("#user-name").innerText);
+    parseName(); 
     createHeading("(All Time)");
     addRankNumbersToTable();
     init_timeQueryBtns();
     init_CreatePlayListBtn();
+}
+
+function parseName() {
+    const hText = document.querySelector("h3").textContent;
+    const textArr = hText.split(" ");
+    let result = "";
+
+    for (let i=0; i<textArr.length; i++) {
+        if (textArr[i+1] === "Top") {
+            result+=textArr[i];
+            break;
+        } else {
+            result+=textArr[i];
+            result+=" ";
+        }
+    }
+
+    name = result;
 }
 
 function addRankNumbersToTable() {
@@ -190,14 +208,4 @@ function reCreateTable(data) {
     newTable.appendChild(newBody);
     document.querySelector("#table-container").appendChild(newTable);
     addRankNumbersToTable();
-}
-
-function parseName (rawName) {
-    if (rawName==="no-name") {
-        name = "My";
-    } else if (rawName[rawName.length-1]==="s") {
-        name = rawName+"'"
-    } else {
-        name = rawName+"'s";
-    }
 }

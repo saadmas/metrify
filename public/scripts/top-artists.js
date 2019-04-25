@@ -3,7 +3,7 @@ let name;
 
 function main() {
 
-    parseName(document.querySelector("#user-name").innerText);
+    parseName();
     createHeading("(All Time)");
     addRankNumbersToTable();
     init_timeQueryBtns();
@@ -38,8 +38,7 @@ async function timeQuery() {
     //* https://metrify-me.herokuapp.com/get-metric?target=tracks&timeRange=${this.id}
     const rawRes = await fetch(`http://localhost:3000/get-metric?target=artists&timeRange=${this.id}`, {method: 'GET'});
     const res = await rawRes.json();   
-    /// 
-    console.log("ID: "+this.id);
+
     switch (this.id) {
         case "long_term":
             createHeading("(All Time)");
@@ -83,14 +82,22 @@ function createElement(elemName, attrs, txt) {
     return resultElem;
 }
 
-function parseName (rawName) {
-    if (rawName==="no-name") {
-        name = "My";
-    } else if (rawName[rawName.length-1]==="s") {
-        name = rawName+"'"
-    } else {
-        name = rawName+"'s";
+function parseName () {
+    const hText = document.querySelector("h3").textContent;
+    const textArr = hText.split(" ");
+    let result = "";
+
+    for (let i=0; i<textArr.length; i++) {
+        if (textArr[i+1] === "Top") {
+            result+=textArr[i];
+            break;
+        } else {
+            result+=textArr[i];
+            result+=" ";
+        }
     }
+
+    name = result;
 }
 
 function createHeading(txt) {
