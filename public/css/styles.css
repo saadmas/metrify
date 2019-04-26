@@ -1,10 +1,11 @@
 /* global */
 .page-heading {
     font-weight: black;
+
 }
 
 #long_term, #medium_term, #short_term {
-    font-size: 14px;
+    font-size: 1em;
 }
 
 /* tracks + artists */
@@ -12,6 +13,7 @@
     margin-top: 10px;
     text-align: center;
     font-weight: bold;
+    font-size: 2.2em;
 }
 
 .btn-toolbar {
@@ -28,7 +30,7 @@
 
 table {
     margin-top: 20px;
-    font-size: 15px;
+    font-size: 1.2em;
 }
 
 .active-time {
@@ -50,17 +52,17 @@ table {
     display: none;
 }
 
-/* artists only */
-
 
 /* index, error page, about */
 .about-header {
     font-weight: bold;
     text-align: left;
+    font-size: 3em !important;
 }
 
 .about-details {
     text-align: left;
+    font-size: 1.6em;
 }
 
 .about-gif {
@@ -77,6 +79,20 @@ table {
 .welcome-heading {
     font-family: "Josefin Sans";
     font-weight: bold;
+    font-size: 5em;
+}
+
+.welcome-details, .error-details {
+    font-size: 2em;
+}
+
+.error-heading {
+    font-size: 4em;
+}
+
+
+.gif {
+    margin-bottom: 2em;
 }
 
 .welcome-details, .error-details, .about-details {
@@ -87,7 +103,7 @@ table {
     margin-top: 1.1em;
     width: 15em;
     height: 2.6em;
-    font-size: 20px;
+    font-size: 1.6em;
 }
 
 #spotify-logo {
@@ -122,7 +138,7 @@ table {
   .note-4 {
     position: absolute;
     animation: notes 3s infinite linear;
-    font-size: 35px;
+    font-size: 3em;
     opacity: 0;
   }
   

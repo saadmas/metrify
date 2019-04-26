@@ -82,7 +82,7 @@ app.use( (err, req, res, next) => {
 
 // Routes //
 app.get("/", (req, res) => {
-    res.render("index");
+    res.render("index", {noNav: true});
 }); 
 
 app.get("/spotify-auth", (req, res) => {
@@ -237,7 +237,7 @@ app.post("/create-top-tracks-playlist", async (req, res, next) => {
 });
 
 app.get("/error-page", (req,res) => {
-    res.render("error-page");
+    res.render("error-page", {noNav: true});
 });
 
 app.get("/about", (req,res) => {
