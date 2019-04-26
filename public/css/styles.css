@@ -14,7 +14,7 @@
     margin-top: 1em;
     text-align: center;
     font-weight: bold;
-    font-size: 1.45em;
+    font-size: 1.9em;
 }
 
 .btn-toolbar {
@@ -139,7 +139,7 @@ table {
   .note-4 {
     position: absolute;
     animation: notes 3s infinite linear;
-    font-size: 3em;
+    font-size: 1.9em;
     opacity: 0;
   }
   
