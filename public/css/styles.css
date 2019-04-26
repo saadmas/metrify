@@ -58,7 +58,7 @@ table {
 .about-header {
     font-weight: bold;
     text-align: left;
-    font-size: 3em !important;
+    font-size: 2.6em !important;
     margin-top: 1em;
 }
 
@@ -81,12 +81,12 @@ table {
 .welcome-heading {
     font-family: "Josefin Sans";
     font-weight: bold;
-    font-size: 5em;
+    font-size: 4em;
     color: white;
 }
 
 .welcome-details, .error-details, .about-details {
-    font-size: 1.8em;
+    font-size: 1.5em;
     color: white;
     margin-top: 1em;
 }
@@ -104,7 +104,7 @@ table {
     margin-top: 1.1em;
     width: 15em;
     height: 2.6em;
-    font-size: 1.6em;
+    font-size: 1.4em;
 }
 
 #spotify-logo {

@@ -18,7 +18,7 @@ function main() {
 }
 
 function parseName() {
-    const hText = document.querySelector("h3").textContent;
+    const hText = document.querySelector("h4").textContent;
     const textArr = hText.split(" ");
     let result = "";
 
@@ -181,12 +181,12 @@ function createElement(elemName, attrs, txt) {
 
 function createHeading(txt) {
     // remove old heading
-    const prevHeading = document.querySelector("h3");
+    const prevHeading = document.querySelector("h4");
     const parent = prevHeading.parentNode;
     parent.removeChild(prevHeading);
 
     // create new heading
-    const newHeading = createElement("h3", {class: "page-heading metric-heading animated bounceIn"}, name+" Top Spotify Tracks "+txt);
+    const newHeading = createElement("h4", {class: "page-heading metric-heading animated bounceIn"}, name+" Top Spotify Tracks "+txt);
     parent.insertBefore(newHeading, document.querySelector("#top-tracks-row"));
 }
 
