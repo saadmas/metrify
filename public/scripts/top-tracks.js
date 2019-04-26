@@ -11,6 +11,7 @@ function main() {
     parseName(); 
     createHeading("(All Time)");
     addRankNumbersToTable();
+    normalizeArtistNames();
     init_timeQueryBtns();
     init_CreatePlayListBtn();
 }
@@ -39,6 +40,30 @@ function addRankNumbersToTable() {
         arr[i].innerText = i+1;
     }
 
+}
+
+// put space between those pesky commas
+function normalizeArtistNames() {
+    const namesArr = document.querySelectorAll(".track-artist");
+    for (let n=0; n<namesArr.length; n++) {
+
+        const elem = namesArr[n];
+        const txt = elem.textContent;
+
+        if (txt.includes(",")) {
+            const txtArr = txt.split(",");
+            let res = "";
+            for (let i=0; i<txtArr.length; i++) {
+                if (i+1 === txtArr.length) {
+                    res+=txtArr[i];
+                } else {
+                    res+=txtArr[i];
+                    res+=", ";
+                }
+            }
+            elem.textContent = res;
+        }
+    }
 }
 
 function init_timeQueryBtns() {
@@ -207,5 +232,6 @@ function reCreateTable(data) {
 
     newTable.appendChild(newBody);
     document.querySelector("#table-container").appendChild(newTable);
+    normalizeArtistNames();
     addRankNumbersToTable();
 }

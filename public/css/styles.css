@@ -60,14 +60,19 @@ table {
 }
 
 .about-gif {
-    width: 150px;
-    height: 150px;
+    width: 1.2em;
+    height: 1.2em;
     border-radius: 5px;
 }
 
 #welcome-div, #error-div {
     text-align: center;
     margin-top: 40px;
+}
+
+.welcome-heading {
+    font-family: "Josefin Sans";
+    font-weight: bold;
 }
 
 .welcome-details, .error-details, .about-details {

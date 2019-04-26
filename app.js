@@ -89,7 +89,7 @@ app.get("/", (req, res) => {
 }); 
 
 app.get("/spotify-auth", (req, res) => {
-    const spotifyApi = initSpotifyAPI();
+    const spotifyApi = createSpotifyAPI();
     const authURL = spotifyApi.createAuthorizeURL(['user-read-private', 'user-read-email', 'user-top-read', 'playlist-modify-private']);
     res.redirect(authURL);
 }); 
@@ -97,7 +97,7 @@ app.get("/spotify-auth", (req, res) => {
 app.get("/login", (req, res, next) => {
     authCode = req.query.code;
 
-    const spotifyApi = initSpotifyAPI();
+    const spotifyApi = createSpotifyAPI();
     spotifyApi.authorizationCodeGrant(authCode).then(
         async (data) => {
             // Set the access token on the API object to use it in later calls
@@ -275,7 +275,7 @@ app.post("/create-top-tracks-playlist", async (req, res, next) => {
     const data = sanitize(req.body);
     const spotifyID = req.session.spotifyID;
     const token = await getToken(spotifyID, next);
-    const spotifyApi = initSpotifyAPI(token);
+    const spotifyApi = createSpotifyAPI(token);
 
     spotifyApi.createPlaylist(spotifyID, `My Top Tracks ${data.timeRange}`, {'public' : false })
     .then( 
@@ -632,7 +632,7 @@ function normalizeName (dbName) {
 }
 
 //*
-function initSpotifyAPI(token) {
+function createSpotifyAPI(token) {
     const spotifyApi = new SpotifyWebApi({
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
