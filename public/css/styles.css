@@ -22,6 +22,10 @@
     float: left;
 }
 
+.filter-text {
+    font-size: 1.25em;  
+}
+
 table {
     margin-top: 20px;
     font-size: 15px;
