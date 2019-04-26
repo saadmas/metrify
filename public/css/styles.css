@@ -38,7 +38,7 @@ table {
 
 /* tracks only */
 #create-playlist {
-    font-size: 14px;
+    font-size: 1.2em;
     font-weight: Extra-Bold;
 }
 
@@ -85,15 +85,15 @@ table {
 
 #login-btn {
     margin-top: 1.1em;
-    width: 25em;
+    width: 15em;
     height: 2.6em;
     font-size: 20px;
 }
 
 #spotify-logo {
-    width: 40px;
-    height: 40px;
-    margin-left: 10px;
+    width: 2em;
+    height: 2em;
+    margin-left: 0.2em;
     
 }
 
