@@ -211,7 +211,7 @@ function reCreateTable(data) {
     thead.appendChild(tr);
     newTable.appendChild(thead);
 
-    const newBody = createElement("tbody", {class: "page-heading metric-heading"});
+    const newBody = createElement("tbody");
     
     // fill in new body with new data
     for (let i=0; i<data.length; i++) {
