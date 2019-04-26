@@ -14,7 +14,6 @@ function main() {
     addRankNumbersToTable();
     normalizeArtistNames();
     init_timeQueryBtns();
-    init_filterBtns();
     init_CreatePlayListBtn();
 }
 
@@ -129,15 +128,6 @@ function deActivateBtns(arr) {
         btn.classList.remove("active-time");
     }
 }
-
-function init_filterBtns() {
-    const affinityFilter = document.querySelector("#affinity-filter");
-    affinityFilter.addEventListener("click", filterTracks.bind("affinity"));
-
-    const popularityFilter = document.querySelector("#affinity-filter");
-    popularityFilter.addEventListener("click", filterTracks.bind("popularity"));
-}
-
 
 function init_CreatePlayListBtn() {
     const createPlaylistBtn = document.querySelector("#create-playlist");

@@ -30,18 +30,6 @@
         <button type="button" class="btn btn-outline-primary" id="short_term" data-toggle="button">Last Month</button>
       </div>
 
-      <!-- filter tracks -->
-      <div class="btn-group mr-2" role="group" aria-label="Time Query" id="time-query-group">
-        <button type="button" class="btn btn-primary" id="filter-info" data-toggle="modal" data-target="#filter-info-modal">Filter</button>
-        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <div class="dropdown-menu">
-          <button class="dropdown-item" id="affinity-filter">Personal Affinity</button>
-          <button class="dropdown-item" id="popularity-filter">General Popularity</button>
-        </div>
-      </div>
-
       <!-- create Spotify playlist -->
       <div class="btn-group mr-2" role="group" aria-label="First group">
         <button id="create-playlist" class="btn btn-primary">Create Spotify Playlist</button>
@@ -77,43 +65,6 @@
   </div>
 </div>
 
-<!-- filter info modal -->
-<div class="modal fade" id="filter-info-modal" tabindex="-1" role="dialog" aria-labelledby="filter-info-modal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="exampleModalLongTitle">Filter Information</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p class="filter-text">
-          You can filter your top played Spotify tracks in 2 ways by 
-          closing this modal and clicking the arrow on the Filter button to choose your filter type. <br> <br>
-          Details about filter types below:
-        </p>
-        <h5> 1. Personal Affinity </h5>
-        <p class="filter-text">
-          This option is chosen by default. <br><br>
-          Affinity is a measure of the expected preference you have for a particular track, based on your Spotify behavior, including play history. <br><br>
-          Note that light or infrequent use of Spotify may not have sufficient play history to generate a full affinity data set.
-        </p>
-
-        <h5> 2. General Popularity </h5>
-        <p class="filter-text">
-          Takes your most played tracks <strong>based on affinity</strong>, then filters those tracks by their general popularity on Spotify.<br><br>
-          Popularity is calculated by a Spotify algorithm and is based mostly on the total number of plays the track has had and how recent those plays are.<br><br>
-          Generally speaking, songs that are being played a lot now will have a higher popularity than songs that were played a lot in the past. 
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-`
 <!-- Create playlist Modal -->
 <div class="modal fade" id="create-playlist-modal" tabindex="-1" role="dialog" aria-labelledby="create-playlist-modal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
