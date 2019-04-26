@@ -19,10 +19,11 @@
   "homepage": "https://github.com/nyu-csci-ua-0480-008-spring-2019/saadmasood96-final-project#readme",
   "devDependencies": {},
   "dependencies": {
+    "cookie-session": "^1.3.3",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
-    "express-session": "^1.16.1",
     "hbs": "^4.0.4",
+    "keygrip": "^1.0.3",
     "mongo-sanitize": "^1.0.1",
     "mongoose": "^5.4.21",
     "mongoose-url-slugs": "^1.0.2",

@@ -1,3 +1,4 @@
+// misc node modules //
 const request = require("request");
 const path = require("path");
 const sanitize = require('mongo-sanitize'); 
@@ -15,9 +16,9 @@ const Artist = mongoose.model("Artist");
 
 // express setup //
 const express = require('express');
-const session = require("express-session"); 
-const FileStore = require('session-file-store')(session); 
 const bodyParser = require("body-parser");
+const cookieSession = require('cookie-session');
+const keyGrip = require('keygrip');
 
 const app = express();
 app.set('view engine', 'hbs');
@@ -26,14 +27,14 @@ app.set('view engine', 'hbs');
 // Middleware //
 
 // session
-app.use(session({ 
-    name: "spotifyUser",
-    secret: generateKey(), 
-    resave: false, 
-    saveUninitialized: false,
-    //?store: new FileStore(),
-    cookie: {httpOnly: true, maxAge: 216000}//? secure: false
+app.use(cookieSession({
+    name: 'spotifyUser',
+    keys: new keyGrip(['key1', 'key2'], 'SHA384', 'base64'),
+    // Cookie Options
+    maxAge: 3600000,
+    httpOnly: true
 }));
+
 
 
 // ensure Spotify auth
@@ -62,6 +63,7 @@ app.use(express.static(publicPath));
 
 // body parser
 app.use(bodyParser.urlencoded({ extended: false }));
+
 // json
 app.use(express.json());
 
@@ -281,17 +283,6 @@ function createTopMetricsCB (spotifyID, userName, target, next, res, timeRange, 
 
     return cb;
 }
-
-function generateKey() {
-        let key = '';
-        const possChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 10; i++) {
-            key += possChars.charAt(Math.floor(Math.random() * possChars.length));
-        }
-        return key;
-}
-
-
 
 // DB functions //
 async function db_storeUser(id, name, token, next) {
