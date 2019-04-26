@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-//const URLSlugs = require('mongoose-url-slugs');
+
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 
 const dotenv = require('dotenv');
 dotenv.config();

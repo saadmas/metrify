@@ -1,16 +1,14 @@
 const request = require("request");
 const path = require("path");
+const sanitize = require('mongo-sanitize'); 
+const SpotifyWebApi = require('spotify-web-api-node'); // spotify web API node wrapper 
 
 // enviroment vars //
 require('dotenv').config();
  
-// db setup // //? maybe move some stuff to db.js ?
+// db setup // 
 require('./db.js');
 const mongoose = require('mongoose');
-const sanitize = require('mongo-sanitize');
-mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
-
 const User = mongoose.model('User');
 const Track = mongoose.model("Track");
 const Artist = mongoose.model("Artist");
@@ -24,9 +22,6 @@ const bodyParser = require("body-parser");
 const app = express();
 app.set('view engine', 'hbs');
 
-
-// spotify web API node wrapper 
-const SpotifyWebApi = require('spotify-web-api-node');
 
 // Middleware //
 
