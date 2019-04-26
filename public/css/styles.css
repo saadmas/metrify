@@ -11,14 +11,14 @@
 
 /* tracks + artists */
 .metric-heading {
-    margin-top: 10px;
+    margin-top: 1em;
     text-align: center;
     font-weight: bold;
-    font-size: 1.85em;
+    font-size: 1.45em;
 }
 
 .btn-toolbar {
-    margin-top: 20px;
+    margin-top: 1em;
 }
 
 #time-query-group {
@@ -30,7 +30,7 @@
 }
 
 table {
-    margin-top: 20px;
+    margin-top: 1em;
     font-size: 1.2em;
 }
 
@@ -75,7 +75,7 @@ table {
 
 #welcome-div, #error-div {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 2.5em;
 }
 
 .welcome-heading {
@@ -127,10 +127,10 @@ table {
     margin: auto;
     position: relative;
     width: 50%;
-    min-width: 300px;
-    height: 200px;
+    min-width: 1em;
+    height: 1.5em;
     border: 0px solid #000;
-    margin-top: 5em;
+    margin-top: 5.1em;
   }
   
   .note-1,
