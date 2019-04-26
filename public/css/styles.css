@@ -6,6 +6,7 @@
 
 #long_term, #medium_term, #short_term {
     font-size: 1em;
+    vertical-align: top;
 }
 
 /* tracks + artists */
@@ -13,7 +14,7 @@
     margin-top: 10px;
     text-align: center;
     font-weight: bold;
-    font-size: 2.2em;
+    font-size: 1.85em;
 }
 
 .btn-toolbar {
@@ -40,7 +41,7 @@ table {
 
 /* tracks only */
 #create-playlist {
-    font-size: 1.2em;
+    font-size: 1em;
     font-weight: Extra-Bold;
 }
 
@@ -58,11 +59,12 @@ table {
     font-weight: bold;
     text-align: left;
     font-size: 3em !important;
+    margin-top: 1em;
 }
 
 .about-details {
     text-align: left;
-    font-size: 1.6em;
+    font-size: 1.4em !important;
 }
 
 .about-gif {
@@ -80,10 +82,13 @@ table {
     font-family: "Josefin Sans";
     font-weight: bold;
     font-size: 5em;
+    color: white;
 }
 
-.welcome-details, .error-details {
+.welcome-details, .error-details, .about-details {
     font-size: 1.8em;
+    color: white;
+    margin-top: 1em;
 }
 
 .error-heading {
@@ -93,10 +98,6 @@ table {
 
 .gif {
     margin-bottom: 2em;
-}
-
-.welcome-details, .error-details, .about-details {
-    margin-top: 1em;
 }
 
 #login-btn {
@@ -129,7 +130,7 @@ table {
     min-width: 300px;
     height: 200px;
     border: 0px solid #000;
-    margin-top: 100px;
+    margin-top: 5em;
   }
   
   .note-1,
