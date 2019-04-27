@@ -2,9 +2,9 @@
 
 ## Overview
 
-**Spotify** is awesome. You can listen to music on the go, offline, with high quality audio. You get personalized playlists, access to an unparalleled catalog of songs, and a sleek, seamless UI.
+**Spotify** is awesome. You can listen to music on the go, offline, in high quality audio. You get personalized playlists, access to an unparalleled catalog of songs, and a sleek, seamless UI.
 
-But, ever wondered what your most played tracks are? How about your most played artists? Spotify may gave you those stats in their annual "Year Wrapped" feature, but what if you wanted to know right this second? 
+But, ever wondered what your most played tracks are? How about your most played artists? Spotify may gave you those stats in their annual "Wrapped" feature, but what if you wanted to know right this second? 
 
 Enter **Metrify** . Connect your Spotify account to Metrify to get access to your top 50 most played tracks and artists. Wanna put those top played tracks into their own Spotify playlists so you can bump them later? Got you covered. 
 
@@ -14,20 +14,23 @@ Enter **Metrify** . Connect your Spotify account to Metrify to get access to you
 The application will store Users, Tracks, and Artists
 
 **Users**
-* Can have multiple tracklists based on time and type 
+* Can have multiple tracklists based on time (all time, last 6 months, last month) 
+* Can have multiple artist lists based on time (all time, last 6 months, last month) 
 * Tracklists are stored by embedding tracks within an array 
+* Artist lists are stored by embedding artists within an array 
 
 **Tracks**
-* Can contain varying amounts of metadata 
+* Contain spotify ID, title, and an array of embedded artists
 
-**Artistss**
-* Can contain varying amounts of metadata 
+**Artists**
+* Contain spotify ID and name
 
 An example User:
 
 ```javascript
 {
   spotifyID: "technojunkie",
+  token: "XyAq123941XjpqR713",
   topTracks_long: [TrackSchema],
   topTracks_med: [TrackSchema],
   topTracks_short: [TrackSchema],
@@ -42,7 +45,8 @@ An example Artist:
 
 ```javascript
 {
-  name: "Stephan Bodzin" 
+  name: "Stephan Bodzin",
+  spotifyID: "1112495" 
 }
 ```
 
@@ -51,8 +55,8 @@ An example Track:
 ```javascript
 {
   title: "Spider On the Moon", 
-  artist: "Rezz", 
-  album: "Certain Kind of Magic"
+  artist: [Rezz], 
+  spotifyID: "1112495"
 }
 ```
 
@@ -62,19 +66,23 @@ An example Track:
 
 / - home page for user to connect to their Spotify account
 
-![/](documentation/wireframes/login.png)
+![/](documentation/wireframes/login-wireframe.png)
 
 /top-artists - page for user's top played artists
 
-![/top-artists](documentation/wireframes/top-artists.png)
+![/top-artists](documentation/wireframes/top-artists-wireframe.png)
 
 /top-tracks - page for user's top played tracks
 
-![/top-tracks](documentation/wireframes/top-tracks.png)
+![/top-tracks](documentation/wireframes/top-tracks-wireframe.png)
+
+/about - page for info about website 
+
+![/about](documentation/wireframes/about-wireframe.png)
 
 ## Site map
 
-![site map](documentation/sitemap.PNG)
+![site map](documentation/site-map.PNG)
 
 ## User Stories or Use Cases
 
@@ -84,8 +92,6 @@ An example Track:
 4. as a user, I can filter my top played artists by time
 5. as a user, I can filter my top played tracks by time
 6. as a user, I can make a new Spotify playlist out of my top played tracks
-7. as a user, I can view specific metadata about one of my top played tracks
-8. as a user, I can view specific metadata about one of my top played artists
 
 ## Research Topics
 

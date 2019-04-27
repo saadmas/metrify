@@ -437,9 +437,7 @@ function db_createTrack(currTrack) {
     return {
         title: currTrack.name,
         spotifyID: currTrack.id, 
-        artists: parseArtistsFromTrackObj(currTrack), 
-        album: currTrack.album.name,  
-        releaseDate: currTrack.album['release_date'], 
+        artists: parseArtistsFromTrackObj(currTrack)
     }
 }
 
@@ -527,8 +525,7 @@ async function parseAndStoreArtists(items) {
 function db_createArtist(rawArtist) {
     return {
         name: rawArtist.name,
-        spotifyID: rawArtist.id, 
-        popularity: rawArtist.popularity
+        spotifyID: rawArtist.id
     }
 }
 
