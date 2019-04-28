@@ -4,6 +4,10 @@
 
 }
 
+.navbar-brand {
+    color: grey;
+}
+
 #long_term, #medium_term, #short_term {
     font-size: 1em;
     vertical-align: top;

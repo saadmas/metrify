@@ -82,7 +82,7 @@ An example Track:
 
 ## Site map
 
-![site map](documentation/site-map.PNG)
+![site map](documentation/site-map.png)
 
 ## User Stories or Use Cases
 
