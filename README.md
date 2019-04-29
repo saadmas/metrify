@@ -105,7 +105,7 @@ An example Track:
   * **WHAT**: Arguably the best CSS framework around for responsive design. It has great templates for typography, forms, buttons, tables, navigation, modals, image carousels, and other elements. Built by Twitter engineers!
   * **WHY**: CSS isn't my strong suit. So, of course, Bootstrap is my saviour! It's easy to use, responsive to different devices, and has great documentation.
 
-*9 points total out of 8 required points*
+*8 points total out of 8 required points*
 
 
 ## [Link to Main Project File](app.js) 

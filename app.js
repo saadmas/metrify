@@ -97,7 +97,8 @@ app.get("/login", (req, res, next) => {
     const spotifyApi = createSpotifyAPI();
     spotifyApi.authorizationCodeGrant(authCode).then(
         async (data) => {
-            // Set the access token on the API object to use it in later calls
+
+            // Store access token
             const token = data.body['access_token'];
             spotifyApi.setAccessToken(token);
             
