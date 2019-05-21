@@ -97,7 +97,7 @@ An example Track:
 
 * **(4 points) Node.js wrapper library for Spotify's Web API**
   * **WHAT**: Handy Node.js library that simplifies a lot of the low level request-response handling with Spotify's Web API. Puts a layer of abstraction over retreiving JSON metadata about music, artists, albums, and tracks, directly from the Spotify Data Catalogue. Includes helper functions to retreive music metadata, perform searches, gather user info, and more. 
-  * **WHY**: Abstraction the library provides allows time for focusing on other aspects of the project rather than just dealing with Spotify's Web API. Additionally, the library functions are built with a strong focus on callbacks. We have been using callbacks heavily in this course, so it's nice to be able to put them to use here too.  
+  * **WHY**: Abstraction the library provides allows time for focusing on other aspects of the project rather than just dealing with Spotify's Web API. 
 * **(2 points) Spotify Web API**
   * **WHAT**: Based on simple REST principles, the Spotify Web API endpoints return JSON metadata about music, artists, albums, and tracks, directly from the Spotify Data Catalogue. Web API also provides access to user related data, like playlists and music that the user saves in the "Your Music" library. Such access is enabled through selective authorization, by the user.
   * **WHY**: As fate would have it, one of the only functions the Node.js wrapper library mentioned above doesn't have is one to retrieve top played tracks/artists. Therefore, will have to use the Spotify Web API directly to do that. Not complaining! Will be nice to see the similarities/differences between implementation of the wrapper vs direct API. 
