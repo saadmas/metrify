@@ -222,7 +222,7 @@ app.post("/create-top-tracks-playlist", async (req, res, next) => {
             .then(
                 (addTrackData) => {
                     console.log('Added tracks to playlist!');
-                    res.json(`Succesfully created playlist "My Top Tracks ${data.timeRange}" \n\n View and listen to the playlist on your Spotify connected device!`);
+                    res.json(`Succesfully created private playlist "My Top Tracks ${data.timeRange}" \n\n View and listen to the playlist on your Spotify connected device!`);
                 }, 
                 (err) => {
                 console.error('Error adding tracks to playlist: ', err);
