@@ -4,9 +4,9 @@
 
 **Spotify** is awesome. You can listen to music on the go, offline, in high quality audio. You get personalized playlists, access to an unparalleled catalog of songs, and a sleek, seamless UI.
 
-But, ever wondered what your most played tracks are? How about your most played artists? Spotify may gave you those stats in their annual "Wrapped" feature, but what if you wanted to know right this second? 
+But, ever wondered what your top tracks are? How about your top artists? Spotify may gave you those stats in their annual "Wrapped" feature, but what if you wanted to know right this second? 
 
-Enter **Metrify** . Connect your Spotify account to Metrify to get access to your top 50 most played tracks and artists. Wanna put those top played tracks into their own Spotify playlists so you can bump them later? Got you covered. 
+Enter **Metrify** . Connect your Spotify account to Metrify to get access to your top 50 top tracks and artists. Wanna put those tracks into their own Spotify playlists so you can bump them later? Got you covered. 
 
 
 ## Data Model
@@ -68,11 +68,11 @@ An example Track:
 
 ![/](documentation/wireframes/login-wireframe.png)
 
-/top-artists - page for user's top played artists
+/top-artists - page for user's top artists
 
 ![/top-artists](documentation/wireframes/top-artists-wireframe.png)
 
-/top-tracks - page for user's top played tracks
+/top-tracks - page for user's top tracks
 
 ![/top-tracks](documentation/wireframes/top-tracks-wireframe.png)
 
@@ -87,11 +87,11 @@ An example Track:
 ## User Stories or Use Cases
 
 1. as non-connected user, I can connect my Spotify account to enter the site
-2. as a user, I can view my top played artists
-3. as a user, I can view my top played tracks
-4. as a user, I can filter my top played artists by time
-5. as a user, I can filter my top played tracks by time
-6. as a user, I can make a new Spotify playlist out of my top played tracks
+2. as a user, I can view my top artists
+3. as a user, I can view my top tracks
+4. as a user, I can filter my top artists by time
+5. as a user, I can filter my top tracks by time
+6. as a user, I can make a new Spotify playlist out of my top tracks
 
 ## Research Topics
 
@@ -104,9 +104,6 @@ An example Track:
 * **(2 points) Bootstrap**
   * **WHAT**: Arguably the best CSS framework around for responsive design. It has great templates for typography, forms, buttons, tables, navigation, modals, image carousels, and other elements. Built by Twitter engineers!
   * **WHY**: CSS isn't my strong suit. So, of course, Bootstrap is my saviour! It's easy to use, responsive to different devices, and has great documentation.
-
-*8 points total out of 8 required points*
-
 
 ## [Link to Main Project File](app.js) 
 

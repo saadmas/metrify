@@ -531,7 +531,6 @@ function db_createArtist(rawArtist) {
 }
 
 function normalizeTrackIDsForPlaylist(arr) {
-    //*
     return arr.map((val) => "spotify:track:"+val);
 }
 
@@ -586,7 +585,6 @@ function normalizeName (dbName) {
     }
 }
 
-//*
 function createSpotifyAPI(token) {
     const spotifyApi = new SpotifyWebApi({
         clientId: process.env.CLIENT_ID,
