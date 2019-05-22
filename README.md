@@ -6,7 +6,7 @@
 
 But, ever wondered what your top tracks are? How about your top artists? Spotify may gave you those stats in their annual "Wrapped" feature, but what if you wanted to know right this second? 
 
-Enter **Metrify** . Connect your Spotify account to Metrify to get access to your top 50 top tracks and artists. Wanna put those tracks into their own Spotify playlists so you can bump them later? Got you covered. 
+Enter **Metrify**. Connect your Spotify account to Metrify to get access to your top 50 top tracks and artists. Wanna put those tracks into their own Spotify playlists so you can bump them later? Got you covered. 
 
 
 ## Data Model
