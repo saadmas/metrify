@@ -35,10 +35,13 @@ app.use(async (req, res, next) => {
             const token = await getToken(req.session.spotifyID, next);
             if (token === "token-err") {
                 res.redirect("/");
+                return;
             } 
             next();
+            return;
         } 
         res.redirect("/");
+        return;
     } 
     next();  
 });
