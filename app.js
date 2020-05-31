@@ -100,21 +100,14 @@ app.get('/get-metric', async (req, res, next) => {
         session: { spotifyID } 
     } = req;
 
-    const db_metricData = await db_getMetricData(spotifyID, timeRange, target, next);
-    if (db_metricData && db_metricData.length) {
+    const metricData = await db_getMetricData(spotifyID, timeRange, target, next);
+    if (metricData && metricData.length) {
         // console.log(`retrieved metric data for ${target} - ${timeRange} from db`);
-        res.json(db_metricData);
+        res.json(metricData);
         return;
     }
 
-    // Make request to Spotify API directly (not through Node.js wrapper library)
-    const token = await getToken(spotifyID, next);
-    const options = {
-        url: `https://api.spotify.com/v1/me/top/${target}?time_range=${timeRange}&limit=50`,
-        headers: { "Authorization": `Bearer ${token}` } 
-    };
-    const topMetricsHandler = createTopMetricsHandler(spotifyID, "", target, next, res, timeRange, "AJAX");
-    request(options, topMetricsHandler); 
+    makeDirectSpotifyApiRequest(res, next, spotifyID, target, timeRange);
 });
  
 app.get("/top-tracks", async (req, res, next) => {
@@ -198,14 +191,13 @@ app.post("/create-top-tracks-playlist", async (req, res, next) => {
 });
 
 app.get("/error-page", (req,res) => {
-    res.render("error-page", {noNav: true});
+    res.render("error-page", { noNav: true });
 });
 
 app.get("/about", (req,res) => {
     res.render("about");
 });
 
-// invalid route handler
 app.get("*", (req, res) => {
     res.redirect("/");
 });
@@ -224,6 +216,16 @@ async function loginUser(spotifyApi, req, res, token, next) {
         const errorMessage = `Cannot get authenticated user info: ${e}`;
         handleError(errorMessage);
      }
+}
+
+async function makeDirectSpotifyApiRequest(res, next, spotifyID, target, timeRange) {
+    const token = await getToken(spotifyID, next);
+    const options = {
+        url: `https://api.spotify.com/v1/me/top/${target}?time_range=${timeRange}&limit=50`,
+        headers: { "Authorization": `Bearer ${token}` } 
+    };
+    const topMetricsHandler = createTopMetricsHandler(spotifyID, "", target, next, res, timeRange, "AJAX");
+    request(options, topMetricsHandler); 
 }
 
 function handleError(errorMessage, next) {
