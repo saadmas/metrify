@@ -82,7 +82,6 @@ app.get("/spotify-auth", (req, res) => {
 app.get("/login", async (req, res, next) => {
     const authCode = req.query.code;
     const spotifyApi = createSpotifyAPI();
-
     try {
         const data = await spotifyApi.authorizationCodeGrant(authCode);
         const token = data.body['access_token'];
@@ -91,74 +90,34 @@ app.get("/login", async (req, res, next) => {
     }
     catch (e) {
         const errorMessage = `Something went wrong with authorizing code grant: ${e}`;
-        console.error(errorMessage);
-        const error = new Error(errorMessage);
-        next(error);
-    }
-
-    // spotifyApi.authorizationCodeGrant(authCode).then(
-    //     async (data) => {
-
-    //         // Store access token
-    //         const token = data.body['access_token'];
-    //         spotifyApi.setAccessToken(token);
-            
-    //         // Store the authenticated user in db + session
-    //         spotifyApi.getMe().then(
-    //             async (data) => {
-    //                 console.log('Info abt the authenticated user: ', data.body);
-
-    //                 await db_storeUser(data.body.id, data.body['display_name'], token, next);
-    //                 req.session.spotifyID = data.body.id;
-    //                 req.session.save();
-
-    //                 // go to top tracks page
-    //                 res.redirect("/top-tracks");
-    //             }, 
-    //             (err) => {
-    //             console.error('Cannot get authenticated user info: ', err);
-    //             const errorDetails = new Error(`Cannot get authenticated user info: ${err}`);
-    //             next(errorDetails);
-    //             }
-    //         );
-    //     },
-    //     (err) => {
-    //     console.error('Something went wrong with authorizing code grant!', err);
-    //     const errorDetails = new Error(`Something went wrong with authorizing code grant: ${err}`);
-    //     next(errorDetails);
-    //     }
-    // );      
+        handleError(errorMessage);
+    }   
 }); 
 
 app.get('/get-metric', async (req, res, next) => {
-    const target = req.query.target;
-    const timeRange = req.query.timeRange;
+    const { 
+        query: { target, timeRange }, 
+        session: { spotifyID } 
+    } = req;
 
-    const spotifyID = req.session.spotifyID;
-    let db_metricData = await db_getMetricData(spotifyID, timeRange, target, next);
-
-    // if requested data is already in db - use it instead of making spotify API call
-    if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
-        console.log(`retrieved metric data for ${target} - ${timeRange} from db`);
+    const db_metricData = await db_getMetricData(spotifyID, timeRange, target, next);
+    if (db_metricData && db_metricData.length) {
+        // console.log(`retrieved metric data for ${target} - ${timeRange} from db`);
         res.json(db_metricData);
-    } else {
-        // options and callback for making request to Spotify API DIRECTLY
-        // (NOT through Node.js wrapper library)
-        const token = await getToken(spotifyID, next);
-        const options = {
-            url: `https://api.spotify.com/v1/me/top/${target}?time_range=${timeRange}&limit=50`,
-            headers: {"Authorization": "Bearer " + token} 
-        };
-
-        // get metric data directly from Spotify API 
-        const topMetricsCB = createTopMetricsCB(spotifyID, "", target, next, res, timeRange, "AJAX");
-        request(options, topMetricsCB); 
+        return;
     }
+
+    // Make request to Spotify API directly (not through Node.js wrapper library)
+    const token = await getToken(spotifyID, next);
+    const options = {
+        url: `https://api.spotify.com/v1/me/top/${target}?time_range=${timeRange}&limit=50`,
+        headers: { "Authorization": `Bearer ${token}` } 
+    };
+    const topMetricsHandler = createTopMetricsHandler(spotifyID, "", target, next, res, timeRange, "AJAX");
+    request(options, topMetricsHandler); 
 });
  
-
 app.get("/top-tracks", async (req, res, next) => {
-
     const spotifyID = req.session.spotifyID;
     const userName = await getDisplayName(spotifyID, next);
     let db_metricData = await db_getMetricData(spotifyID, "long_term", "tracks", next);
@@ -176,7 +135,7 @@ app.get("/top-tracks", async (req, res, next) => {
         };
 
         // get metric data directly from Spotify API 
-        const topMetricsCB = createTopMetricsCB(spotifyID, userName, "tracks", next, res, "long_term");
+        const topMetricsCB = createTopMetricsHandler(spotifyID, userName, "tracks", next, res, "long_term");
         request(options, topMetricsCB); 
     }
 });
@@ -201,7 +160,7 @@ app.get("/top-artists", async (req, res, next) => {
         };
 
         // get metric data directly from Spotify API 
-        const topMetricsCB = createTopMetricsCB(spotifyID, userName, "artists", next, res, "long_term");
+        const topMetricsCB = createTopMetricsHandler(spotifyID, userName, "artists", next, res, "long_term");
         request(options, topMetricsCB); 
     }
 });
@@ -263,13 +222,17 @@ async function loginUser(spotifyApi, req, res, token, next) {
         res.redirect("/top-tracks");
      } catch (e) {
         const errorMessage = `Cannot get authenticated user info: ${e}`;
-        console.error(errorMessage);
-        const error = new Error(errorMessage);
-        next(error);
+        handleError(errorMessage);
      }
 }
 
-function createTopMetricsCB (spotifyID, userName, target, next, res, timeRange, isAJAXReq) {
+function handleError(errorMessage, next) {
+    console.error(errorMessage);
+    const error = new Error(errorMessage);
+    next(error);
+}
+
+function createTopMetricsHandler (spotifyID, userName, target, next, res, timeRange, isAJAXReq) {
     const cb = async (error, response, body) => {
         let pagingObj;
 
