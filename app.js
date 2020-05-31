@@ -1,43 +1,34 @@
-// misc node modules //
 const request = require("request");
 const path = require("path");
 const sanitize = require('mongo-sanitize'); 
-const SpotifyWebApi = require('spotify-web-api-node'); // spotify web API node wrapper 
-
-// enviroment vars //
-require('dotenv').config();
- 
-// db setup // 
-require('./db.js');
 const mongoose = require('mongoose');
-const User = mongoose.model('User');
-const Track = mongoose.model("Track");
-const Artist = mongoose.model("Artist");
-
-// express setup //
 const express = require('express');
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const keyGrip = require('keygrip');
+const SpotifyWebApi = require('spotify-web-api-node'); // spotify web API node wrapper 
+ 
+// DB setup
+require('./db.js');
+const User = mongoose.model('User');
+const Track = mongoose.model("Track");
+const Artist = mongoose.model("Artist");
 
+// Express setup
 const app = express();
 app.set('view engine', 'hbs');
 
+// Middleware
 
-// Middleware //
-
-// session
+// Session
 app.use(cookieSession({
     name: 'spotifyUser',
     keys: new keyGrip(['key1', 'key2'], 'SHA384', 'base64'),
-    // Cookie Options
     maxAge: 3600000,
     httpOnly: true
 }));
 
-
-
-// ensure Spotify auth
+// Spotify auth ///
 app.use( async (req, res, next) => {
     if (req.url==="/top-tracks" || req.url==="/top-artists") {
         // spotify ID must be present in session 
@@ -57,14 +48,14 @@ app.use( async (req, res, next) => {
     }   
 });
 
-// static files
+// Static files
 const publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
 
-// body parser
+// Body parser
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// json
+// Json
 app.use(express.json());
 
 // error handling
@@ -589,7 +580,7 @@ function createSpotifyAPI(token) {
     const spotifyApi = new SpotifyWebApi({
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        redirectUri: process.env.REDIRECTURI || "http://localhost:3000/login"
+        redirectUri: process.env.REDIRECTURI
     });
 
     if (token!== undefined) {

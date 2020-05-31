@@ -34,9 +34,9 @@ function init_timeQueryBtns() {
 
 async function timeQuery() {
     this.classList.add("active-time");
-
-    //*  http://localhost:3000
-    const rawRes = await fetch(`https://metrify-me.herokuapp.com/get-metric?target=artists&timeRange=${this.id}`, {method: 'GET'});
+ 
+    //*   https://metrify-me.herokuapp.com
+    const rawRes = await fetch(`http://localhost:3000/get-metric?target=artists&timeRange=${this.id}`, {method: 'GET'});
     const res = await rawRes.json();   
 
     switch (this.id) {
