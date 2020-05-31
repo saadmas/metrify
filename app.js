@@ -53,25 +53,24 @@ app.use(express.static(publicPath));
 // Body parser
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Json
+// JSON
 app.use(express.json());
 
-// error handling
-app.use( (err, req, res, next) => {
-    // log error
-    console.error("error msg: "+err.message); 
-    console.error("error stack: "+err.stack); 
-    // set status code
+// Error handling
+app.use((err, req, res, next) => {
+    console.error("error msg: " + err.message); 
+    console.error("error stack: " + err.stack); 
+    
     if (!err.statusCode) { 
         err.statusCode = 500;
     }
-    // render error page
+    
     res.status(err.statusCode).render("error-page", {errMsg: err.message, errStack: err.stack}); 
 });
 
-// Routes //
+// Routes
 app.get("/", (req, res) => {
-    res.render("index", {noNav: true});
+    res.render("index", { noNav: true });
 }); 
 
 app.get("/spotify-auth", (req, res) => {
@@ -80,42 +79,55 @@ app.get("/spotify-auth", (req, res) => {
     res.redirect(authURL);
 }); 
 
-app.get("/login", (req, res, next) => {
-    authCode = req.query.code;
-
+app.get("/login", async (req, res, next) => {
+    const authCode = req.query.code;
     const spotifyApi = createSpotifyAPI();
-    spotifyApi.authorizationCodeGrant(authCode).then(
-        async (data) => {
 
-            // Store access token
-            const token = data.body['access_token'];
-            spotifyApi.setAccessToken(token);
+    try {
+        const data = await spotifyApi.authorizationCodeGrant(authCode);
+        const token = data.body['access_token'];
+        spotifyApi.setAccessToken(token);
+        loginUser(spotifyApi, req, res, token, next);
+    }
+    catch (e) {
+        const errorMessage = `Something went wrong with authorizing code grant: ${e}`;
+        console.error(errorMessage);
+        const error = new Error(errorMessage);
+        next(error);
+    }
+
+    // spotifyApi.authorizationCodeGrant(authCode).then(
+    //     async (data) => {
+
+    //         // Store access token
+    //         const token = data.body['access_token'];
+    //         spotifyApi.setAccessToken(token);
             
-            // Store the authenticated user in db + session
-            spotifyApi.getMe().then(
-                async (data) => {
-                    console.log('Info abt the authenticated user: ', data.body);
+    //         // Store the authenticated user in db + session
+    //         spotifyApi.getMe().then(
+    //             async (data) => {
+    //                 console.log('Info abt the authenticated user: ', data.body);
 
-                    await db_storeUser(data.body.id, data.body['display_name'], token, next);
-                    req.session.spotifyID = data.body.id;
-                    req.session.save();
+    //                 await db_storeUser(data.body.id, data.body['display_name'], token, next);
+    //                 req.session.spotifyID = data.body.id;
+    //                 req.session.save();
 
-                    // go to top tracks page
-                    res.redirect("/top-tracks");
-                }, 
-                (err) => {
-                console.error('Cannot get authenticated user info: ', err);
-                const errorDetails = new Error(`Cannot get authenticated user info: ${err}`);
-                next(errorDetails);
-                }
-            );
-        },
-        (err) => {
-        console.error('Something went wrong with authorizing code grant!', err);
-        const errorDetails = new Error(`Something went wrong with authorizing code grant: ${err}`);
-        next(errorDetails);
-        }
-    );      
+    //                 // go to top tracks page
+    //                 res.redirect("/top-tracks");
+    //             }, 
+    //             (err) => {
+    //             console.error('Cannot get authenticated user info: ', err);
+    //             const errorDetails = new Error(`Cannot get authenticated user info: ${err}`);
+    //             next(errorDetails);
+    //             }
+    //         );
+    //     },
+    //     (err) => {
+    //     console.error('Something went wrong with authorizing code grant!', err);
+    //     const errorDetails = new Error(`Something went wrong with authorizing code grant: ${err}`);
+    //     next(errorDetails);
+    //     }
+    // );      
 }); 
 
 app.get('/get-metric', async (req, res, next) => {
@@ -240,6 +252,22 @@ app.get("*", (req, res) => {
 });
 
 // Helper functions //
+async function loginUser(spotifyApi, req, res, token, next) {
+    try {
+        const user = await spotifyApi.getMe();
+        const userId = user.body.id;
+        // console.log('Info abt the authenticated user: ', user.body);
+        await db_storeUser(userId, user.body['display_name'], token, next);
+        req.session.spotifyID = userId;
+        req.session.save();
+        res.redirect("/top-tracks");
+     } catch (e) {
+        const errorMessage = `Cannot get authenticated user info: ${e}`;
+        console.error(errorMessage);
+        const error = new Error(errorMessage);
+        next(error);
+     }
+}
 
 function createTopMetricsCB (spotifyID, userName, target, next, res, timeRange, isAJAXReq) {
     const cb = async (error, response, body) => {
