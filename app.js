@@ -90,7 +90,7 @@ app.get("/login", async (req, res, next) => {
     }
     catch (e) {
         const errorMessage = `Something went wrong with authorizing code grant: ${e}`;
-        handleError(errorMessage);
+        handleError(errorMessage, next);
     }   
 }); 
 
@@ -102,7 +102,7 @@ app.get('/get-metric', async (req, res, next) => {
 
     const metricData = await db_getMetricData(spotifyID, timeRange, target, next);
     if (metricData && metricData.length) {
-        // console.log(`retrieved metric data for ${target} - ${timeRange} from db`);
+        console.log(`retrieved metric data for ${target} - ${timeRange} from db`);
         res.json(metricData);
         return;
     }
@@ -119,35 +119,23 @@ app.get("/top-artists", (req, res, next) => {
 });
 
 app.post("/create-top-tracks-playlist", async (req, res, next) => {
-    
-    // Create a private playlist
-    const data = sanitize(req.body);
-    const spotifyID = req.session.spotifyID;
+    const { 
+        session: { spotifyID },
+        body
+    } = req;
+    const data = sanitize(body);
+    const { timeRange, spotifyTrackIDs } = data;
     const token = await getToken(spotifyID, next);
     const spotifyApi = createSpotifyAPI(token);
-
-    spotifyApi.createPlaylist(spotifyID, `My Top Tracks ${data.timeRange}`, {'public' : false })
-    .then( 
-        (playlistData) => {
-            console.log(`Created Top Tracks ${data.timeRange} playlist!`);
-            // Add tracks to playlist
-            spotifyApi.addTracksToPlaylist(playlistData.body.id, normalizeTrackIDsForPlaylist(data.spotifyTrackIDs))
-            .then(
-                (addTrackData) => {
-                    console.log('Added tracks to playlist!');
-                    res.json(`Succesfully created private playlist "My Top Tracks ${data.timeRange}" \n\n View and listen to the playlist on your Spotify connected device!`);
-                }, 
-                (err) => {
-                console.error('Error adding tracks to playlist: ', err);
-                res.json("Error occured. Could not create playlist! Please try again.");
-                }
-            );
-        }, 
-        (err) => {
-            console.error('Error creating playlist: ', err);
-            res.json("Error occured. Could not create playlist!");
-        }
-    );
+    try {
+        const playlistData = await spotifyApi.createPlaylist(spotifyID, `My Top Tracks ${timeRange}`, { 'public': false });
+        console.log(`Created Top Tracks ${timeRange} playlist!`);
+        const normalizedTrackIDs = normalizeTrackIDsForPlaylist(spotifyTrackIDs);
+        addTracksToPlaylist(spotifyApi, playlistData.body.id, normalizedTrackIDs, timeRange, res);
+    } catch (e) {
+        console.error(`Error creating playlist: ${e}`);
+        res.json("Error occured. Could not create playlist!");
+    }
 });
 
 app.get("/error-page", (req,res) => {
@@ -162,7 +150,7 @@ app.get("*", (req, res) => {
     res.redirect("/");
 });
 
-// Helper functions //
+// Helper functions
 async function loginUser(spotifyApi, req, res, token, next) {
     try {
         const user = await spotifyApi.getMe();
@@ -174,7 +162,7 @@ async function loginUser(spotifyApi, req, res, token, next) {
         res.redirect("/top-tracks");
      } catch (e) {
         const errorMessage = `Cannot get authenticated user info: ${e}`;
-        handleError(errorMessage);
+        handleError(errorMessage, next);
      }
 }
 
@@ -195,12 +183,23 @@ async function handleMetricPage(metric, req, res, next) {
 
     const metricData = await db_getMetricData(spotifyID, timeRange, metric, next); /// target --> metric
     if (metricData && metricData.length > 0) {
-        // console.log("retrieved top tracks (all time) data from db"); 
+        console.log("retrieved top tracks (all time) data from db"); 
         res.render(`top-${metric}`, { metricData, name: userName });
         return;
     }
 
     makeDirectSpotifyApiRequest(res, next, spotifyID, metric, timeRange);
+}
+
+async function addTracksToPlaylist(spotifyApi, playlistID, trackIDs, timeRange, res) {
+    try {
+        await spotifyApi.addTracksToPlaylist(playlistID, trackIDs);
+        console.log('Added tracks to playlist!');
+        res.json(`Succesfully created private playlist "My Top Tracks ${timeRange}" \n\n View and listen to the playlist on your Spotify connected device!`);
+    } catch (e) {
+        console.error(`Error adding tracks to playlist: ${e}`); /// sep fn
+        res.json("Error occured. Could not create playlist! Please try again.");
+    }
 }
 
 function handleError(errorMessage, next) {
@@ -209,7 +208,7 @@ function handleError(errorMessage, next) {
     next(error);
 }
 
-function createTopMetricsHandler (spotifyID, userName, target, next, res, timeRange, isAJAXReq) {
+function createTopMetricsHandler(spotifyID, userName, target, next, res, timeRange, isAJAXReq) {
     const cb = async (error, response, body) => {
         let pagingObj;
 
@@ -242,7 +241,7 @@ function createTopMetricsHandler (spotifyID, userName, target, next, res, timeRa
     return cb;
 }
 
-// DB functions //
+// DB functions
 async function db_storeUser(id, name, token, next) {
     // check if user already exists
     await User.findOneAndUpdate(
