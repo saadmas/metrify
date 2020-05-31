@@ -6,8 +6,8 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const keyGrip = require('keygrip');
-const SpotifyWebApi = require('spotify-web-api-node'); // spotify web API node wrapper 
- 
+const SpotifyWebApi = require('spotify-web-api-node');
+
 // DB setup
 require('./db.js');
 const User = mongoose.model('User');
@@ -29,23 +29,18 @@ app.use(cookieSession({
 }));
 
 // Spotify auth ///
-app.use( async (req, res, next) => {
-    if (req.url==="/top-tracks" || req.url==="/top-artists") {
-        // spotify ID must be present in session 
+app.use(async (req, res, next) => {
+    if (req.url === "/top-tracks" || req.url === "/top-artists") {
         if (req.session.spotifyID) {
-            // token for authenticated MUST be present in db
             const token = await getToken(req.session.spotifyID, next);
             if (token === "token-err") {
                 res.redirect("/");
-            } else {
-                next();
-            }
-        } else {
-            res.redirect("/");
-        }
-    } else {
-        next();
-    }   
+            } 
+            next();
+        } 
+        res.redirect("/");
+    } 
+    next();  
 });
 
 // Static files
