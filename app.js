@@ -172,7 +172,7 @@ async function makeDirectSpotifyApiRequest(res, next, spotifyID, metric, timeRan
         url: `https://api.spotify.com/v1/me/top/${metric}?time_range=${timeRange}&limit=50`,
         headers: { "Authorization": `Bearer ${token}` } 
     };
-    const topMetricsHandler = createTopMetricsHandler(spotifyID, "", metric, next, res, timeRange, "AJAX"); /// target --> metric
+    const topMetricsHandler = createTopMetricsHandler(spotifyID, metric, next, res, timeRange);
     request(options, topMetricsHandler); 
 }
 
@@ -208,37 +208,27 @@ function handleError(errorMessage, next) {
     next(error);
 }
 
-function createTopMetricsHandler(spotifyID, userName, target, next, res, timeRange, isAJAXReq) {
-    const cb = async (error, response, body) => {
-        let pagingObj;
-
-        // parse response
-        if (!error && response.statusCode == 200) {
-            pagingObj = JSON.parse(body);
-        } else {
-            console.error(`Error getting top ${target}: ${error}`)
-            const errorDetails = new Error(`Error getting top ${target}: ${error}`);
+function createTopMetricsHandler(spotifyID, metric, next, res, timeRange) {
+    const topMetricsHandler = async (error, apiResponse, body) => {
+        if (error || apiResponse.statusCode !== 200) {
+            console.error(`Error fetching top ${metric}: ${error}`)
+            const errorDetails = new Error(`Error getting top ${metric}: ${error}`);
             next(errorDetails);
+            return;
         }
 
-        // save metric data in db
-        if (target==="tracks") {
-            await db_saveTopTracksData(spotifyID, timeRange, pagingObj.items, next);
-        } else if (target==="artists") {
-            await db_saveTopArtistsData(spotifyID, timeRange, pagingObj.items, next);
+        const { items } = JSON.parse(body);
+
+        if (metric === "tracks") {
+            await db_saveTopTracksData(spotifyID, timeRange, items, next);
+        } else if (metric === "artists") {
+            await db_saveTopArtistsData(spotifyID, timeRange, items, next);
         }
 
-        // retrive data from db and render 
-        db_metricData = await db_getMetricData(spotifyID, "long_term", target, next);
-        
-        if (isAJAXReq) {
-            res.json(db_metricData);
-        } else {
-            res.render(`top-${target}`, {metricData: db_metricData, name: userName});
-        }
+        const metricData = await db_getMetricData(spotifyID, "long_term", metric, next);
+        res.json(metricData);
     };
-
-    return cb;
+    return topMetricsHandler;
 }
 
 // DB functions
