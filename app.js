@@ -110,52 +110,12 @@ app.get('/get-metric', async (req, res, next) => {
     makeDirectSpotifyApiRequest(res, next, spotifyID, target, timeRange);
 });
  
-app.get("/top-tracks", async (req, res, next) => {
-    const spotifyID = req.session.spotifyID;
-    const userName = await getDisplayName(spotifyID, next);
-    let db_metricData = await db_getMetricData(spotifyID, "long_term", "tracks", next);
-
-    // if requested data is already in db - use it instead of making spotify API call
-    if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
-        console.log("retrieved top tracks (all time) data from db"); 
-        res.render(`top-tracks`, {metricData: db_metricData, name: userName});
-    } else {
-        // options and callback for making request to Spotify API DIRECTLY (NOT through Node.js wrapper library)
-        const token = await getToken(spotifyID, next);
-        const options = {
-            url: `https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=50`,
-            headers: {"Authorization": "Bearer " + token} 
-        };
-
-        // get metric data directly from Spotify API 
-        const topMetricsCB = createTopMetricsHandler(spotifyID, userName, "tracks", next, res, "long_term");
-        request(options, topMetricsCB); 
-    }
+app.get("/top-tracks", (req, res, next) => {
+    handleMetricPage('tracks', req, res, next);
 });
 
-app.get("/top-artists", async (req, res, next) => {
-
-    const spotifyID = req.session.spotifyID;
-    const userName = await getDisplayName(spotifyID, next);
-    let db_metricData = await db_getMetricData(spotifyID, "long_term", "artists", next);
-
-    // if requested data is already in db - use it instead of making spotify API call
-    if (db_metricData !== undefined && db_metricData !== null && db_metricData.length > 0) {
-        console.log("retrieved top ARTISTS (all time) data from db"); 
-        res.render(`top-artists`, {metricData: db_metricData, name: userName}); 
-    } else {
-
-        // options and callback for making request to Spotify API DIRECTLY (NOT through Node.js wrapper library)
-        const token = await getToken(spotifyID, next);
-        const options = {
-            url: `https://api.spotify.com/v1/me/top/artists?time_range=long_term&limit=50`,
-            headers: {"Authorization": "Bearer " + token} 
-        };
-
-        // get metric data directly from Spotify API 
-        const topMetricsCB = createTopMetricsHandler(spotifyID, userName, "artists", next, res, "long_term");
-        request(options, topMetricsCB); 
-    }
+app.get("/top-artists", (req, res, next) => {
+    handleMetricPage('artists', req, res, next);
 });
 
 app.post("/create-top-tracks-playlist", async (req, res, next) => {
@@ -218,14 +178,29 @@ async function loginUser(spotifyApi, req, res, token, next) {
      }
 }
 
-async function makeDirectSpotifyApiRequest(res, next, spotifyID, target, timeRange) {
+async function makeDirectSpotifyApiRequest(res, next, spotifyID, metric, timeRange) {
     const token = await getToken(spotifyID, next);
     const options = {
-        url: `https://api.spotify.com/v1/me/top/${target}?time_range=${timeRange}&limit=50`,
+        url: `https://api.spotify.com/v1/me/top/${metric}?time_range=${timeRange}&limit=50`,
         headers: { "Authorization": `Bearer ${token}` } 
     };
-    const topMetricsHandler = createTopMetricsHandler(spotifyID, "", target, next, res, timeRange, "AJAX");
+    const topMetricsHandler = createTopMetricsHandler(spotifyID, "", metric, next, res, timeRange, "AJAX"); /// target --> metric
     request(options, topMetricsHandler); 
+}
+
+async function handleMetricPage(metric, req, res, next) {
+    const { spotifyID } = req.session;
+    const timeRange = 'long_term';
+    const userName = await getDisplayName(spotifyID, next);
+
+    const metricData = await db_getMetricData(spotifyID, timeRange, metric, next); /// target --> metric
+    if (metricData && metricData.length > 0) {
+        // console.log("retrieved top tracks (all time) data from db"); 
+        res.render(`top-${metric}`, { metricData, name: userName });
+        return;
+    }
+
+    makeDirectSpotifyApiRequest(res, next, spotifyID, metric, timeRange);
 }
 
 function handleError(errorMessage, next) {
