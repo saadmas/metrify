@@ -241,21 +241,20 @@ async function getToken(id, next) {
 }
 
 async function getDisplayName(id, next) {
-  const user = await User.findOne({spotifyID: id}, (err, findResult) => {
-      if (err) {
-          // create user in db 
-          console.error("Error. Cannot retrive access token: "+err);
-      } else if (findResult) {    
-          console.log("Retrieved display name!");
-      }
+  const user = await User.findOne({ spotifyID: id }, (err, findResult) => {
+    if (err) {
+      console.error(`Error. Cannot retrive access token: ${err}`);
+    } else if (findResult) {    
+      console.log("Retrieved display name!");
+    }
   }).exec();
 
   if (user) {
       return normalizeName(user.name);
-  } else {
-    const errorMessage = `Can't find user to retrieve display name. ${err}`;
-    appHelpers.handleError(errorMessage, next);
   }
+
+  const errorMessage = `Can't find user to retrieve display name. ${err}`;
+  appHelpers.handleError(errorMessage, next);
 }
 
 function normalizeName(dbName) {
