@@ -110,45 +110,44 @@ async function updateTopTracks(id, time, items, next) {
   });
 }
 
-async function parseAndStoreTracks(items, next) {
-  const arr = [];
-  for (let i=0; i<items.length; i++) {
-      const currTrack = items[i];
+async function parseAndStoreTracks(trackItems, next) {
+  const trackDocs = [];
 
-      await Track.findOneAndUpdate(
-          {spotifyID: currTrack.id}, 
-          createTrack(currTrack),
-          {upsert: true, new: true, runValidators: true}, // store track if it doesn't exist
-          (err, doc) => {
-          if (err) {
-            const errorMessage = `Error saving new track: ${err}`;
-            appHelpers.handleError(errorMessage, next);
-          // return from db if track already exists
-          } else {
-              console.log("saved new track to db: "+ doc.title);
-              arr.push(doc);
-          }
-      });
+  for (const trackItem of trackItems) {
+    await Track.findOneAndUpdate(
+      { spotifyID: trackItem.id }, 
+      createTrack(trackItem),
+      { upsert: true, new: true, runValidators: true },
+      (err, trackDoc) => {
+        if (err) {
+          const errorMessage = `Error saving new track: ${err}`;
+          appHelpers.handleError(errorMessage, next);
+          return;
+        }
+        console.log("saved new track to db: "+ trackDoc.title);
+        trackDocs.push(trackDoc);
+    });
   }
 
-  return arr;
+  return trackDocs;
 }
 
-function createTrack(currTrack) {
+function createTrack(trackItem) {
   return {
-      title: currTrack.name,
-      spotifyID: currTrack.id, 
-      artists: parseArtistsFromTrackObj(currTrack)
+      title: trackItem.name,
+      spotifyID: trackItem.id, 
+      artists: parseArtistsFromTrackItem(trackItem)
   }
 }
 
-function parseArtistsFromTrackObj(track) {
-  const result = [];
-  const artistsArr = track.artists;
-  for (let i=0; i<artistsArr.length; i++) {
-      result.push(artistsArr[i].name);
+function parseArtistsFromTrackItem(trackItem) {
+  const artists = [];
+
+  for (const artist of trackItem.artists) {
+    artists.push(artist.name);
   }
-  return result;
+
+  return artists;
 }
 
 async function saveTopArtistsData(id, time, items, next) {
