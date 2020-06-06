@@ -9,31 +9,31 @@ const Artist = mongoose.model("Artist");
 async function storeUser(id, name, token, next) {
   // check if user already exists
   await User.findOneAndUpdate(
-      { spotifyID: id },
-      { $set: { token }},
-      { new: true, runValidators: true }, 
-      (err, user) => onFindUserForSave(err, user, name, next))
+    { spotifyID: id },
+    { $set: { token }},
+    { new: true, runValidators: true }, 
+    (err, user) => onFindUserForSave(err, user, name, next))
   .exec();
 }
 
 function onFindUserForSave(err, user, name, next) {
   if (err || !user) {
-      console.log("User does not exist. Storing user in db now ...");
+    console.log("User does not exist. Storing user in db now ...");
 
-      const user = name ? 
-      new User({ spotifyID: id, name, token }) :
-      new User({ spotifyID: id, name: "My", token });
+    const user = name ? 
+    new User({ spotifyID: id, name, token }) :
+    new User({ spotifyID: id, name: "My", token });
 
-      user.save((err) => {
-          if (err) {
-            const errorMessage = `Error storing user in db: ${err}`;
-            appHelpers.handleError(errorMessage, next);
-            return;
-          } 
-          console.log("User succesfully saved in db!");
-      });
+    user.save((err) => {
+      if (err) {
+        const errorMessage = `Error storing user in db: ${err}`;
+        appHelpers.handleError(errorMessage, next);
+        return;
+      } 
+      console.log("User succesfully saved in db!");
+    });
   } else if (user) {
-      console.log("User already exists in db. Token updated.");
+    console.log("User already exists in db. Token updated.");
   } 
 }
 
@@ -42,8 +42,8 @@ async function getMetricData(id, time, target, next) {
     { spotifyID: id }, 
     (err, user) => {
       if (err) {
-          const errorMessage = `Error finding user to get metric data: ${err}`;
-          appHelpers.handleError(errorMessage, next);
+        const errorMessage = `Error finding user to get metric data: ${err}`;
+        appHelpers.handleError(errorMessage, next);
       }
     })
   .exec();
@@ -53,79 +53,61 @@ async function getMetricData(id, time, target, next) {
   }
   
   if (target === "tracks") {
-      return getTopTrackData(user, time);
+    return getTopTrackData(user, time);
   } else if (target === "artists") {
-      return getTopArtistData(user, time);
+    return getTopArtistData(user, time);
   }
 }
 
 function getTopTrackData(user, time) {
   switch (time) {
     case "long_term":
-        return user.topTracks_long;
+      return user.topTracks_long;
     case "medium_term":
-        return user.topTracks_med;
+      return user.topTracks_med;
     case "short_term":
-        return user.topTracks_short;
+      return user.topTracks_short;
   }
 }
 
 function getTopArtistData(user, time) {
   switch (time) {
     case "long_term":
-        return user.topArtists_long;
+      return user.topArtists_long;
     case "medium_term":
-        return user.topArtists_med;
+      return user.topArtists_med;
     case "short_term":
-        return user.topArtists_short;
+      return user.topArtists_short;
   }
 }
 
-async function saveTopTracksData(id, time, items, next) {
+function saveTopTracksData(id, time, items, next) {
   switch (time) {
-      case "long_term":
-          await User.findOneAndUpdate(
-              {spotifyID: id},
-              {$set: {topTracks_long: await parseAndStoreTracks(items, next)}},
-              {new: true, runValidators: true}, 
-              (err, user) => {
-              if (err) {
-                const errorMessage = `Error saving long_term top-track data: ${err}`;
-                appHelpers.handleError(errorMessage, next);
-              } else if (user) {
-                  console.log("Found User. Stored long_term tracklist");
-              }
-          });
-          break;
-
-      case "medium_term":
-          await User.findOneAndUpdate(
-              {spotifyID: id},
-              {$set: {topTracks_med: await parseAndStoreTracks(items, next)}}, 
-              (err, user) => {
-              if (err) {
-                const errorMessage = `Error saving med_term top-track data: ${err}`;
-                appHelpers.handleError(errorMessage, next);
-              } else if (user) {
-                  console.log("Found User. Stored med_term tracklist");
-              }
-          });
-          break;
-
-      case "short_term":
-          await User.findOneAndUpdate(
-              {spotifyID: id},
-              {$set: {topTracks_short: await parseAndStoreTracks(items, next)}}, 
-              (err, user) => {
-              if (err) {
-                const errorMessage = `Error saving short_term top-track data: ${err}`;
-                appHelpers.handleError(errorMessage, next);
-              } else if (user) {
-                  console.log("Found User. Stored short_term tracklist");
-              }
-          });
-          break;
+    case "long_term":
+      updateTopTracks(id, 'long', items, next);
+      break;
+    case "medium_term":
+      updateTopTracks(id, 'med', items, next);
+      break;
+    case "short_term":
+      updateTopTracks(id, 'short', items, next);
+      break;
   }
+}
+
+async function updateTopTracks(id, time, items, next) {
+  await User.findOneAndUpdate(
+    { spotifyID: id },
+    { $set: { [`topTracks_${time}`]: await parseAndStoreTracks(items, next) }},
+    { new: true, runValidators: true }, 
+    (err, user) => {
+      if (err) {
+        const errorMessage = `Error saving ${time}_term top-track data: ${err}`;
+        appHelpers.handleError(errorMessage, next);
+      } else if (user) {
+          console.log(`Found User. Stored ${time}_term tracklist`);
+      }
+  });
 }
 
 async function parseAndStoreTracks(items, next) {
