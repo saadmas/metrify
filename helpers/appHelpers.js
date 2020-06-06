@@ -93,7 +93,7 @@ function createSpotifyAPI(token) {
         redirectUri: process.env.REDIRECTURI
     });
 
-    if (token!== undefined) {
+    if (token) {
         spotifyApi.setAccessToken(token);
     }
     

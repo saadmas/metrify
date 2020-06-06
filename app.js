@@ -12,8 +12,6 @@ const app = express();
 app.set('view engine', 'hbs');
 
 // Middleware
-
-// Session
 app.use(cookieSession({
     name: 'spotifyUser',
     keys: new keyGrip(['key1', 'key2'], 'SHA384', 'base64'),
@@ -39,14 +37,11 @@ app.use(async (req, res, next) => {
     next();  
 });
 
-// Static files
 const publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
 
-// Body parser
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// JSON
 app.use(express.json());
 
 // Error handling
@@ -140,10 +135,7 @@ app.get("/about", (req,res) => {
 });
 
 app.get("*", (req, res) => {
-    res.redirect("/");
+    res.redirect("/top-tracks");
 });
-
-/// 
-
 
 app.listen(process.env.PORT || 3000);
