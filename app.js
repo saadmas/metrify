@@ -4,7 +4,6 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const keyGrip = require('keygrip');
-const SpotifyWebApi = require('spotify-web-api-node');
 const appHelpers = require('./helpers/appHelpers');
 const dbHelpers = require('./helpers/dbHelpers');
 
@@ -68,14 +67,14 @@ app.get("/", (req, res) => {
 }); 
 
 app.get("/spotify-auth", (req, res) => {
-    const spotifyApi = createSpotifyAPI();
+    const spotifyApi = appHelpers.createSpotifyAPI();
     const authURL = spotifyApi.createAuthorizeURL(['user-read-private', 'user-read-email', 'user-top-read', 'playlist-modify-private']);
     res.redirect(authURL);
 }); 
 
 app.get("/login", async (req, res, next) => {
     const authCode = req.query.code;
-    const spotifyApi = createSpotifyAPI();
+    const spotifyApi = appHelpers.createSpotifyAPI();
     try {
         const data = await spotifyApi.authorizationCodeGrant(authCode);
         const token = data.body['access_token'];
@@ -120,7 +119,7 @@ app.post("/create-top-tracks-playlist", async (req, res, next) => {
     const data = sanitize(body);
     const { timeRange, spotifyTrackIDs } = data;
     const token = await dbHelpers.getToken(spotifyID, next);
-    const spotifyApi = createSpotifyAPI(token);
+    const spotifyApi = appHelpers.createSpotifyAPI(token);
     try {
         const playlistData = await spotifyApi.createPlaylist(spotifyID, `My Top Tracks ${timeRange}`, { 'public': false });
         console.log(`Created Top Tracks ${timeRafnge} playlist!`);
@@ -145,18 +144,6 @@ app.get("*", (req, res) => {
 });
 
 /// 
-function createSpotifyAPI(token) {
-    const spotifyApi = new SpotifyWebApi({
-        clientId: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        redirectUri: process.env.REDIRECTURI
-    });
 
-    if (token!== undefined) {
-        spotifyApi.setAccessToken(token);
-    }
-    
-    return spotifyApi;
-}
 
 app.listen(process.env.PORT || 3000);

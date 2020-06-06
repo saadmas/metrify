@@ -1,4 +1,5 @@
 const request = require("request");
+const SpotifyWebApi = require('spotify-web-api-node');
 const dbHelpers = require('./dbHelpers');
 
 async function loginUser(spotifyApi, req, res, token, next) {
@@ -83,7 +84,21 @@ function createTopMetricsHandler(spotifyID, metric, next, res, timeRange) {
 
 function normalizeTrackIDsForPlaylist(trackIds) {
     return trackIds.map((trackId) => "spotify:track:" + trackId);
-  }
+}
+
+function createSpotifyAPI(token) {
+    const spotifyApi = new SpotifyWebApi({
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        redirectUri: process.env.REDIRECTURI
+    });
+
+    if (token!== undefined) {
+        spotifyApi.setAccessToken(token);
+    }
+    
+    return spotifyApi;
+}
 
 module.exports = {
   handleError,
@@ -91,5 +106,6 @@ module.exports = {
   handleMetricPage,
   makeDirectSpotifyApiRequest,
   loginUser,
-  normalizeTrackIDsForPlaylist
+  normalizeTrackIDsForPlaylist,
+  createSpotifyAPI
 };
