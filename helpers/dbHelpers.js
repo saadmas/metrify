@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const appHelpers = require('./appHelpers');
 
 require('../db'); ///
 const User = mongoose.model('User');
@@ -11,8 +12,8 @@ async function storeUser(id, name, token, next) {
       { spotifyID: id },
       { $set: { token }},
       { new: true, runValidators: true }, 
-      (err, user) => onFindUserForSave(err, user, name, next)
-      ).exec();
+      (err, user) => onFindUserForSave(err, user, name, next))
+  .exec();
 }
 
 function onFindUserForSave(err, user, name, next) {
@@ -25,53 +26,59 @@ function onFindUserForSave(err, user, name, next) {
 
       user.save((err) => {
           if (err) {
-              console.error("Error storing user in db: "+err);
-              const errorDetails = new Error(`Error storing user in database: ${err}`);
-              next(errorDetails);
-              return;
+            const errorMessage = `Error storing user in db: ${err}`;
+            appHelpers.handleError(errorMessage, next);
+            return;
           } 
           console.log("User succesfully saved in db!");
       });
   } else if (user) {
       console.log("User already exists in db. Token updated.");
-  }
+  } 
 }
 
 async function getMetricData(id, time, target, next) {
-  // get user from db
-  const user = await User.findOne({spotifyID: id}, (err, user) => {
+  const user = await User.findOne(
+    { spotifyID: id }, 
+    (err, user) => {
       if (err) {
-          console.error("Error finding user to get metric data: "+err);
-          const errorDetails = new Error(`Error finding user to get metric data: ${err}`);
-          next(errorDetails);
-      } 
-  }).exec();
-
-  // query user data if user exists in db
-  if (user) {
-      if (target==="tracks") {
-          switch (time) {
-              case "long_term":
-                  return user.topTracks_long === undefined ? null : user.topTracks_long;
-              case "medium_term":
-                  return user.topTracks_med === undefined ? null : user.topTracks_med;
-              case "short_term":
-                  return user.topTracks_short === undefined ? null : user.topTracks_short;
-          }
-      } else if (target==="artists") {
-          switch (time) {
-              case "long_term":
-                  return user.topArtists_long === undefined ? null : user.topArtists_long;
-              case "medium_term":
-                  return user.topArtists_med === undefined ? null : user.topArtists_med;
-              case "short_term":
-                  return user.topArtists_short === undefined ? null : user.topArtists_short;
-          }
+          const errorMessage = `Error finding user to get metric data: ${err}`;
+          appHelpers.handleError(errorMessage, next);
       }
-  } else {
-      return null;
+    })
+  .exec();
+  
+  if (!user) {
+    return null;
   }
   
+  if (target === "tracks") {
+      return getTopTrackData(user, time);
+  } else if (target === "artists") {
+      return getTopArtistData(user, time);
+  }
+}
+
+function getTopTrackData(user, time) {
+  switch (time) {
+    case "long_term":
+        return user.topTracks_long;
+    case "medium_term":
+        return user.topTracks_med;
+    case "short_term":
+        return user.topTracks_short;
+  }
+}
+
+function getTopArtistData(user, time) {
+  switch (time) {
+    case "long_term":
+        return user.topArtists_long;
+    case "medium_term":
+        return user.topArtists_med;
+    case "short_term":
+        return user.topArtists_short;
+  }
 }
 
 async function saveTopTracksData(id, time, items, next) {
@@ -83,9 +90,8 @@ async function saveTopTracksData(id, time, items, next) {
               {new: true, runValidators: true}, 
               (err, user) => {
               if (err) {
-                  console.error("Error saving long_term top-track data: "+err);
-                  const errorDetails = new Error(`Error saving long_term top-track data:  ${err}`);
-                  next(errorDetails);
+                const errorMessage = `Error saving long_term top-track data: ${err}`;
+                appHelpers.handleError(errorMessage, next);
               } else if (user) {
                   console.log("Found User. Stored long_term tracklist");
               }
@@ -98,9 +104,8 @@ async function saveTopTracksData(id, time, items, next) {
               {$set: {topTracks_med: await parseAndStoreTracks(items, next)}}, 
               (err, user) => {
               if (err) {
-                  console.error("Error saving med_term top-track data: "+err);
-                  const errorDetails = new Error(`Error saving med_term top-track data:  ${err}`);
-                  next(errorDetails);
+                const errorMessage = `Error saving med_term top-track data: ${err}`;
+                appHelpers.handleError(errorMessage, next);
               } else if (user) {
                   console.log("Found User. Stored med_term tracklist");
               }
@@ -113,9 +118,8 @@ async function saveTopTracksData(id, time, items, next) {
               {$set: {topTracks_short: await parseAndStoreTracks(items, next)}}, 
               (err, user) => {
               if (err) {
-                  console.error("Error saving short_term top-track data: "+err);
-                  const errorDetails = new Error(`Error saving short_term top-track data:  ${err}`);
-                  next(errorDetails);
+                const errorMessage = `Error saving short_term top-track data: ${err}`;
+                appHelpers.handleError(errorMessage, next);
               } else if (user) {
                   console.log("Found User. Stored short_term tracklist");
               }
@@ -135,9 +139,8 @@ async function parseAndStoreTracks(items, next) {
           {upsert: true, new: true, runValidators: true}, // store track if it doesn't exist
           (err, doc) => {
           if (err) {
-              console.error("error saving new track: "+err);
-              const errorDetails = new Error(`Error saving new track:  ${err}`);
-              next(errorDetails);
+            const errorMessage = `Error saving new track: ${err}`;
+            appHelpers.handleError(errorMessage, next);
           // return from db if track already exists
           } else {
               console.log("saved new track to db: "+ doc.title);
@@ -175,9 +178,8 @@ async function saveTopArtistsData(id, time, items, next) {
               {new: true, runValidators: true}, 
               (err, user) => {
               if (err) {
-                  console.error("Error saving long_term top-artist data: "+err);
-                  const errorDetails = new Error(`Error saving long_term top-artist data:  ${err}`);
-                  next(errorDetails);
+                const errorMessage = `Error saving long_term top-artist data: ${err}`;
+                appHelpers.handleError(errorMessage, next);
               } else if (user) {
                   console.log("Found User. Stored long_term artists");
               }
@@ -190,9 +192,8 @@ async function saveTopArtistsData(id, time, items, next) {
               {$set: {topArtists_med: await parseAndStoreArtists(items)}}, 
               (err, user) => {
               if (err) {
-                  console.error("Error saving med_term top-artists data: "+err);
-                  const errorDetails = new Error(`Error saving med_term top-artist data:  ${err}`);
-                  next(errorDetails);
+                const errorMessage = `Error saving med_term top-artist data: ${err}`;
+                appHelpers.handleError(errorMessage, next);
               } else if (user) {
                   console.log("Found User. Stored med_term artists");
               }
@@ -249,9 +250,8 @@ function createArtist(rawArtist) {
 async function getToken(id, next) {
   const user = await User.findOne({spotifyID: id}, (err, findResult) => {
       if (err) {
-          console.error("Error. Cannot retrive access token: "+err);
-          const errorDetails = new Error(`Error. Cannot retrive access token:  ${err}`);
-          next(errorDetails);
+        const errorMessage = `Error. Cannot retrive access token: ${err}`;
+        appHelpers.handleError(errorMessage, next);
       } else if (findResult) {    
           console.log("Retrieved access token!");
       }
@@ -277,9 +277,8 @@ async function getDisplayName(id, next) {
   if (user) {
       return normalizeName(user.name);
   } else {
-      console.error("Can't find user to retrieve display name.");
-      const errorDetails = new Error(`Can't find user to retrieve display name.`);
-      next(errorDetails);
+    const errorMessage = `Can't find user to retrieve display name. ${err}`;
+    appHelpers.handleError(errorMessage, next);
   }
 }
 
