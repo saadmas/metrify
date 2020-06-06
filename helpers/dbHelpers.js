@@ -8,40 +8,36 @@ const Artist = mongoose.model("Artist");
 async function storeUser(id, name, token, next) {
   // check if user already exists
   await User.findOneAndUpdate(
-      {spotifyID: id},
-      {$set: {token: token}},
-      {new: true, runValidators: true}, 
-      (err, user) => {
-          if (err || !user) {
-              // create user in db 
-              console.log("User does not exist. Storing user in db now ...");
+      { spotifyID: id },
+      { $set: { token }},
+      { new: true, runValidators: true }, 
+      (err, user) => onFindUserForSave(err, user, name, next)
+      ).exec();
+}
 
-              let user;
-              // store name if given
-              if (name) {
-                  user = new User({spotifyID: id, name: name, token: token});
-              } else {
-                  user = new User({spotifyID: id, name: "My", token: token});
-              }
+function onFindUserForSave(err, user, name, next) {
+  if (err || !user) {
+      console.log("User does not exist. Storing user in db now ...");
 
-              user.save((err) => {
-                  if (err) {
-                      console.error("Error storing user in db: "+err);
-                      const errorDetails = new Error(`Error storing user in database: ${err}`);
-                      next(errorDetails);
-                  } else {
-                      console.log("User succesfully saved in db!");
-                  }
-              });
-          } else if (user) {
-              console.log("User already exists in db. Token updated.");
-          }
-      }
-  ).exec();
+      const user = name ? 
+      new User({ spotifyID: id, name, token }) :
+      new User({ spotifyID: id, name: "My", token });
+
+      user.save((err) => {
+          if (err) {
+              console.error("Error storing user in db: "+err);
+              const errorDetails = new Error(`Error storing user in database: ${err}`);
+              next(errorDetails);
+              return;
+          } 
+          console.log("User succesfully saved in db!");
+      });
+  } else if (user) {
+      console.log("User already exists in db. Token updated.");
+  }
 }
 
 async function getMetricData(id, time, target, next) {
-
   // get user from db
   const user = await User.findOne({spotifyID: id}, (err, user) => {
       if (err) {
