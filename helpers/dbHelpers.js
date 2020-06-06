@@ -141,12 +141,7 @@ function createTrack(trackItem) {
 }
 
 function parseArtistsFromTrackItem(trackItem) {
-  const artists = [];
-
-  for (const artist of trackItem.artists) {
-    artists.push(artist.name);
-  }
-
+  const artists = trackItems.artists.map(artist => artist.name);
   return artists;
 }
 
@@ -263,17 +258,16 @@ async function getDisplayName(id, next) {
   }
 }
 
-function normalizeName (dbName) {
-  // no Spotify display name
-  if (dbName==="My") {
-      return dbName;
-  // name ends with "s"
-  } else if (dbName[dbName.length-1]==="s") {
-      return dbName+"'"
-  // name doesn't end with "s"
+function normalizeName(dbName) {
+  let normalizedName = dbName;
+
+  if (dbName[dbName.length-1] === "s") {
+    normalizedName += "'";
   } else {
-      return dbName+"'s";
+    normalizedName += "'s";
   }
+
+  return normalizedName;
 }
 
 module.exports = {
@@ -282,6 +276,5 @@ module.exports = {
   getDisplayName,
   getMetricData,
   saveTopTracksData,
-  saveTopArtistsData,
-
+  saveTopArtistsData
 };
