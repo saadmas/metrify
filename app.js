@@ -94,7 +94,7 @@ app.get('/get-metric', async (req, res, next) => {
         session: { spotifyID } 
     } = req;
 
-    const metricData = await dbHelpers.db_getMetricData(spotifyID, timeRange, target, next);
+    const metricData = await dbHelpers.getMetricData(spotifyID, timeRange, target, next);
     if (metricData && metricData.length) {
         console.log(`retrieved metric data for ${target} - ${timeRange} from db`);
         res.json(metricData);

@@ -6,7 +6,7 @@ async function loginUser(spotifyApi, req, res, token, next) {
         const user = await spotifyApi.getMe();
         const userId = user.body.id;
         // console.log('Info abt the authenticated user: ', user.body);
-        await dbHelpers.db_storeUser(userId, user.body['display_name'], token, next);
+        await dbHelpers.storeUser(userId, user.body['display_name'], token, next);
         req.session.spotifyID = userId;
         req.session.save();
         res.redirect("/top-tracks");
@@ -31,7 +31,7 @@ async function handleMetricPage(metric, req, res, next) {
     const timeRange = 'long_term';
     const userName = await dbHelpers.getDisplayName(spotifyID, next);
 
-    const metricData = await dbHelpers.db_getMetricData(spotifyID, timeRange, metric, next); /// target --> metric
+    const metricData = await dbHelpers.getMetricData(spotifyID, timeRange, metric, next); /// target --> metric
     if (metricData && metricData.length > 0) {
         console.log("retrieved top tracks (all time) data from db"); 
         res.render(`top-${metric}`, { metricData, name: userName });
@@ -70,12 +70,12 @@ function createTopMetricsHandler(spotifyID, metric, next, res, timeRange) {
         const { items } = JSON.parse(body);
 
         if (metric === "tracks") {
-            await dbHelpers.db_saveTopTracksData(spotifyID, timeRange, items, next);
+            await dbHelpers.saveTopTracksData(spotifyID, timeRange, items, next);
         } else if (metric === "artists") {
-            await dbHelpers.db_saveTopArtistsData(spotifyID, timeRange, items, next);
+            await dbHelpers.saveTopArtistsData(spotifyID, timeRange, items, next);
         }
 
-        const metricData = await dbHelpers.db_getMetricData(spotifyID, "long_term", metric, next);
+        const metricData = await dbHelpers.getMetricData(spotifyID, "long_term", metric, next);
         res.json(metricData);
     };
     return topMetricsHandler;

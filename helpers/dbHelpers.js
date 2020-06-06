@@ -5,7 +5,7 @@ const User = mongoose.model('User');
 const Track = mongoose.model("Track");
 const Artist = mongoose.model("Artist");
 
-async function db_storeUser(id, name, token, next) {
+async function storeUser(id, name, token, next) {
   // check if user already exists
   await User.findOneAndUpdate(
       {spotifyID: id},
@@ -40,7 +40,7 @@ async function db_storeUser(id, name, token, next) {
   ).exec();
 }
 
-async function db_getMetricData(id, time, target, next) {
+async function getMetricData(id, time, target, next) {
 
   // get user from db
   const user = await User.findOne({spotifyID: id}, (err, user) => {
@@ -78,7 +78,7 @@ async function db_getMetricData(id, time, target, next) {
   
 }
 
-async function db_saveTopTracksData(id, time, items, next) {
+async function saveTopTracksData(id, time, items, next) {
   switch (time) {
       case "long_term":
           await User.findOneAndUpdate(
@@ -135,7 +135,7 @@ async function parseAndStoreTracks(items, next) {
 
       await Track.findOneAndUpdate(
           {spotifyID: currTrack.id}, 
-          db_createTrack(currTrack),
+          createTrack(currTrack),
           {upsert: true, new: true, runValidators: true}, // store track if it doesn't exist
           (err, doc) => {
           if (err) {
@@ -153,7 +153,7 @@ async function parseAndStoreTracks(items, next) {
   return arr;
 }
 
-function db_createTrack(currTrack) {
+function createTrack(currTrack) {
   return {
       title: currTrack.name,
       spotifyID: currTrack.id, 
@@ -170,7 +170,7 @@ function parseArtistsFromTrackObj(track) {
   return result;
 }
 
-async function db_saveTopArtistsData(id, time, items, next) {
+async function saveTopArtistsData(id, time, items, next) {
   switch (time) {
       case "long_term":
           await User.findOneAndUpdate(
@@ -225,7 +225,7 @@ async function parseAndStoreArtists(items) {
 
       await Artist.findOneAndUpdate(
           {spotifyID: currArtist.id}, 
-          db_createArtist(currArtist), 
+          createArtist(currArtist), 
           {upsert: true, new: true, runValidators: true}, // store artist if they don't exist in db
           (err, doc) => {
           if (err) {
@@ -242,7 +242,7 @@ async function parseAndStoreArtists(items) {
   return arr;
 }
 
-function db_createArtist(rawArtist) {
+function createArtist(rawArtist) {
   return {
       name: rawArtist.name,
       spotifyID: rawArtist.id
@@ -301,11 +301,11 @@ function normalizeName (dbName) {
 }
 
 module.exports = {
-  db_storeUser,
+  storeUser,
   getToken,
   getDisplayName,
-  db_getMetricData,
-  db_saveTopTracksData,
-  db_saveTopArtistsData,
+  getMetricData,
+  saveTopTracksData,
+  saveTopArtistsData,
 
 };
