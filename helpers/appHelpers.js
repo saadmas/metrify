@@ -32,7 +32,7 @@ async function handleMetricPage(metric, req, res, next) {
     const timeRange = 'long_term';
     const userName = await dbHelpers.getDisplayName(spotifyID, next);
 
-    const metricData = await dbHelpers.getMetricData(spotifyID, timeRange, metric, next); /// target --> metric
+    const metricData = await dbHelpers.getMetricData(spotifyID, timeRange, metric, next);
     if (metricData && metricData.length > 0) {
         console.log("retrieved top tracks (all time) data from db"); 
         res.render(`top-${metric}`, { metricData, name: userName });

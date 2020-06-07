@@ -5,7 +5,7 @@ function main() {
     parseName();
     createHeading("(All Time)");
     addRankNumbersToTable();
-    addListenersToTimeQueryButtons();
+    addEventListenersToTimeQueryButtons();
 }
 
 function addRankNumbersToTable() {
@@ -15,7 +15,7 @@ function addRankNumbersToTable() {
     }
 }
 
-function addListenersToTimeQueryButtons() {
+function addEventListenersToTimeQueryButtons() {
     document.querySelector("#long_term").addEventListener("click", timeQuery);
     document.querySelector("#medium_term").addEventListener("click", timeQuery);
     document.querySelector("#short_term").addEventListener("click", timeQuery);
