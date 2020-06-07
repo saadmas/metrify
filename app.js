@@ -53,7 +53,7 @@ app.use((err, req, res, next) => {
         err.statusCode = 500;
     }
     
-    res.status(err.statusCode).render("error-page", {errMsg: err.message, errStack: err.stack}); 
+    res.status(err.statusCode).render("error", {errMsg: err.message, errStack: err.stack}); 
 });
 
 // Routes
@@ -126,8 +126,8 @@ app.post("/create-top-tracks-playlist", async (req, res, next) => {
     }
 });
 
-app.get("/error-page", (req,res) => {
-    res.render("error-page", { noNav: true });
+app.get("/error", (req,res) => {
+    res.render("error", { noNav: true });
 });
 
 app.get("/about", (req,res) => {
