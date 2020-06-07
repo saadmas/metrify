@@ -117,7 +117,7 @@ app.post("/create-top-tracks-playlist", async (req, res, next) => {
     const spotifyApi = appHelpers.createSpotifyAPI(token);
     try {
         const playlistData = await spotifyApi.createPlaylist(spotifyID, `My Top Tracks ${timeRange}`, { 'public': false });
-        console.log(`Created Top Tracks ${timeRafnge} playlist!`);
+        console.log(`Created Top Tracks ${timeRange} playlist!`);
         const normalizedTrackIDs = appHelpers.normalizeTrackIDsForPlaylist(spotifyTrackIDs);
         appHelpers.addTracksToPlaylist(spotifyApi, playlistData.body.id, normalizedTrackIDs, timeRange, res);
     } catch (e) {
