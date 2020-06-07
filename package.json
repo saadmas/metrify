@@ -1,22 +1,21 @@
 {
-  "name": "saadmasood96-final-project",
+  "name": "metrify",
   "version": "1.0.0",
-  "description": "Web app to access top played tracks/artists on Spotify",
+  "description": "Web app to view top played tracks and artists on Spotify",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "src/app.js"
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nyu-csci-ua-0480-008-spring-2019/saadmasood96-final-project.git"
+    "url": "git+https://github.com/saadmas/metrify.git"
   },
   "author": "Saad Masood",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nyu-csci-ua-0480-008-spring-2019/saadmasood96-final-project/issues"
+    "url": "https://github.com/saadmas/metrify/issues"
   },
-  "homepage": "https://github.com/nyu-csci-ua-0480-008-spring-2019/saadmasood96-final-project#readme",
+  "homepage": "https://github.com/saadmas/metrify#readme",
   "devDependencies": {},
   "dependencies": {
     "cookie-session": "^1.3.3",
