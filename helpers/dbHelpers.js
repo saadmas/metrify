@@ -47,9 +47,13 @@ async function getMetricData(id, time, metric, next) {
     })
   .exec();
   
-  const capitalizedMetric = metric.charAt(0).toUpperCase() + metric.slice(1);
-  const lastUpdated = `top${capitalizedMetric}LastUpdated`;
-  if (!user || getMinutesFromNow(user[lastUpdated]) > 0.2) {
+  let timeKey = time.split('_')[0];
+  timeKey = timeKey.charAt(0).toUpperCase() + timeKey.slice(1);
+  const metricKey = metric.charAt(0).toUpperCase() + metric.slice(1);
+  const metricField = `top${metricKey}${timeKey}`;
+  const lastUpdated = user[metricField]['lastUpdated'];
+
+  if (!user || getMinutesFromNow(lastUpdated) > 60) {
     return null;
   }
   
@@ -63,30 +67,29 @@ async function getMetricData(id, time, metric, next) {
 function getMinutesFromNow(date) {
   const now = new Date();
   const diff = Math.abs(now - date);
-  const minutesFromNow = Math.floor((diff/1000)/60);
-  ///console.log('\n\n\ndate: '+date+'\tminutes from now: '+minutesFromNow+'\n\n\n');
+  const minutesFromNow = Math.floor((diff / 1000) / 60);
   return minutesFromNow;
 }
 
 function getTopTrackData(user, time) {
   switch (time) {
     case "long_term":
-      return user.topTracksLong;
+      return user.topTracksLong.topTracksLong;
     case "medium_term":
-      return user.topTracksMedium;
+      return user.topTracksMedium.topTracksMedium;
     case "short_term":
-      return user.topTracksShort;
+      return user.topTracksShort.topTracksShort;
   }
 }
 
 function getTopArtistData(user, time) {
   switch (time) {
     case "long_term":
-      return user.topArtistsLong;
+      return user.topArtistsLong.topArtistsLong;
     case "medium_term":
-      return user.topArtistsMedium;
+      return user.topArtistsMedium.topArtistsMedium;
     case "short_term":
-      return user.topArtistsShort;
+      return user.topArtistsShort.topArtistsShort;
   }
 }
 
@@ -105,11 +108,14 @@ async function saveTopTracksData(id, time, items, next) {
 }
 
 async function updateTopTracks(id, time, items, next) {
+  const fieldName = `topTracks${time}`;
   await User.findOneAndUpdate(
     { spotifyID: id },
     { $set: { 
-      [`topTracks${time}`]: await parseAndStoreTracks(items, next),
-      'topTracksLastUpdated': new Date()
+      [fieldName]: {
+        [fieldName] : await parseAndStoreTracks(items, next),
+        lastUpdated: new Date()
+      }
     }},
     { new: true, runValidators: true }, 
     (err, user) => {
@@ -167,11 +173,14 @@ async function saveTopArtistsData(id, time, items, next) {
 }
 
 async function updateTopArtists(id, time, items, next) {
+  const fieldName = `topArtists${time}`;
   await User.findOneAndUpdate(
     { spotifyID: id },
     { $set: { 
-      [`topArtists${time}`]: await parseAndStoreArtists(items, next),
-      'topArtistsLastUpdated': new Date()
+      [fieldName]: {
+        [fieldName]: await parseAndStoreArtists(items, next),
+        lastUpdated: new Date()
+      }
     }},
     { new: true, runValidators: true }, 
     (err, user) => {

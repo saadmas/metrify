@@ -77,7 +77,7 @@ function createTopMetricsHandler(spotifyID, metric, next, res, timeRange, userNa
         }
 
         const metricData = await dbHelpers.getMetricData(spotifyID, timeRange, metric, next);
-        
+
         if (isAjax) {
             res.json(metricData);
         } else {

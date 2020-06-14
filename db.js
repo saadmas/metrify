@@ -22,15 +22,30 @@ const UserSchema = new mongoose.Schema({
     spotifyID: { type: String, required: true },
     name: String,
     token: { type: String, required: true },
-    topTracksLastUpdated: Date,
-    topTracksLong: [TrackSchema],
-    topTracksMedium: [TrackSchema],
-    topTracksShort: [TrackSchema],
-    topArtistsLastUpdated: Date,
-    topArtistsLong: [ArtistSchema],
-    topArtistsMedium: [ArtistSchema],
-    topArtistsShort: [ArtistSchema],
-    
+    topTracksLong: {
+        topTracksLong: [TrackSchema],
+        lastUpdated: Date
+    },
+    topTracksMedium: {
+        topTracksMedium: [TrackSchema],
+        lastUpdated: Date
+    },
+    topTracksShort: {
+        topTracksShort: [TrackSchema],
+        lastUpdated: Date
+    },
+    topArtistsLong: {
+        topArtistsLong: [ArtistSchema],
+        lastUpdated: Date
+    },
+    topArtistsMedium: {
+        topArtistsMedium: [ArtistSchema],
+        lastUpdated: Date
+    },
+    topArtistsShort: {
+        topArtistsShort: [ArtistSchema],
+        lastUpdated: Date
+    },
 });
 mongoose.model('User', UserSchema);
 
