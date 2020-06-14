@@ -95,7 +95,7 @@ app.get('/get-metric', async (req, res, next) => {
         return;
     }
 
-    appHelpers.makeDirectSpotifyApiRequest(res, next, spotifyID, target, timeRange);
+    appHelpers.makeDirectSpotifyApiRequest(res, next, spotifyID, target, timeRange, undefined, true);
 });
  
 app.get("/top-tracks", (req, res, next) => {
@@ -134,8 +134,8 @@ app.get("/about", (req,res) => {
     res.render("about");
 });
 
-app.get("*", (req, res) => {
-    res.redirect("/top-tracks");
-});
+// app.get("*", (req, res) => { ///
+//     res.redirect("/top-tracks");
+// });
 
 app.listen(process.env.PORT || 3000);

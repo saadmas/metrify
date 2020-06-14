@@ -22,12 +22,15 @@ const UserSchema = new mongoose.Schema({
     spotifyID: { type: String, required: true },
     name: String,
     token: { type: String, required: true },
+    topTracks_lastUpdated: Date,
     topTracks_long: [TrackSchema],
     topTracks_med: [TrackSchema],
     topTracks_short: [TrackSchema],
+    topArtists_lastUpdated: Date,
     topArtists_long: [ArtistSchema],
     topArtists_med: [ArtistSchema],
     topArtists_short: [ArtistSchema],
+    
 });
 mongoose.model('User', UserSchema);
 

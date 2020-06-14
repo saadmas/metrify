@@ -11,11 +11,11 @@ async function storeUser(id, name, token, next) {
     { spotifyID: id },
     { $set: { token }},
     { new: true, runValidators: true }, 
-    (err, user) => onFindUserForSave(err, user, name, next))
+    (err, user) => onFindUserForSave(id, token, err, user, name, next))
   .exec();
 }
 
-function onFindUserForSave(err, user, name, next) {
+function onFindUserForSave(id, token, err, user, name, next) {
   if (err || !user) {
     console.log("User does not exist. Storing user in db now ...");
 
@@ -36,7 +36,7 @@ function onFindUserForSave(err, user, name, next) {
   } 
 }
 
-async function getMetricData(id, time, target, next) {
+async function getMetricData(id, time, metric, next) {
   const user = await User.findOne(
     { spotifyID: id }, 
     (err, user) => {
@@ -47,15 +47,25 @@ async function getMetricData(id, time, target, next) {
     })
   .exec();
   
-  if (!user) {
+  const capitalizedMetric = metric.charAt(0).toUpperCase() + metric.slice(1);
+  const lastUpdated = `top${capitalizedMetric}_lastUpdated`;
+  if (!user || getMinutesFromNow(user[lastUpdated]) > 0.2) {
     return null;
   }
   
-  if (target === "tracks") {
+  if (metric === "tracks") {
     return getTopTrackData(user, time);
-  } else if (target === "artists") {
+  } else if (metric === "artists") {
     return getTopArtistData(user, time);
   }
+}
+ 
+function getMinutesFromNow(date) {
+  const now = new Date();
+  const diff = Math.abs(now - date);
+  const minutesFromNow = Math.floor((diff/1000)/60);
+  ///console.log('\n\n\ndate: '+date+'\tminutes from now: '+minutesFromNow+'\n\n\n');
+  return minutesFromNow;
 }
 
 function getTopTrackData(user, time) {
@@ -80,16 +90,16 @@ function getTopArtistData(user, time) {
   }
 }
 
-function saveTopTracksData(id, time, items, next) {
+async function saveTopTracksData(id, time, items, next) {
   switch (time) {
     case "long_term":
-      updateTopTracks(id, 'long', items, next);
+      await updateTopTracks(id, 'long', items, next);
       break;
     case "medium_term":
-      updateTopTracks(id, 'med', items, next);
+      await updateTopTracks(id, 'med', items, next);
       break;
     case "short_term":
-      updateTopTracks(id, 'short', items, next);
+      await updateTopTracks(id, 'short', items, next);
       break;
   }
 }
@@ -97,7 +107,10 @@ function saveTopTracksData(id, time, items, next) {
 async function updateTopTracks(id, time, items, next) {
   await User.findOneAndUpdate(
     { spotifyID: id },
-    { $set: { [`topTracks_${time}`]: await parseAndStoreTracks(items, next) }},
+    { $set: { 
+      [`topTracks_${time}`]: await parseAndStoreTracks(items, next),
+      'topTracks_lastUpdated': new Date()
+    }},
     { new: true, runValidators: true }, 
     (err, user) => {
       if (err) {
@@ -123,7 +136,7 @@ async function parseAndStoreTracks(trackItems, next) {
           appHelpers.handleError(errorMessage, next);
           return;
         }
-        console.log("saved new track to db: "+ trackDoc.title);
+        // console.log("saved new track to db: "+ trackDoc.title);
         trackDocs.push(trackDoc);
     });
   }
@@ -139,16 +152,16 @@ function createTrack(trackItem) {
   }
 }
 
-function saveTopArtistsData(id, time, items, next) {
+async function saveTopArtistsData(id, time, items, next) {
   switch (time) {
     case "long_term":
-      updateTopArtists(id, 'long', items, next);
+      await updateTopArtists(id, 'long', items, next);
       break;
     case "medium_term":
-      updateTopArtists(id, 'med', items, next);
+      await updateTopArtists(id, 'med', items, next);
       break;
     case "short_term":
-      updateTopArtists(id, 'short', items, next);
+      await updateTopArtists(id, 'short', items, next);
       break;
   }
 }
@@ -156,7 +169,10 @@ function saveTopArtistsData(id, time, items, next) {
 async function updateTopArtists(id, time, items, next) {
   await User.findOneAndUpdate(
     { spotifyID: id },
-    { $set: { [`topArtists_${time}`]: await parseAndStoreArtists(items, next) }},
+    { $set: { 
+      [`topArtists_${time}`]: await parseAndStoreArtists(items, next),
+      'topArtists_lastUpdated': new Date()
+    }},
     { new: true, runValidators: true }, 
     (err, user) => {
       if (err) {
@@ -181,7 +197,7 @@ async function parseAndStoreArtists(artistItems, next) {
           const errorMessage = `Error saving new artist: ${err}`;
           appHelpers.handleError(errorMessage, next);
         } else if (doc) {
-          console.log("saved new artist to db: "+ doc.name);
+          // console.log("saved new artist to db: "+ doc.name);
           artists.push(doc);
         }
     });
@@ -203,7 +219,7 @@ async function getToken(id, next) {
       const errorMessage = `Error. Cannot retrive access token: ${err}`;
       appHelpers.handleError(errorMessage, next);
     } else if (findResult) {    
-      console.log("Retrieved access token!");
+      // console.log("Retrieved access token!");
     }
   }).exec();
 
@@ -219,7 +235,7 @@ async function getDisplayName(id, next) {
     if (err) {
       console.error(`Error. Cannot retrive access token: ${err}`);
     } else if (findResult) {    
-      console.log("Retrieved display name!");
+      // console.log("Retrieved display name!");
     }
   }).exec();
 
