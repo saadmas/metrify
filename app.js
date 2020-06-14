@@ -134,8 +134,8 @@ app.get("/about", (req,res) => {
     res.render("about");
 });
 
-// app.get("*", (req, res) => { ///
-//     res.redirect("/top-tracks");
-// });
+app.get("*", (req, res) => {
+    res.redirect("/top-tracks");
+});
 
 app.listen(process.env.PORT || 3000);

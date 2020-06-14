@@ -48,7 +48,7 @@ async function addTracksToPlaylist(spotifyApi, playlistID, trackIDs, timeRange, 
         console.log('Added tracks to playlist!');
         res.json(`Succesfully created private playlist "My Top Tracks ${timeRange}" \n\n View and listen to the playlist on your Spotify connected device!`);
     } catch (e) {
-        console.error(`Error adding tracks to playlist: ${e}`); /// sep fn
+        console.error(`Error adding tracks to playlist: ${e}`);
         res.json("Error occured. Could not create playlist! Please try again.");
     }
 }
@@ -76,7 +76,8 @@ function createTopMetricsHandler(spotifyID, metric, next, res, timeRange, userNa
             await dbHelpers.saveTopArtistsData(spotifyID, timeRange, items, next);
         }
 
-        const metricData = await dbHelpers.getMetricData(spotifyID, "long_term", metric, next);
+        const metricData = await dbHelpers.getMetricData(spotifyID, timeRange, metric, next);
+        
         if (isAjax) {
             res.json(metricData);
         } else {

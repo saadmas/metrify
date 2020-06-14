@@ -48,7 +48,7 @@ async function getMetricData(id, time, metric, next) {
   .exec();
   
   const capitalizedMetric = metric.charAt(0).toUpperCase() + metric.slice(1);
-  const lastUpdated = `top${capitalizedMetric}_lastUpdated`;
+  const lastUpdated = `top${capitalizedMetric}LastUpdated`;
   if (!user || getMinutesFromNow(user[lastUpdated]) > 0.2) {
     return null;
   }
@@ -71,35 +71,35 @@ function getMinutesFromNow(date) {
 function getTopTrackData(user, time) {
   switch (time) {
     case "long_term":
-      return user.topTracks_long;
+      return user.topTracksLong;
     case "medium_term":
-      return user.topTracks_med;
+      return user.topTracksMedium;
     case "short_term":
-      return user.topTracks_short;
+      return user.topTracksShort;
   }
 }
 
 function getTopArtistData(user, time) {
   switch (time) {
     case "long_term":
-      return user.topArtists_long;
+      return user.topArtistsLong;
     case "medium_term":
-      return user.topArtists_med;
+      return user.topArtistsMedium;
     case "short_term":
-      return user.topArtists_short;
+      return user.topArtistsShort;
   }
 }
 
 async function saveTopTracksData(id, time, items, next) {
   switch (time) {
     case "long_term":
-      await updateTopTracks(id, 'long', items, next);
+      await updateTopTracks(id, 'Long', items, next);
       break;
     case "medium_term":
-      await updateTopTracks(id, 'med', items, next);
+      await updateTopTracks(id, 'Medium', items, next);
       break;
     case "short_term":
-      await updateTopTracks(id, 'short', items, next);
+      await updateTopTracks(id, 'Short', items, next);
       break;
   }
 }
@@ -108,8 +108,8 @@ async function updateTopTracks(id, time, items, next) {
   await User.findOneAndUpdate(
     { spotifyID: id },
     { $set: { 
-      [`topTracks_${time}`]: await parseAndStoreTracks(items, next),
-      'topTracks_lastUpdated': new Date()
+      [`topTracks${time}`]: await parseAndStoreTracks(items, next),
+      'topTracksLastUpdated': new Date()
     }},
     { new: true, runValidators: true }, 
     (err, user) => {
@@ -155,13 +155,13 @@ function createTrack(trackItem) {
 async function saveTopArtistsData(id, time, items, next) {
   switch (time) {
     case "long_term":
-      await updateTopArtists(id, 'long', items, next);
+      await updateTopArtists(id, 'Long', items, next);
       break;
     case "medium_term":
-      await updateTopArtists(id, 'med', items, next);
+      await updateTopArtists(id, 'Medium', items, next);
       break;
     case "short_term":
-      await updateTopArtists(id, 'short', items, next);
+      await updateTopArtists(id, 'Short', items, next);
       break;
   }
 }
@@ -170,8 +170,8 @@ async function updateTopArtists(id, time, items, next) {
   await User.findOneAndUpdate(
     { spotifyID: id },
     { $set: { 
-      [`topArtists_${time}`]: await parseAndStoreArtists(items, next),
-      'topArtists_lastUpdated': new Date()
+      [`topArtists${time}`]: await parseAndStoreArtists(items, next),
+      'topArtistsLastUpdated': new Date()
     }},
     { new: true, runValidators: true }, 
     (err, user) => {
