@@ -3,8 +3,16 @@
   font-weight: black;
 }
 
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
 nav {
   margin-top: 15px;
+}
+
+.nav-link {
+  font-size: 18px;
 }
 
 .nav-metrify {
@@ -23,14 +31,16 @@ nav {
 
 /* tracks + artists */
 .metric-heading {
-  margin-top: 1em;
+  margin-top: 40px;
+  margin-bottom: 35px;
   text-align: center;
-  font-weight: bold;
-  font-size: 1.9em;
+  font-size: 30px;
+  font-family: 'Rock Salt', sans-serif;
 }
 
 .btn-toolbar {
-  margin-top: 1em;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 #time-query-group {
@@ -44,11 +54,30 @@ nav {
 table {
   margin-top: 1em;
   font-size: 1.2em;
+  table-layout: fixed;
+}
+
+tr {
+  color: white;
+  font-size: 20px;
+  font-weight: 100;
+}
+
+.rank-col-artist {
+  width: 200px;
+}
+
+.rank-col-track {
+  width: 100px;
 }
 
 .active-time {
   background-color: #15506c !important;
   color: white !important;
+}
+
+.action-btn {
+  font-size: 15px !important;
 }
 
 /* tracks only */
@@ -59,6 +88,21 @@ table {
 
 #show-modal-button {
     display: none;
+}
+
+.create-playlist-title {
+  font-size: 25px;
+}
+
+.create-playlist-result {
+  font-size: 15px;
+  margin-top: 10px;
+  margin-left: 0px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  color: white;
+  letter-spacing: 0.5px;
+  font-weight: lighter;
 }
 
 /* index, error page, about */
@@ -87,6 +131,7 @@ table {
 #welcome-div, #error-div {
   text-align: center;
   margin-top: 2.5em;
+  font-size: 14px;
 }
 
 .welcome-heading {
@@ -107,6 +152,7 @@ table {
 }
 
 .gif {
+  margin-top: 10px;
   margin-bottom: 2em;
 }
 
@@ -149,7 +195,7 @@ table {
 .note-4 {
   position: absolute;
   animation: notes 3s infinite linear;
-  font-size: 1.9em;
+  font-size: 30px;
   opacity: 0;
 }
   

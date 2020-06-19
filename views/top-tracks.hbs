@@ -1,21 +1,22 @@
-<h4 class="page-heading metric-heading animated bounceIn"> {{name}} Top Spotify Tracks (All Time)</h4>  
+<h4 class="page-heading metric-heading"> {{name}} Top Spotify Tracks (All Time)</h4>  
 <div class="row" id="top-tracks-row">
   <div class="col">
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
       <div class="btn-group mr-2" role="group" aria-label="Time Query" id="time-query-group">
-        <button type="button" class="btn btn-outline-primary active-time active" id="long_term" data-toggle="button">
+        <button type="button" class="btn btn-outline-primary active-time active action-btn" id="long_term" data-toggle="button">
           All Time
         </button>
-        <button type="button" class="btn btn-outline-primary" id="medium_term" data-toggle="button">
+        <button type="button" class="btn btn-outline-primary action-btn" id="medium_term" data-toggle="button">
           Last 6 Months
         </button>
-        <button type="button" class="btn btn-outline-primary" id="short_term" data-toggle="button">
+        <button type="button" class="btn btn-outline-primary action-btn" id="short_term" data-toggle="button">
           Last Month
         </button>
       </div>
       <div class="btn-group mr-2 mt-2 mt-md-0 mt-lg-0" role="group" aria-label="First group">
-        <button id="create-playlist" class="btn btn-primary">
+        <button id="create-playlist" class="btn btn-primary action-btn">
           Create Spotify Playlist
+          <img id="spotify-logo" src="/img/Spotify_Icon_RGB_White.png" alt="Spotify Logo">
         </button>
       </div>
     </div>                
@@ -23,10 +24,10 @@
 </div>
 <div class="row">
   <div class="col" id="table-container">
-    <table class="table table-striped animated fadeInUpBig fast" id="tracks-table">
+    <table class="table table-striped" id="tracks-table">
       <thead>
         <tr>
-          <th scope="col">Rank</th>
+          <th scope="col" class="rank-col-track">Rank</th>
           <th scope="col">Title</th>
           <th scope="col">Artists</th>
         </tr>
@@ -34,7 +35,7 @@
       <tbody>
         {{#each metricData}}
           <tr>
-            <td class="track-rank" scope="row"/>
+            <td class="track-rank" scope="row">
             <td class="track-title" id={{spotifyID}}>
               {{title}}
             </td>
@@ -51,14 +52,14 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">
+        <h5 class="modal-title create-playlist-title" id="exampleModalLongTitle">
           Spotify Playlist Creation
         </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" id="create-playlist-result"/>
+      <div class="modal-body create-playlist-result" id="create-playlist-result"/>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Close

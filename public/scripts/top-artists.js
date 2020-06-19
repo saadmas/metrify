@@ -77,7 +77,7 @@ function createHeading(timeFilterText) {
     prevHeadingParent.removeChild(prevHeading);
 
     const headingText = `${name} Top Spotify Artists ${timeFilterText}`
-    const newHeading = createElement("h3", { class: "page-heading metric-heading animated bounceIn" }, headingText);
+    const newHeading = createElement("h3", { class: "page-heading metric-heading" }, headingText);
     prevHeadingParent.insertBefore(newHeading, document.querySelector("#top-artists-row"));
 }
 
@@ -91,8 +91,8 @@ function createTable(tableData) {
     const table = createElement("table", { class: "table table-striped" });    
     const thead = createElement("thead");
     const tr = createElement("tr");
-    const thRank = createElement("th", {scope: "col"}, "Rank");
-    const thName = createElement("th", {scope: "col"}, "Name");
+    const thRank = createElement("th", { scope: "col", class: 'rank-col-artist' }, "Rank");
+    const thName = createElement("th", { scope: "col" }, "Name");
     tr.appendChild(thRank);
     tr.appendChild(thName);
     thead.appendChild(tr);
