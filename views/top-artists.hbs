@@ -1,4 +1,4 @@
-<h3 class="page-heading metric-heading"> {{name}} Top Spotify Artists (All Time)</h3>  
+<h3 class="page-heading metric-heading"> {{name}} Top Spotify Artists</h3>  
 <div class="row" id="top-artists-row">
   <div class="col">
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
@@ -27,9 +27,9 @@
       </thead>
       <tbody>
         {{#each metricData}}
-          <tr>
+          <tr class="data-row" id={{spotifyID}}>
             <td class="artist-rank" scope="row"/>
-            <td id={{spotifyID}}>
+            <td>
               {{name}}
             </td>
           </tr>

@@ -3,10 +3,10 @@ let name;
 
 function main() {
     parseName(); 
-    createHeading("(All Time)");
     addRankNumbersToTable();
     normalizeArtistNames();
     addEventListenersToButtons();
+    addEventListenersToTrackRows();
     addHiddenInputForPlaylistTime();
 }
 
@@ -37,6 +37,17 @@ function addEventListenersToButtons() {
     document.querySelector("#create-playlist").addEventListener("click", createSpotifyPlaylist);
 }
 
+function addEventListenersToTrackRows() {
+    const dataRows = [...document.querySelectorAll("tr")].splice(1);
+    for (const dataRow of dataRows) {
+        dataRow.addEventListener("click", goToTrackPage)
+    }
+}
+
+function goToTrackPage() {
+    document.location = `track/${this.id}`;
+}
+
 function addHiddenInputForPlaylistTime() {
     const playlistTime = createElement("input", { type: "hidden", value: "(All Time)", id: "time-for-playlist-creation" });
     document.body.appendChild(playlistTime);
@@ -48,17 +59,14 @@ async function timeQuery() {
     
     switch (this.id) {
         case "long_term":
-            createHeading("(All Time)");
             deactivateTimeFilters(["medium_term", "short_term"]);
             playlistTime.value = "(All Time)";
             break;
         case "medium_term":
-            createHeading("(Last 6 Months)");
             deactivateTimeFilters(["long_term", "short_term"]);
             playlistTime.value = "(Last 6 Months)";
             break;
         case "short_term":
-            createHeading("(Last Month)");
             deactivateTimeFilters(["medium_term", "long_term"]);
             playlistTime.value = "(Last Month)";
             break;
@@ -79,7 +87,8 @@ function deactivateTimeFilters(timeFilters) {
 
 async function createSpotifyPlaylist() {
     const timeRange = document.querySelector("#time-for-playlist-creation").value;
-    const spotifyTrackIDs = [...document.querySelectorAll(".track-title")].map(track => track.id);
+    const dataRows = [...document.querySelectorAll("tr")].splice(1);
+    const spotifyTrackIDs = dataRows.map(track => track.id);
 
     //*  https://metrify-me.herokuapp.com
     const rawRes = await fetch("http://localhost:3000/create-top-tracks-playlist", {
@@ -107,16 +116,6 @@ function createElement(elementName, attrs, text) {
     return elem;
 }
 
-function createHeading(timeFilterText) {
-    const prevHeading = document.querySelector("h4");
-    const prevHeadingParent = prevHeading.parentNode;
-    prevHeadingParent.removeChild(prevHeading);
-
-    const headingText = `${name} Top Spotify Tracks ${timeFilterText}`
-    const newHeading = createElement("h4", { class: "page-heading metric-heading" }, headingText);
-    prevHeadingParent.insertBefore(newHeading, document.querySelector("#top-tracks-row"));
-}
-
 function removeTable() {
     const table = document.querySelector("table");
     const parent = table.parentNode;
@@ -138,9 +137,9 @@ function createTable(tableData) {
 
     const tableBody = createElement("tbody");
     for (const track of tableData) {
-        const trackRow = createElement("tr");
+        const trackRow = createElement("tr", { id: track.spotifyID, class: 'data-row' });
         const trackRank = createElement("td", { class: "track-rank", scope:"row" });
-        const trackName = createElement("td", { class: "track-title", id: track.spotifyID }, track.title);
+        const trackName = createElement("td", { class: "track-title" }, track.title);
         const trackArtists = createElement("td", { class: "track-artist" }, track.artists);
         trackRow.appendChild(trackRank);
         trackRow.appendChild(trackName);

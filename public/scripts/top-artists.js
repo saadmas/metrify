@@ -3,7 +3,6 @@ let name;
 
 function main() {
     parseName();
-    createHeading("(All Time)");
     addRankNumbersToTable();
     addEventListenersToTimeQueryButtons();
 }
@@ -29,15 +28,12 @@ async function timeQuery() {
 
     switch (this.id) {
         case "long_term":
-            createHeading("(All Time)");
             deactivateTimeFilters(["medium_term", "short_term"]);
             break;
         case "medium_term":
-            createHeading("(Last 6 Months)");
             deactivateTimeFilters(["long_term", "short_term"]);
             break;
         case "short_term":
-            createHeading("(Last Month)");
             deactivateTimeFilters(["medium_term", "long_term"]);
             break;
     }
@@ -71,16 +67,6 @@ function parseName() {
     name = headingText.split(" Top Spotify")[0];
 }
 
-function createHeading(timeFilterText) {
-    const prevHeading = document.querySelector("h3");
-    const prevHeadingParent = prevHeading.parentNode;
-    prevHeadingParent.removeChild(prevHeading);
-
-    const headingText = `${name} Top Spotify Artists ${timeFilterText}`
-    const newHeading = createElement("h3", { class: "page-heading metric-heading" }, headingText);
-    prevHeadingParent.insertBefore(newHeading, document.querySelector("#top-artists-row"));
-}
-
 function removeTable() {
     const table = document.querySelector("table");
     const tableParent = table.parentNode;
@@ -100,9 +86,9 @@ function createTable(tableData) {
 
     const tableBody = createElement("tbody");
     for (const artist of tableData) {
-        const artistRow = createElement("tr");
+        const artistRow = createElement("tr", { class: "data-row", id: artist.spotifyID });
         const artistRank = createElement("td", { class: "artist-rank", scope:"row" });
-        const artistName = createElement("td", { id: artist.spotifyID }, artist.name);
+        const artistName = createElement("td", undefined, artist.name);
         artistRow.appendChild(artistRank);
         artistRow.appendChild(artistName);
         tableBody.appendChild(artistRow);

@@ -61,6 +61,16 @@ tr {
   color: white;
   font-size: 20px;
   font-weight: 100;
+  cursor: default;
+}
+
+.data-row {
+  cursor: pointer;
+}
+
+.data-row:hover {
+  color: #2A9FD6;
+  background: #404040 !important;
 }
 
 .rank-col-artist {
@@ -111,6 +121,7 @@ tr {
 }
 
 .about-header {
+  font-family: 'Rock Salt', cursive;
   font-weight: bold;
   text-align: left;
   font-size: 2.6em !important;
@@ -119,7 +130,6 @@ tr {
 
 .about-details {
   text-align: left;
-  font-size: 1.4em !important;
 }
 
 .about-gif {
