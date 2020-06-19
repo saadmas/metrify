@@ -23,27 +23,27 @@ const UserSchema = new mongoose.Schema({
     name: String,
     token: { type: String, required: true },
     topTracksLong: {
-        topTracksLong: [TrackSchema],
+        tracks: [TrackSchema],
         lastUpdated: Date
     },
     topTracksMedium: {
-        topTracksMedium: [TrackSchema], /// tracks
+        tracks: [TrackSchema], 
         lastUpdated: Date
     },
     topTracksShort: {
-        topTracksShort: [TrackSchema],
+        tracks: [TrackSchema],
         lastUpdated: Date
     },
     topArtistsLong: {
-        topArtistsLong: [ArtistSchema],
+        artists: [ArtistSchema],
         lastUpdated: Date
     },
     topArtistsMedium: {
-        topArtistsMedium: [ArtistSchema],
+        artists: [ArtistSchema],
         lastUpdated: Date
     },
     topArtistsShort: {
-        topArtistsShort: [ArtistSchema],
+        artists: [ArtistSchema],
         lastUpdated: Date
     },
 });

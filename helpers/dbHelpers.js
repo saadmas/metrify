@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const appHelpers = require('./appHelpers');
+require('../db');
 
-require('../db'); ///
 const User = mongoose.model('User');
 const Track = mongoose.model("Track");
 const Artist = mongoose.model("Artist");
@@ -74,22 +74,23 @@ function getMinutesFromNow(date) {
 function getTopTrackData(user, time) {
   switch (time) {
     case "long_term":
-      return user.topTracksLong.topTracksLong;
+      return user.topTracksLong.tracks;
     case "medium_term":
-      return user.topTracksMedium.topTracksMedium;
+      return user.topTracksMedium.tracks;
     case "short_term":
-      return user.topTracksShort.topTracksShort;
+      return user.topTracksShort.tracks;
   }
 }
 
 function getTopArtistData(user, time) {
+  console.log(user.topArtistsLong) ///
   switch (time) {
     case "long_term":
-      return user.topArtistsLong.topArtistsLong;
+      return user.topArtistsLong.artists;
     case "medium_term":
-      return user.topArtistsMedium.topArtistsMedium;
+      return user.topArtistsMedium.artists;
     case "short_term":
-      return user.topArtistsShort.topArtistsShort;
+      return user.topArtistsShort.artists;
   }
 }
 
@@ -113,7 +114,7 @@ async function updateTopTracks(id, time, items, next) {
     { spotifyID: id },
     { $set: { 
       [fieldName]: {
-        [fieldName]: await parseAndStoreTracks(items, next),
+        tracks: await parseAndStoreTracks(items, next),
         lastUpdated: new Date()
       }
     }},
@@ -178,7 +179,7 @@ async function updateTopArtists(id, time, items, next) {
     { spotifyID: id },
     { $set: { 
       [fieldName]: {
-        [fieldName]: await parseAndStoreArtists(items, next),
+        artists: await parseAndStoreArtists(items, next),
         lastUpdated: new Date()
       }
     }},
