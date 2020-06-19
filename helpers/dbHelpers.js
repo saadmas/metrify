@@ -113,7 +113,7 @@ async function updateTopTracks(id, time, items, next) {
     { spotifyID: id },
     { $set: { 
       [fieldName]: {
-        [fieldName] : await parseAndStoreTracks(items, next),
+        [fieldName]: await parseAndStoreTracks(items, next),
         lastUpdated: new Date()
       }
     }},

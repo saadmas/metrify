@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
         lastUpdated: Date
     },
     topTracksMedium: {
-        topTracksMedium: [TrackSchema],
+        topTracksMedium: [TrackSchema], /// tracks
         lastUpdated: Date
     },
     topTracksShort: {
