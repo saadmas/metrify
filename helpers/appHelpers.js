@@ -69,6 +69,28 @@ async function handleTrackPage(req, res, next) {
     res.render('track', { track, artists, features });
 }
 
+async function getTrackFeatures(req, res, next) {
+    const { params, session } = req;
+    const { trackId } = params;
+    const { spotifyID } = session;
+
+    const token = await dbHelpers.getToken(spotifyID, next);
+    const spotifyApi = createSpotifyAPI(token);
+
+    const { body: audioFeatures } = await spotifyApi.getAudioFeaturesForTrack(trackId);
+    const { acousticness, danceability, energy, instrumentalness, speechiness, valence } = audioFeatures;
+    const features = {
+        acousticness,
+        danceability,
+        energy,
+        instrumentalness,
+        speechiness,
+        valence
+    };
+
+    res.json({ features });
+}
+
 async function addTracksToPlaylist(spotifyApi, playlistID, trackIDs, timeRange, res) {
     try {
         await spotifyApi.addTracksToPlaylist(playlistID, trackIDs);
@@ -140,5 +162,6 @@ module.exports = {
     loginUser,
     normalizeTrackIDsForPlaylist,
     createSpotifyAPI,
-    handleTrackPage
+    handleTrackPage,
+    getTrackFeatures
 };

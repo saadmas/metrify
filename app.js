@@ -114,6 +114,10 @@ app.get("/track/:trackId", (req, res, next) => {
     appHelpers.handleTrackPage(req, res, next);
 });
 
+app.get("/track-features/:trackId", (req, res, next) => {
+    appHelpers.getTrackFeatures(req, res, next);
+});
+
 app.post("/create-top-tracks-playlist", async (req, res, next) => {
     const {
         session: { spotifyID },
