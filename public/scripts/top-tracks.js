@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", main);
 let name;
 
 function main() {
-    parseName(); 
+    parseName();
     addRankNumbersToTable();
     normalizeArtistNames();
     addEventListenersToButtons();
@@ -24,7 +24,7 @@ function addRankNumbersToTable() {
 
 function normalizeArtistNames() {
     const trackArtists = document.querySelectorAll(".track-artist");
-    for (let i=0; i < trackArtists.length; i++) {
+    for (let i = 0; i < trackArtists.length; i++) {
         const artists = trackArtists[i];
         artists.textContent = artists.textContent.split(',').join(', ');
     }
@@ -56,7 +56,7 @@ function addHiddenInputForPlaylistTime() {
 async function timeQuery() {
     this.classList.add("active-time");
     const playlistTime = document.querySelector("#time-for-playlist-creation");
-    
+
     switch (this.id) {
         case "long_term":
             deactivateTimeFilters(["medium_term", "short_term"]);
@@ -74,14 +74,14 @@ async function timeQuery() {
 
     //* https://metrify-me.herokuapp.com
     const rawRes = await fetch(`http://localhost:3000/get-metric?target=tracks&timeRange=${this.id}`, { method: 'GET' });
-    const res = await rawRes.json();   
+    const res = await rawRes.json();
     reCreateTable(res);
 }
 
 function deactivateTimeFilters(timeFilters) {
     for (const timeFilter of timeFilters) {
         document.querySelector(`#${timeFilter}`)
-        .classList.remove("active", "active-time")
+            .classList.remove("active", "active-time")
     }
 }
 
@@ -92,12 +92,12 @@ async function createSpotifyPlaylist() {
 
     //*  https://metrify-me.herokuapp.com
     const rawRes = await fetch("http://localhost:3000/create-top-tracks-playlist", {
-          method: 'POST',
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-          body: JSON.stringify({ spotifyTrackIDs, timeRange })
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ spotifyTrackIDs, timeRange })
     });
-    const res = await rawRes.json();   
-    
+    const res = await rawRes.json();
+
     document.querySelector("#create-playlist-result").innerText = res;
     document.querySelector("#show-modal-button").click();
 }
@@ -138,7 +138,7 @@ function createTable(tableData) {
     const tableBody = createElement("tbody");
     for (const track of tableData) {
         const trackRow = createElement("tr", { id: track.spotifyID, class: 'data-row' });
-        const trackRank = createElement("td", { class: "track-rank", scope:"row" });
+        const trackRank = createElement("td", { class: "track-rank", scope: "row" });
         const trackName = createElement("td", { class: "track-title" }, track.title);
         const trackArtists = createElement("td", { class: "track-artist" }, track.artists);
         trackRow.appendChild(trackRank);

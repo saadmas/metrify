@@ -96,6 +96,10 @@ tr {
   font-weight: Extra-Bold;
 }
 
+.create-playlist-btn {
+  margin-left: 5px;
+}
+
 #show-modal-button {
     display: none;
 }
@@ -113,6 +117,22 @@ tr {
   color: white;
   letter-spacing: 0.5px;
   font-weight: lighter;
+}
+
+/* track */
+.track-name {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.track-artists {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.track-image {
+  height: 300px;
+  width: 300px;
 }
 
 /* index, error page, about */
@@ -177,6 +197,11 @@ tr {
   width: 2em;
   height: 2em;
   margin-left: 0.2em;
+}
+
+.welcome-page {
+  height: 1000px;
+  overflow: hidden;
 }
 
 /* Music notes animation for homepage */

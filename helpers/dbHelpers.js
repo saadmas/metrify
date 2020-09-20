@@ -9,44 +9,44 @@ const Artist = mongoose.model("Artist");
 async function storeUser(id, name, token, next) {
   await User.findOneAndUpdate(
     { spotifyID: id },
-    { $set: { token }},
-    { new: true, runValidators: true }, 
+    { $set: { token } },
+    { new: true, runValidators: true },
     (err, user) => onFindUserForSave(id, token, err, user, name, next))
-  .exec();
+    .exec();
 }
 
 function onFindUserForSave(id, token, err, user, name, next) {
   if (err || !user) {
-    console.log("User does not exist. Storing user in db now ...");
+    // console.log("User does not exist. Storing user in db now ...");
 
-    const user = name ? 
-    new User({ spotifyID: id, name, token }) :
-    new User({ spotifyID: id, name: "My", token });
+    const user = name ?
+      new User({ spotifyID: id, name, token }) :
+      new User({ spotifyID: id, name: "My", token });
 
     user.save((err) => {
       if (err) {
         const errorMessage = `Error storing user in db: ${err}`;
         appHelpers.handleError(errorMessage, next);
         return;
-      } 
-      console.log("User succesfully saved in db!");
+      }
+      // console.log("User succesfully saved in db!");
     });
   } else if (user) {
-    console.log("User already exists in db. Token updated.");
-  } 
+    // console.log("User already exists in db. Token updated.");
+  }
 }
 
 async function getMetricData(id, time, metric, next) {
   const user = await User.findOne(
-    { spotifyID: id }, 
+    { spotifyID: id },
     (err, user) => {
       if (err) {
         const errorMessage = `Error finding user to get metric data: ${err}`;
         appHelpers.handleError(errorMessage, next);
       }
     })
-  .exec();
-  
+    .exec();
+
   let timeKey = time.split('_')[0];
   timeKey = timeKey.charAt(0).toUpperCase() + timeKey.slice(1);
   const metricKey = metric.charAt(0).toUpperCase() + metric.slice(1);
@@ -56,14 +56,14 @@ async function getMetricData(id, time, metric, next) {
   if (!user || getMinutesFromNow(lastUpdated) > 60) {
     return null;
   }
-  
+
   if (metric === "tracks") {
     return getTopTrackData(user, time);
   } else if (metric === "artists") {
     return getTopArtistData(user, time);
   }
 }
- 
+
 function getMinutesFromNow(date) {
   const now = new Date();
   const diff = Math.abs(now - date);
@@ -83,7 +83,7 @@ function getTopTrackData(user, time) {
 }
 
 function getTopArtistData(user, time) {
-  console.log(user.topArtistsLong) ///
+  // console.log(user.topArtistsLong) ///
   switch (time) {
     case "long_term":
       return user.topArtistsLong.artists;
@@ -112,21 +112,23 @@ async function updateTopTracks(id, time, items, next) {
   const fieldName = `topTracks${time}`;
   await User.findOneAndUpdate(
     { spotifyID: id },
-    { $set: { 
-      [fieldName]: {
-        tracks: await parseAndStoreTracks(items, next),
-        lastUpdated: new Date()
+    {
+      $set: {
+        [fieldName]: {
+          tracks: await parseAndStoreTracks(items, next),
+          lastUpdated: new Date()
+        }
       }
-    }},
-    { new: true, runValidators: true }, 
+    },
+    { new: true, runValidators: true },
     (err, user) => {
       if (err) {
         const errorMessage = `Error saving ${time}_term top-track data: ${err}`;
         appHelpers.handleError(errorMessage, next);
       } else if (user) {
-          console.log(`Found User. Stored ${time}_term tracklist`);
+        // console.log(`Found User. Stored ${time}_term tracklist`);
       }
-  });
+    });
 }
 
 async function parseAndStoreTracks(trackItems, next) {
@@ -134,7 +136,7 @@ async function parseAndStoreTracks(trackItems, next) {
 
   for (const trackItem of trackItems) {
     await Track.findOneAndUpdate(
-      { spotifyID: trackItem.id }, 
+      { spotifyID: trackItem.id },
       createTrack(trackItem),
       { upsert: true, new: true, runValidators: true },
       (err, trackDoc) => {
@@ -143,9 +145,9 @@ async function parseAndStoreTracks(trackItems, next) {
           appHelpers.handleError(errorMessage, next);
           return;
         }
-        // console.log("saved new track to db: "+ trackDoc.title);
+        // // console.log("saved new track to db: "+ trackDoc.title);
         trackDocs.push(trackDoc);
-    });
+      });
   }
 
   return trackDocs;
@@ -153,9 +155,9 @@ async function parseAndStoreTracks(trackItems, next) {
 
 function createTrack(trackItem) {
   return {
-      title: trackItem.name,
-      spotifyID: trackItem.id, 
-      artists: trackItem.artists.map(artist => artist.name)
+    title: trackItem.name,
+    spotifyID: trackItem.id,
+    artists: trackItem.artists.map(artist => artist.name)
   }
 }
 
@@ -177,21 +179,23 @@ async function updateTopArtists(id, time, items, next) {
   const fieldName = `topArtists${time}`;
   await User.findOneAndUpdate(
     { spotifyID: id },
-    { $set: { 
-      [fieldName]: {
-        artists: await parseAndStoreArtists(items, next),
-        lastUpdated: new Date()
+    {
+      $set: {
+        [fieldName]: {
+          artists: await parseAndStoreArtists(items, next),
+          lastUpdated: new Date()
+        }
       }
-    }},
-    { new: true, runValidators: true }, 
+    },
+    { new: true, runValidators: true },
     (err, user) => {
       if (err) {
         const errorMessage = `Error saving ${time}_term top-artist data: ${err}`;
         appHelpers.handleError(errorMessage, next);
       } else if (user) {
-          console.log(`Found User. Stored ${time}_term artists`);
+        // console.log(`Found User. Stored ${time}_term artists`);
       }
-  });
+    });
 }
 
 async function parseAndStoreArtists(artistItems, next) {
@@ -199,18 +203,18 @@ async function parseAndStoreArtists(artistItems, next) {
 
   for (const artistItem of artistItems) {
     await Artist.findOneAndUpdate(
-      { spotifyID: artistItem.id }, 
-      createArtist(artistItem), 
+      { spotifyID: artistItem.id },
+      createArtist(artistItem),
       { upsert: true, new: true, runValidators: true },
       (err, doc) => {
         if (err) {
           const errorMessage = `Error saving new artist: ${err}`;
           appHelpers.handleError(errorMessage, next);
         } else if (doc) {
-          // console.log("saved new artist to db: "+ doc.name);
+          // // console.log("saved new artist to db: "+ doc.name);
           artists.push(doc);
         }
-    });
+      });
   }
 
   return artists;
@@ -228,14 +232,14 @@ async function getToken(id, next) {
     if (err) {
       const errorMessage = `Error. Cannot retrive access token: ${err}`;
       appHelpers.handleError(errorMessage, next);
-    } else if (findResult) {    
-      // console.log("Retrieved access token!");
+    } else if (findResult) {
+      // // console.log("Retrieved access token!");
     }
   }).exec();
 
   if (user) {
     return user.token;
-  } 
+  }
 
   return "token-err";
 }
@@ -244,8 +248,8 @@ async function getDisplayName(id, next) {
   const user = await User.findOne({ spotifyID: id }, (err, findResult) => {
     if (err) {
       console.error(`Error. Cannot retrive access token: ${err}`);
-    } else if (findResult) {    
-      // console.log("Retrieved display name!");
+    } else if (findResult) {
+      // // console.log("Retrieved display name!");
     }
   }).exec();
 
@@ -260,7 +264,7 @@ async function getDisplayName(id, next) {
 function normalizeName(dbName) {
   let normalizedName = dbName;
 
-  if (dbName[dbName.length-1] === "s") {
+  if (dbName[dbName.length - 1] === "s") {
     normalizedName += "'";
   } else {
     normalizedName += "'s";

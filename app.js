@@ -1,5 +1,5 @@
 const path = require("path");
-const sanitize = require('mongo-sanitize'); 
+const sanitize = require('mongo-sanitize');
 const express = require('express');
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
@@ -27,14 +27,14 @@ app.use(async (req, res, next) => {
             if (token === "token-err") {
                 res.redirect("/");
                 return;
-            } 
+            }
             next();
             return;
-        } 
+        }
         res.redirect("/");
         return;
-    } 
-    next();  
+    }
+    next();
 });
 
 const publicPath = path.join(__dirname, 'public');
@@ -46,26 +46,26 @@ app.use(express.json());
 
 // Error handling
 app.use((err, req, res, next) => {
-    console.error("error msg: " + err.message); 
-    console.error("error stack: " + err.stack); 
-    
-    if (!err.statusCode) { 
+    console.error("error msg: " + err.message);
+    console.error("error stack: " + err.stack);
+
+    if (!err.statusCode) {
         err.statusCode = 500;
     }
-    
-    res.status(err.statusCode).render("error", {errMsg: err.message, errStack: err.stack}); 
+
+    res.status(err.statusCode).render("error", { errMsg: err.message, errStack: err.stack });
 });
 
 // Routes
 app.get("/", (req, res) => {
     res.render("index", { noNav: true });
-}); 
+});
 
 app.get("/spotify-auth", (req, res) => {
     const spotifyApi = appHelpers.createSpotifyAPI();
     const authURL = spotifyApi.createAuthorizeURL(['user-read-private', 'user-read-email', 'user-top-read', 'playlist-modify-private']);
     res.redirect(authURL);
-}); 
+});
 
 app.get("/login", async (req, res, next) => {
     const authCode = req.query.code;
@@ -79,25 +79,25 @@ app.get("/login", async (req, res, next) => {
     catch (e) {
         const errorMessage = `Something went wrong with authorizing code grant: ${e}`;
         appHelpers.handleError(errorMessage, next);
-    }   
-}); 
+    }
+});
 
 app.get('/get-metric', async (req, res, next) => {
-    const { 
-        query: { target, timeRange }, 
-        session: { spotifyID } 
+    const {
+        query: { target, timeRange },
+        session: { spotifyID }
     } = req;
 
     const metricData = await dbHelpers.getMetricData(spotifyID, timeRange, target, next);
     if (metricData && metricData.length) {
-        console.log(`retrieved metric data for ${target} - ${timeRange} from db`);
+        // console.log(`retrieved metric data for ${target} - ${timeRange} from db`);
         res.json(metricData);
         return;
     }
 
     appHelpers.makeDirectSpotifyApiRequest(res, next, spotifyID, target, timeRange, undefined, true);
 });
- 
+
 app.get("/top-tracks", (req, res, next) => {
     appHelpers.handleMetricPage('tracks', req, res, next);
 });
@@ -106,8 +106,16 @@ app.get("/top-artists", (req, res, next) => {
     appHelpers.handleMetricPage('artists', req, res, next);
 });
 
+app.get("/top-artists", (req, res, next) => {
+    appHelpers.handleMetricPage('artists', req, res, next);
+});
+
+app.get("/track/:trackId", (req, res, next) => {
+    appHelpers.handleTrackPage(req, res, next);
+});
+
 app.post("/create-top-tracks-playlist", async (req, res, next) => {
-    const { 
+    const {
         session: { spotifyID },
         body
     } = req;
@@ -117,7 +125,7 @@ app.post("/create-top-tracks-playlist", async (req, res, next) => {
     const spotifyApi = appHelpers.createSpotifyAPI(token);
     try {
         const playlistData = await spotifyApi.createPlaylist(spotifyID, `My Top Tracks ${timeRange}`, { 'public': false });
-        console.log(`Created Top Tracks ${timeRange} playlist!`);
+        // console.log(`Created Top Tracks ${timeRange} playlist!`);
         const normalizedTrackIDs = appHelpers.normalizeTrackIDsForPlaylist(spotifyTrackIDs);
         appHelpers.addTracksToPlaylist(spotifyApi, playlistData.body.id, normalizedTrackIDs, timeRange, res);
     } catch (e) {
@@ -126,11 +134,11 @@ app.post("/create-top-tracks-playlist", async (req, res, next) => {
     }
 });
 
-app.get("/error", (req,res) => {
+app.get("/error", (req, res) => {
     res.render("error", { noNav: true });
 });
 
-app.get("/about", (req,res) => {
+app.get("/about", (req, res) => {
     res.render("about");
 });
 

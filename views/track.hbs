@@ -1,0 +1,13 @@
+<section>
+  <h1 class="track-name">{{track.name}}</h1>
+  <h2 class="track-artists">
+    {{#each artists}}
+    <a href="artist/{{id}}">{{name}}</a>
+    {{/each}}
+  </h2>
+  <div class="track-image-chart">
+    <img class="track-image" src="{{track.imageUrl}}">
+    <div class='track-chart'>
+    </div>
+  </div>
+</section>
