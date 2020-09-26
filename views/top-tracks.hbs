@@ -1,9 +1,10 @@
-<h4 class="page-heading metric-heading"> {{name}} Top Spotify Tracks</h4>  
+<h4 class="page-heading metric-heading"> {{name}} Top Spotify Tracks</h4>
 <div class="row" id="top-tracks-row">
   <div class="col">
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
       <div class="btn-group mr-2" role="group" aria-label="Time Query" id="time-query-group">
-        <button type="button" class="btn btn-outline-primary active-time active action-btn" id="long_term" data-toggle="button">
+        <button type="button" class="btn btn-outline-primary active-time active action-btn" id="long_term"
+          data-toggle="button">
           All Time
         </button>
         <button type="button" class="btn btn-outline-primary action-btn" id="medium_term" data-toggle="button">
@@ -19,7 +20,7 @@
           <img id="spotify-logo" src="/img/Spotify_Icon_RGB_White.png" alt="Spotify Logo">
         </button>
       </div>
-    </div>                
+    </div>
   </div>
 </div>
 <div class="row">
@@ -34,21 +35,22 @@
       </thead>
       <tbody>
         {{#each metricData}}
-          <tr id={{spotifyID}} class="data-row">
-            <td class="track-rank" scope="row">
-            <td class="track-title">
-              {{title}}
-            </td>
-            <td class="track-artist">
-              {{artists}}
-            </td>
-          </tr>
+        <tr id={{spotifyID}} class="data-row">
+          <td class="track-rank" scope="row">
+          <td class="track-title">
+            {{title}}
+          </td>
+          <td class="track-artist">
+            {{artists}}
+          </td>
+        </tr>
         {{/each}}
       </tbody>
     </table>
   </div>
 </div>
-<div class="modal fade" id="create-playlist-modal" tabindex="-1" role="dialog" aria-labelledby="create-playlist-modal" aria-hidden="true">
+<div class="modal fade" id="create-playlist-modal" tabindex="-1" role="dialog" aria-labelledby="create-playlist-modal"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -59,7 +61,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body create-playlist-result" id="create-playlist-result"/>
+      <div class="modal-body create-playlist-result" id="create-playlist-result" />
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Close
@@ -68,5 +70,6 @@
     </div>
   </div>
 </div>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-playlist-modal" id="show-modal-button"></button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-playlist-modal"
+  id="show-modal-button"></button>
 <script type='text/javascript' src="scripts/top-tracks.js"></script>
