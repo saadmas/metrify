@@ -55,18 +55,7 @@ async function handleTrackPage(req, res, next) {
     const track = { name: trackInfo.name, imageUrl: trackImageUrl };
     const artists = trackInfo.artists.map(artist => ({ id: artist.id, name: artist.name }));
 
-    const { body: audioFeatures } = await spotifyApi.getAudioFeaturesForTrack(trackId);
-    const { acousticness, danceability, energy, instrumentalness, speechiness, valence } = audioFeatures;
-    const features = {
-        acousticness,
-        danceability,
-        energy,
-        instrumentalness,
-        speechiness,
-        valence
-    };
-
-    res.render('track', { track, artists, features });
+    res.render('track', { track, artists });
 }
 
 async function getTrackFeatures(req, res, next) {
@@ -80,11 +69,11 @@ async function getTrackFeatures(req, res, next) {
     const { body: audioFeatures } = await spotifyApi.getAudioFeaturesForTrack(trackId);
     const { acousticness, danceability, energy, instrumentalness, speechiness, valence } = audioFeatures;
     const features = {
+        instrumentalness,
         acousticness,
         danceability,
-        energy,
-        instrumentalness,
         speechiness,
+        energy,
         valence
     };
 
