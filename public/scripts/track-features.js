@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", main);
 async function main() {
   const trackFeatures = await getTrackFeatures();
   renderChart(trackFeatures);
-  removeLoader();
 }
 
 async function getTrackFeatures() {
@@ -11,12 +10,6 @@ async function getTrackFeatures() {
   const rawRes = await fetch(`http://localhost:3000/track-features/${trackId}`);
   const trackFeatures = await rawRes.json();
   return trackFeatures.features;
-}
-
-function removeLoader() {
-  const loader = document.querySelector('.loading-chart');
-  const parent = loader.parentNode;
-  parent.removeChild(loader);
 }
 
 function renderChart(trackFeatures) {
