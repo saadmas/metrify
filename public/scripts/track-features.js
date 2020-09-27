@@ -22,13 +22,26 @@ function renderChart(trackFeatures) {
       labels,
       datasets: [{
         label: null,
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: ['#f06363', '#6378f0', '#63f099', '#f09b63', '#f0e763', '#b863f0'],
         data: featuresData
       }]
     },
     options: {
-      legend: { display: false }
+      legend: { display: false },
+      responsive: true,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            fontColor: '#fff'
+          },
+        }],
+        xAxes: [{
+          ticks: {
+            fontColor: '#fff'
+          },
+        }]
+      }
     }
   });
 
