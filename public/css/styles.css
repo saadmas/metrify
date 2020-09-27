@@ -130,13 +130,17 @@ tr {
   margin-bottom: 30px;
 }
 
-.track-image-chart {
+.track-embed-chart {
   display: flex;
 }
 
 .track-image {
   height: 300px;
   width: 300px;
+}
+
+.track-features-chart {
+  margin-left: 200px;
 }
 
 .loading-chart {

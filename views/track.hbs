@@ -5,9 +5,12 @@
     <a href="artist/{{id}}">{{name}}</a>
     {{/each}}
   </h2>
-  <div class="track-image-chart">
-    <img class="track-image" src="{{track.imageUrl}}">
-    <div class='track-chart'>
+  <div class="track-embed-chart">
+    <div class="spotify-track-embed">
+      <iframe src="https://open.spotify.com/embed/track/{{track.id}}" width="500" height="480" frameborder="0"
+        allowtransparency="true" allow="encrypted-media"></iframe>
+    </div>
+    <div class='track-features-chart'>
       <div class="loading-chart">
         <div class="loader">Loading...</div>
       </div>

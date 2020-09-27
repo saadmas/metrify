@@ -51,8 +51,7 @@ async function handleTrackPage(req, res, next) {
     const spotifyApi = createSpotifyAPI(token);
 
     const { body: trackInfo } = await spotifyApi.getTrack(trackId);
-    const trackImageUrl = trackInfo.album.images[0].url;
-    const track = { name: trackInfo.name, imageUrl: trackImageUrl };
+    const track = { name: trackInfo.name, id: trackId };
     const artists = trackInfo.artists.map(artist => ({ id: artist.id, name: artist.name }));
 
     res.render('track', { track, artists });

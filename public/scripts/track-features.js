@@ -22,7 +22,6 @@ function removeLoader() {
 function renderChart(trackFeatures) {
   const ctx = document.querySelector('#track-chart').getContext('2d');
   const labels = Object.keys(trackFeatures).map(toTitleCase);
-  console.log(labels)
   const featuresData = Object.values(trackFeatures);
   const trackChart = new Chart(ctx, {
     type: 'bar',
@@ -34,6 +33,9 @@ function renderChart(trackFeatures) {
         borderColor: 'rgb(255, 99, 132)',
         data: featuresData
       }]
+    },
+    options: {
+      legend: { display: false }
     }
   });
 
