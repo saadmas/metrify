@@ -127,11 +127,13 @@ tr {
 .track-name {
   margin-top: 30px;
   text-align: center;
+  font-size: 30px;
 }
 
 .track-artists {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  font-size: 25px;
 }
 
 .track-embed-chart {
@@ -144,7 +146,22 @@ tr {
 }
 
 .track-features-chart {
-  margin-left: 200px;
+  margin-top: 30px;
+  margin-left: 120px;
+}
+
+.track-feature-details {
+  margin-top: 50px;
+}
+
+.track-features-gif {
+  width: 70px;
+  height: 50px;
+  border-radius: 5px;
+}
+
+.track-features-page {
+  margin-bottom: 40px;
 }
 
 /* index, error page, about */
