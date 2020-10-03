@@ -1,19 +1,20 @@
-<h3 class="page-heading metric-heading"> {{name}} Top Spotify Artists</h3>  
+<h3 class="page-heading metric-heading"> {{name}} Top Spotify Artists</h3>
 <div class="row" id="top-artists-row">
   <div class="col">
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
       <div class="btn-group mr-2" role="group" aria-label="Time Query" id="time-query-group">
-        <button type="button" class="btn btn-outline-primary active active-time action-btn" id="long_term" data-toggle="button"> 
-          All Time 
+        <button type="button" class="btn btn-outline-primary active active-time action-btn" id="long_term"
+          data-toggle="button">
+          All Time
         </button>
-        <button type="button" class="btn btn-outline-primary action-btn" id="medium_term" data-toggle="button"> 
+        <button type="button" class="btn btn-outline-primary action-btn" id="medium_term" data-toggle="button">
           Last 6 Months
         </button>
         <button type="button" class="btn btn-outline-primary action-btn" id="short_term" data-toggle="button">
           Last Month
         </button>
       </div>
-    </div>                
+    </div>
   </div>
 </div>
 <div class="row">
@@ -27,12 +28,12 @@
       </thead>
       <tbody>
         {{#each metricData}}
-          <tr class="data-row" id={{spotifyID}}>
-            <td class="artist-rank" scope="row"/>
-            <td>
-              {{name}}
-            </td>
-          </tr>
+        <tr class="data-row artist-row" id={{spotifyID}}>
+          <td class="artist-rank" scope="row" />
+          <td>
+            {{name}}
+          </td>
+        </tr>
         {{/each}}
       </tbody>
     </table>

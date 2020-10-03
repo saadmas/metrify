@@ -68,6 +68,10 @@ tr {
   cursor: default;
 }
 
+.artist-row {
+  cursor: default !important;
+}
+
 .data-row {
   cursor: pointer;
 }
@@ -128,6 +132,7 @@ tr {
   margin-top: 30px;
   text-align: center;
   font-size: 30px;
+  color: #69bce2;
 }
 
 .track-artists {
