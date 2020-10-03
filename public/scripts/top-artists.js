@@ -24,7 +24,7 @@ async function timeQuery() {
     this.classList.add("active-time");
     //*   https://metrify-me.herokuapp.com
     const rawRes = await fetch(`http://localhost:3000/get-metric?target=artists&timeRange=${this.id}`, { method: 'GET' });
-    const res = await rawRes.json();   
+    const res = await rawRes.json();
 
     switch (this.id) {
         case "long_term":
@@ -44,7 +44,7 @@ async function timeQuery() {
 function deactivateTimeFilters(timeFilters) {
     for (const timeFilter of timeFilters) {
         document.querySelector(`#${timeFilter}`)
-        .classList.remove("active", "active-time")
+            .classList.remove("active", "active-time")
     }
 }
 
@@ -74,7 +74,7 @@ function removeTable() {
 }
 
 function createTable(tableData) {
-    const table = createElement("table", { class: "table table-striped" });    
+    const table = createElement("table", { class: "table table-striped" });
     const thead = createElement("thead");
     const tr = createElement("tr");
     const thRank = createElement("th", { scope: "col", class: 'rank-col-artist' }, "Rank");
@@ -87,7 +87,7 @@ function createTable(tableData) {
     const tableBody = createElement("tbody");
     for (const artist of tableData) {
         const artistRow = createElement("tr", { class: "data-row", id: artist.spotifyID });
-        const artistRank = createElement("td", { class: "artist-rank", scope:"row" });
+        const artistRank = createElement("td", { class: "artist-rank", scope: "row" });
         const artistName = createElement("td", undefined, artist.name);
         artistRow.appendChild(artistRank);
         artistRow.appendChild(artistName);
