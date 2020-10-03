@@ -83,7 +83,6 @@ function getTopTrackData(user, time) {
 }
 
 function getTopArtistData(user, time) {
-  // console.log(user.topArtistsLong) ///
   switch (time) {
     case "long_term":
       return user.topArtistsLong.artists;
