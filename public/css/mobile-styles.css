@@ -1,0 +1,64 @@
+@media screen and (max-width: 420px) {
+  /* index */
+  .welcome-heading {
+    font-size: 40px;
+  }
+
+  .welcome-details {
+    font-size: 15px;
+  }
+
+  #login-btn {
+    font-size: 18px;
+  }
+
+  /* nav */
+  .nav-link {
+    font-size: 12px;
+  }
+
+  .nav-metrify {
+    font-size: 40px;
+  }
+
+  .metric-heading {
+    font-size: 20px;
+  }
+
+  /* top tracks */
+  #long_term, #medium_term, #short_term {
+    font-size: 10px !important;
+  }
+
+  .btn-toolbar {
+    margin-top: -10px;
+    margin-left: 50px;
+  }
+
+  .create-playlist-btn {
+    font-size: 12px !important;
+    margin-left: 30px;
+    margin-top: 10px;
+  }
+
+  /* top tracks + top artists */
+
+  th, td {
+    font-size: 10px;
+  }
+
+  .rank-col-track, .rank-col-artist {
+    width: 50px;
+  }
+
+  /* about */
+  .about-header {
+    font-size: 18px !important;
+  }
+
+  .about-details {
+    font-size: 12px;
+  }
+
+  /* track */
+}
