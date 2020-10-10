@@ -72,8 +72,7 @@ async function timeQuery() {
             break;
     }
 
-    //* https://metrify-me.herokuapp.com
-    const rawRes = await fetch(`http://localhost:3000/get-metric?target=tracks&timeRange=${this.id}`, { method: 'GET' });
+    const rawRes = await fetch(`/get-metric?target=tracks&timeRange=${this.id}`, { method: 'GET' });
     const res = await rawRes.json();
     reCreateTable(res);
 }
@@ -90,8 +89,7 @@ async function createSpotifyPlaylist() {
     const dataRows = [...document.querySelectorAll("tr")].splice(1);
     const spotifyTrackIDs = dataRows.map(track => track.id);
 
-    //*  https://metrify-me.herokuapp.com
-    const rawRes = await fetch("http://localhost:3000/create-top-tracks-playlist", {
+    const rawRes = await fetch("/create-top-tracks-playlist", {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({ spotifyTrackIDs, timeRange })

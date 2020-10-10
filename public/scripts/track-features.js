@@ -7,7 +7,7 @@ async function main() {
 
 async function getTrackFeatures() {
   const trackId = document.location.pathname.split('/track/')[1];
-  const rawRes = await fetch(`http://localhost:3000/track-features/${trackId}`);
+  const rawRes = await fetch(`/track-features/${trackId}`);
   const trackFeatures = await rawRes.json();
   return trackFeatures.features;
 }
