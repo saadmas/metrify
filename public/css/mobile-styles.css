@@ -32,12 +32,12 @@
 
   .btn-toolbar {
     margin-top: -10px;
-    margin-left: 50px;
+    margin-left: 45px;
   }
 
   .create-playlist-btn {
     font-size: 12px !important;
-    margin-left: 30px;
+    margin-left: 32px;
     margin-top: 10px;
   }
 
@@ -61,4 +61,38 @@
   }
 
   /* track */
+  .track-embed-chart {
+    flex-direction: column-reverse;
+  }
+
+  .track-name {
+    font-size: 20px;
+  }
+
+  .track-artists {
+    font-size: 18px;
+  }
+
+  .track-frame {
+    width: 300px;
+    height: 300px;
+    margin-left: 25px;
+    margin-top: 20px;
+  } 
+
+  .track-features-gif {
+    height: 50px;
+    width: 50px;
+  }
+
+  .track-feature-details {
+    margin-top: 20px;
+  }
+
+  .track-features-chart {
+    margin: 0px 10px 20px 0px;
+    /* margin-left: 0px;
+    margin-right: 10px;
+    margin-bottom: 20px; */
+  }
 }

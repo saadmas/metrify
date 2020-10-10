@@ -145,6 +145,11 @@ tr {
   display: flex;
 }
 
+.track-frame {
+  width: 500px;
+  height: 450px;
+}
+
 .track-image {
   height: 300px;
   width: 300px;

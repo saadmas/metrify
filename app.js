@@ -21,7 +21,9 @@ app.use(cookieSession({
 
 // Spotify auth ///
 app.use(async (req, res, next) => {
-    if (req.url === "/top-tracks" || req.url === "/top-artists") {
+    const authUrls = ['top-tracks', 'top-artists', 'track'];
+    const isAuthUrl = authUrls.some(authUrl => req.url.includes(authUrl));
+    if (isAuthUrl) {
         if (req.session.spotifyID) {
             const token = await dbHelpers.getToken(req.session.spotifyID, next);
             if (token === "token-err") {
