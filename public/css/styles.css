@@ -129,7 +129,7 @@ tr {
 
 /* track */
 .track-name {
-  margin-top: 30px;
+  margin-top: 0px;
   text-align: center;
   font-size: 30px;
   color: #69bce2;
@@ -147,7 +147,7 @@ tr {
 
 .track-frame {
   width: 500px;
-  height: 450px;
+  height: 400px;
 }
 
 .track-image {
@@ -156,7 +156,7 @@ tr {
 }
 
 .track-features-chart {
-  margin-top: 30px;
+  margin-top: 10px;
   margin-left: 120px;
 }
 
@@ -309,3 +309,21 @@ tr {
   }
 }
   
+
+@media screen and (min-width: 420px) and (max-width: 1100px)  {
+  .track-embed-chart {
+    flex-direction: column-reverse;
+  }
+
+  .track-frame {
+    margin-top: 60px;
+    margin-bottom: 0px;
+    width: 400px;
+    height: 200px;
+  }
+
+  .spotify-track-embed {
+    display: flex;
+    justify-content: center;
+  }
+}
