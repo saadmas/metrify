@@ -1,0 +1,98 @@
+@media screen and (max-width: 420px) {
+  /* index */
+  .welcome-heading {
+    font-size: 40px;
+  }
+
+  .welcome-details {
+    font-size: 15px;
+    font-family: 'Archivo', sans-serif;
+    font-weight: lighter;
+  }
+
+  #login-btn {
+    font-size: 18px;
+    font-family: 'Archivo', sans-serif;
+  }
+
+  /* nav */
+  .nav-link {
+    font-size: 12px;
+  }
+
+  .nav-metrify {
+    font-size: 40px;
+  }
+
+  .metric-heading {
+    font-size: 20px;
+  }
+
+  /* top tracks */
+  #long_term, #medium_term, #short_term {
+    font-size: 10px !important;
+  }
+
+  .btn-toolbar {
+    margin-top: -10px;
+    margin-left: 45px;
+  }
+
+  .create-playlist-btn {
+    font-size: 12px !important;
+    margin-left: 32px;
+    margin-top: 10px;
+  }
+
+  /* top tracks + top artists */
+
+  th, td {
+    font-size: 10px;
+  }
+
+  .rank-col-track, .rank-col-artist {
+    width: 50px;
+  }
+
+  /* about */
+  .about-header {
+    font-size: 18px !important;
+  }
+
+  .about-details {
+    font-size: 12px;
+  }
+
+  /* track */
+  .track-embed-chart {
+    flex-direction: column-reverse;
+  }
+
+  .track-name {
+    font-size: 20px;
+  }
+
+  .track-artists {
+    font-size: 18px;
+  }
+
+  .track-frame {
+    width: 300px;
+    height: 300px;
+    margin-left: 25px;
+    margin-top: 20px;
+  } 
+
+  .track-features-gif {
+    height: 50px;
+    width: 50px;
+  }
+
+  .track-feature-details {
+    margin-top: 20px;
+  }
+
+  .track-features-chart {
+    margin: 0px 10px 20px 0px;
+  }
+}

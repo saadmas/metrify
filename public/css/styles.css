@@ -1,188 +1,329 @@
 /* global */
 .page-heading {
-    font-weight: black;
-
+  font-weight: black;
 }
 
-.navbar-brand {
-    color: grey;
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+nav {
+  margin-top: 15px;
+}
+
+.nav-link {
+  font-size: 18px;
+}
+
+.nav-metrify {
+  cursor: default;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 35px;
+  margin-right: 10px;
+  color: #69bce2;
+  letter-spacing: 1px;
 }
 
 #long_term, #medium_term, #short_term {
-    font-size: 1em;
-    vertical-align: top;
+  font-size: 1em;
+  vertical-align: top;
 }
 
 /* tracks + artists */
 .metric-heading {
-    margin-top: 1em;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.9em;
+  margin-top: 40px;
+  margin-bottom: 35px;
+  text-align: center;
+  font-size: 30px;
+  font-family: 'Josefin Sans', sans-serif;
 }
 
 .btn-toolbar {
-    margin-top: 1em;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 #time-query-group {
-    float: left;
+  float: left;
 }
 
 .filter-text {
-    font-size: 1.25em;  
+  font-size: 1.25em;  
 }
 
 table {
-    margin-top: 1em;
-    font-size: 1.2em;
+  margin-top: 1em;
+  font-size: 1.2em;
+  table-layout: fixed;
+}
+
+td {
+  max-width: 100px;
+}
+
+tr {
+  color: white;
+  font-size: 20px;
+  font-weight: 100;
+  cursor: default;
+}
+
+.artist-row {
+  cursor: default !important;
+}
+
+.data-row {
+  cursor: pointer;
+}
+
+.data-row:hover {
+  color: #2A9FD6;
+  background: #404040 !important;
+}
+
+.rank-col-artist {
+  width: 200px;
+}
+
+.rank-col-track {
+  width: 100px;
 }
 
 .active-time {
-    background-color: #15506c !important;
-    color: white !important;
+  background-color: #15506c !important;
+  color: white !important;
+}
+
+.action-btn {
+  font-size: 15px !important;
 }
 
 /* tracks only */
 #create-playlist {
-    font-size: 1em;
-    font-weight: Extra-Bold;
+  font-size: 1em;
+  font-weight: Extra-Bold;
+}
+
+.create-playlist-btn {
+  margin-left: 5px;
 }
 
 #show-modal-button {
     display: none;
 }
 
+.create-playlist-title {
+  font-size: 25px;
+}
+
+.create-playlist-result {
+  font-size: 15px;
+  margin-top: 10px;
+  margin-left: 0px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  color: white;
+  letter-spacing: 0.5px;
+  font-weight: lighter;
+}
+
+/* track */
+.track-name {
+  margin-top: 0px;
+  text-align: center;
+  font-size: 30px;
+  color: #69bce2;
+}
+
+.track-artists {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 25px;
+}
+
+.track-embed-chart {
+  display: flex;
+}
+
+.track-frame {
+  width: 500px;
+  height: 400px;
+}
+
+.track-image {
+  height: 300px;
+  width: 300px;
+}
+
+.track-features-chart {
+  margin-top: 10px;
+  margin-left: 120px;
+}
+
+.track-feature-details {
+  margin-top: 50px;
+}
+
+.track-features-gif {
+  width: 70px;
+  height: 50px;
+  border-radius: 5px;
+}
+
+.track-features-page {
+  margin-bottom: 40px;
+}
 
 /* index, error page, about */
+.about-page {
+  margin-bottom: 30px;
+}
+
 .about-header {
-    font-weight: bold;
-    text-align: left;
-    font-size: 2.6em !important;
-    margin-top: 1em;
+  font-weight: bold;
+  text-align: left;
+  font-size: 2.6em !important;
+  margin-top: 1em;
 }
 
 .about-details {
-    text-align: left;
-    font-size: 1.4em !important;
+  text-align: left;
 }
 
 .about-gif {
-    width: 1.2em;
-    height: 1.2em;
-    border-radius: 5px;
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 5px;
 }
 
 #welcome-div, #error-div {
-    text-align: center;
-    margin-top: 2.5em;
+  text-align: center;
+  margin-top: 2.5em;
+  font-size: 14px;
 }
 
 .welcome-heading {
-    font-family: "Josefin Sans";
-    font-weight: bold;
-    font-size: 4em;
-    color: white;
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: bold;
+  font-size: 4em;
+  color: white;
 }
 
 .welcome-details, .error-details, .about-details {
-    font-size: 1.5em;
-    color: white;
-    margin-top: 1em;
+  font-size: 1.5em;
+  color: white;
+  margin-top: 1em;
 }
 
 .error-heading {
-    font-size: 4em;
+  font-size: 4em;
 }
 
-
 .gif {
-    margin-bottom: 2em;
+  margin-top: 10px;
+  margin-bottom: 2em;
 }
 
 #login-btn {
-    margin-top: 1.1em;
-    width: 15em;
-    height: 2.6em;
-    font-size: 1.4em;
+  margin-top: 1.1em;
+  width: 15em;
+  height: 2.6em;
+  font-size: 1.4em;
 }
 
 #spotify-logo {
-    width: 2em;
-    height: 2em;
-    margin-left: 0.2em;
-    
+  width: 2em;
+  height: 2em;
+  margin-left: 0.2em;
 }
 
+/* Music notes animation for homepage */
 .music-notes-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    color: white;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
   
 .music-notes {
-    display: block;
-    margin: auto;
-    position: relative;
-    width: 50%;
-    min-width: 1em;
-    height: 1.5em;
-    border: 0px solid #000;
-    margin-top: 5.1em;
-  }
+  display: block;
+  margin: auto;
+  position: relative;
+  width: 50%;
+  min-width: 1em;
+  height: 1.5em;
+  border: 0px solid #000;
+  margin-top: 5.1em;
+}
   
-  .note-1,
-  .note-2,
-  .note-3,
-  .note-4 {
-    position: absolute;
-    animation: notes 3s infinite linear;
-    font-size: 1.9em;
+.note-1,
+.note-2,
+.note-3,
+.note-4 {
+  position: absolute;
+  animation: notes 3s infinite linear;
+  font-size: 30px;
+  opacity: 0;
+}
+  
+.note-1 {
+  top: 60px;
+  left: 0;
+  animation-delay: 0.5s;
+}
+
+.note-2 {
+  top: 30px;
+  left: 30%;
+  animation-delay: 1s;
+}
+
+.note-3 {
+  top: 90px;
+  left: 60%;
+  animation-delay: 1.5s;
+}
+
+.note-4 {
+  top: 40px;
+  left: 90%;
+  animation-delay: 2s;
+}
+  
+@keyframes notes {
+  0% {
+    transform: scale(1) translate(0, 0);
     opacity: 0;
   }
-  
-  .note-1 {
-    top: 60px;
-    left: 0;
-    animation-delay: 0.5s;
+  50% {
+    opacity: 1;
+    transform: scale(1.5) translate(50%, -50%);
   }
-  
-  .note-2 {
-    top: 30px;
-    left: 30%;
-    animation-delay: 1s;
+  80% {
+    opacity: 0;
+    transform: scale(1.5) translate(100%, -100%);
   }
-  
-  .note-3 {
-    top: 90px;
-    left: 60%;
-    animation-delay: 1.5s;
+  100% {
+    transform: scale(1.5) translate(100%, -100%);
+    opacity: 0;
   }
+}
   
-  .note-4 {
-    top: 40px;
-    left: 90%;
-    animation-delay: 2s;
+
+@media screen and (min-width: 420px) and (max-width: 1100px)  {
+  .track-embed-chart {
+    flex-direction: column-reverse;
   }
-  
-  @keyframes notes {
-    0% {
-      transform: scale(1) translate(0, 0);
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1.5) translate(50%, -50%);
-    }
-    80% {
-      opacity: 0;
-      transform: scale(1.5) translate(100%, -100%);
-    }
-    100% {
-      transform: scale(1.5) translate(100%, -100%);
-      opacity: 0;
-    }
+
+  .track-frame {
+    margin-top: 60px;
+    margin-bottom: 0px;
+    width: 400px;
+    height: 200px;
   }
-  
+
+  .spotify-track-embed {
+    display: flex;
+    justify-content: center;
+  }
+}

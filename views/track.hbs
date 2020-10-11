@@ -1,0 +1,141 @@
+<section class="track-features-page">
+  <h1 class="track-name">{{track.name}}</h1>
+  <h2 class="track-artists">
+    {{#each artists}}
+    {{name}}
+    {{/each}}
+  </h2>
+  <div class="track-embed-chart">
+    <div class="spotify-track-embed">
+      <iframe src="https://open.spotify.com/embed/track/{{track.id}}" frameborder="0" allowtransparency="true"
+        allow="encrypted-media" class="track-frame"></iframe>
+    </div>
+    <div class='track-features-chart'>
+      <canvas id="track-chart" width="400" height="400"></canvas>
+    </div>
+  </div>
+  <div class="track-feature-details">
+    <div class="row">
+      <div class="col">
+        <h1 class="about-header">
+          Instrumentalness
+          <img class="track-features-gif" src="https://media.giphy.com/media/xTiTnnnWvRXTeXx3wc/giphy.gif">
+        </h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5 class="about-details">
+          Predicts whether a track contains no vocals. “Ooh” and “aah” sounds are treated as instrumental in this
+          context. Rap or spoken word tracks are clearly “vocal”.
+          <br /> <br />
+          The closer the instrumentalness value is to 1.0, the
+          greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent
+          instrumental tracks, but confidence is higher as the value approaches 1.0.
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h1 class="about-header">
+        Acousticness
+        <img class="track-features-gif" src="https://media.giphy.com/media/xUPGcDXjPy3ph8b8gU/giphy.gif">
+      </h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h5 class="about-details">
+        A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track
+        is acoustic.
+      </h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h1 class="about-header">
+        Danceability
+        <img class="track-features-gif" src="https://media.giphy.com/media/l0Ex2403A1YqrKNQA/giphy.gif">
+      </h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h5 class="about-details">
+        Danceability describes how suitable a track is for dancing based on a combination of musical elements including
+        tempo, rhythm stability, beat strength, and overall regularity.
+        <br /><br />
+        A value of 0.0 is least danceable and 1.0 is
+        most danceable.
+      </h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h1 class="about-header">
+        Speechiness
+        <img class="track-features-gif" src="https://media.giphy.com/media/LU0EPR6tWaNREI35hU/giphy.gif">
+      </h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h5 class="about-details">
+        Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording
+        (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value.
+        <br /><br />
+        Values above 0.66 describe tracks
+        that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain
+        both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most
+        likely represent music and other non-speech-like tracks.
+      </h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h1 class="about-header">
+        Energy
+        <img class="track-features-gif" src="https://media.giphy.com/media/MdeSslU80bVsTtWxEh/giphy.gif">
+      </h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h5 class="about-details">
+        Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity.
+        <br /><br />
+        Typically,
+        energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude
+        scores low on the scale. Perceptual features contributing to this attribute include dynamic range, perceived
+        loudness, timbre, onset rate, and general entropy
+      </h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h1 class="about-header">
+        Valence
+        <img class="track-features-gif" src="https://media.giphy.com/media/kI0mZhnqikAgg/giphy.gif">
+      </h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h5 class="about-details">
+        A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track.
+        <br /><br />
+        Tracks with high valence
+        sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g.
+        sad, depressed, angry).
+      </h5>
+    </div>
+  </div>
+
+</section>
+<script type='text/javascript' src="/scripts/track-features.js"></script>

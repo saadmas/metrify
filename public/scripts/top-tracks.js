@@ -1,238 +1,157 @@
-
-// globals //
-let name;
-let affinityData;
-
-// functions //
-
 document.addEventListener("DOMContentLoaded", main);
+let name;
 
 function main() {
-
-    parseName(); 
-    createHeading("(All Time)");
+    parseName();
     addRankNumbersToTable();
     normalizeArtistNames();
-    init_timeQueryBtns();
-    init_CreatePlayListBtn();
+    addEventListenersToButtons();
+    addEventListenersToTrackRows();
+    addHiddenInputForPlaylistTime();
 }
 
 function parseName() {
-    const hText = document.querySelector("h4").textContent;
-    const textArr = hText.split(" ");
-    let result = "";
-
-    for (let i=0; i<textArr.length; i++) {
-        if (textArr[i+1] === "Top") {
-            result+=textArr[i];
-            break;
-        } else {
-            result+=textArr[i];
-            result+=" ";
-        }
-    }
-
-    name = result;
+    const headingText = document.querySelector("h4").textContent;
+    name = headingText.split(" Top Spotify")[0];
 }
 
 function addRankNumbersToTable() {
-    const arr = document.querySelectorAll(".track-rank");
-    for (let i = 0; i < arr.length; i++) {
-        arr[i].innerText = i+1;
+    const trackRanks = document.querySelectorAll(".track-rank");
+    for (let i = 0; i < trackRanks.length; i++) {
+        trackRanks[i].innerText = i + 1;
     }
-
 }
 
-// put space between those pesky commas
 function normalizeArtistNames() {
-    const namesArr = document.querySelectorAll(".track-artist");
-    for (let n=0; n<namesArr.length; n++) {
-
-        const elem = namesArr[n];
-        const txt = elem.textContent;
-
-        if (txt.includes(",")) {
-            const txtArr = txt.split(",");
-            let res = "";
-            for (let i=0; i<txtArr.length; i++) {
-                if (i+1 === txtArr.length) {
-                    res+=txtArr[i];
-                } else {
-                    res+=txtArr[i];
-                    res+=", ";
-                }
-            }
-            elem.textContent = res;
-        }
+    const trackArtists = document.querySelectorAll(".track-artist");
+    for (let i = 0; i < trackArtists.length; i++) {
+        const artists = trackArtists[i];
+        artists.textContent = artists.textContent.split(',').join(', ');
     }
 }
 
-function init_timeQueryBtns() {
+function addEventListenersToButtons() {
+    document.querySelector("#long_term").addEventListener("click", timeQuery);
+    document.querySelector("#medium_term").addEventListener("click", timeQuery);
+    document.querySelector("#short_term").addEventListener("click", timeQuery);
+    document.querySelector("#create-playlist").addEventListener("click", createSpotifyPlaylist);
+}
 
-    // all time
-    const longTermQuery = document.querySelector("#long_term");
-    longTermQuery.addEventListener("click",timeQuery);
+function addEventListenersToTrackRows() {
+    const dataRows = [...document.querySelectorAll("tr")].splice(1);
+    for (const dataRow of dataRows) {
+        dataRow.addEventListener("click", goToTrackPage)
+    }
+}
 
-    // last 6 months
-    const mediumTermQuery = document.querySelector("#medium_term");
-    mediumTermQuery.addEventListener("click",timeQuery);
+function goToTrackPage() {
+    document.location = `track/${this.id}`;
+}
 
-    // last month
-    const shortTermQuery = document.querySelector("#short_term");
-    shortTermQuery.addEventListener("click",timeQuery);
-
-    // page is loaded with all time tracks - so set create playlist btn input to that
-    const timeForPlaylistCreation = createElement("input", {type: "hidden", value: "(All Time)", id: "time-for-playlist-creation"});
-    document.body.appendChild(timeForPlaylistCreation);
-
+function addHiddenInputForPlaylistTime() {
+    const playlistTime = createElement("input", { type: "hidden", value: "(All Time)", id: "time-for-playlist-creation" });
+    document.body.appendChild(playlistTime);
 }
 
 async function timeQuery() {
-
     this.classList.add("active-time");
+    const playlistTime = document.querySelector("#time-for-playlist-creation");
 
-    // set create playlist button functionality
-    const timeForPlaylistCreation = document.querySelector("#time-for-playlist-creation");
     switch (this.id) {
         case "long_term":
-            createHeading("(All Time)");
-            deActivateBtns(["medium_term", "short_term"]);
-            timeForPlaylistCreation.value = "(All Time)";
+            deactivateTimeFilters(["medium_term", "short_term"]);
+            playlistTime.value = "(All Time)";
             break;
         case "medium_term":
-            createHeading("(Last 6 Months)");
-            deActivateBtns(["long_term", "short_term"]);
-            timeForPlaylistCreation.value = "(Last 6 Months)";
+            deactivateTimeFilters(["long_term", "short_term"]);
+            playlistTime.value = "(Last 6 Months)";
             break;
         case "short_term":
-            createHeading("(Last Month)");
-            deActivateBtns(["medium_term", "long_term"]);
-            timeForPlaylistCreation.value = "(Last Month)";
+            deactivateTimeFilters(["medium_term", "long_term"]);
+            playlistTime.value = "(Last Month)";
             break;
     }
 
-    //* http://localhost:3000
-    const rawRes = await fetch(`https://metrify-me.herokuapp.com/get-metric?target=tracks&timeRange=${this.id}`, {method: 'GET'});
-    const res = await rawRes.json();   
-
-    // update table body //
+    const rawRes = await fetch(`/get-metric?target=tracks&timeRange=${this.id}`, { method: 'GET' });
+    const res = await rawRes.json();
     reCreateTable(res);
-
-    lastClickedBtn = this;
 }
 
-function deActivateBtns(arr) {
-    for (let i=0; i<arr.length; i++) {
-        const btn = document.querySelector("#"+arr[i]);
-        btn.classList.remove("active");
-        btn.classList.remove("active-time");
+function deactivateTimeFilters(timeFilters) {
+    for (const timeFilter of timeFilters) {
+        document.querySelector(`#${timeFilter}`)
+            .classList.remove("active", "active-time")
     }
-}
-
-function init_CreatePlayListBtn() {
-    const createPlaylistBtn = document.querySelector("#create-playlist");
-    createPlaylistBtn.addEventListener("click", createSpotifyPlaylist);
 }
 
 async function createSpotifyPlaylist() {
-
-    const trackIDs = [];
-    const trackElems = document.querySelectorAll(".track-title");
-
-    for (track of trackElems) {
-        trackIDs.push(track.id);
-    }
-
     const timeRange = document.querySelector("#time-for-playlist-creation").value;
+    const dataRows = [...document.querySelectorAll("tr")].splice(1);
+    const spotifyTrackIDs = dataRows.map(track => track.id);
 
+    const rawRes = await fetch("/create-top-tracks-playlist", {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ spotifyTrackIDs, timeRange })
+    });
+    const res = await rawRes.json();
 
-    //* change url b/w herokou and local: http://localhost:3000
-    const res = await fetch("https://metrify-me.herokuapp.com/create-top-tracks-playlist", {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({spotifyTrackIDs: trackIDs, timeRange: timeRange})
-        });
-    const resText = await res.json();   
-    
-    // show result in modal
-    const modalBody = document.querySelector("#create-playlist-result");
-    modalBody.innerText = resText;
-
-    const modalShowBtn = document.querySelector("#show-modal-button");
-    modalShowBtn.click();
+    document.querySelector("#create-playlist-result").innerText = res;
+    document.querySelector("#show-modal-button").click();
 }
 
-function createElement(elemName, attrs, txt) {
-    const resultElem = document.createElement(elemName);
-    
+function createElement(elementName, attrs, text) {
+    const elem = document.createElement(elementName);
+
     for (const key in attrs) {
-        resultElem.setAttribute(key, attrs[key]);
+        elem.setAttribute(key, attrs[key]);
     }
 
-    if (txt) {
-        resultElem.innerText = txt;
+    if (text) {
+        elem.innerText = text;
     }
 
-    return resultElem;
+    return elem;
 }
 
-function createHeading(txt) {
-    // remove old heading
-    const prevHeading = document.querySelector("h4");
-    const parent = prevHeading.parentNode;
-    parent.removeChild(prevHeading);
-
-    // create new heading
-    const newHeading = createElement("h4", {class: "page-heading metric-heading animated bounceIn"}, name+" Top Spotify Tracks "+txt);
-    parent.insertBefore(newHeading, document.querySelector("#top-tracks-row"));
-}
-
-function reCreateTable(data) {
-
-    // remove old table
+function removeTable() {
     const table = document.querySelector("table");
     const parent = table.parentNode;
     parent.removeChild(table);
+}
 
-    // create new table
-    const newTable = createElement("table", {class: "table table-striped animated fadeInUpBig fast", id: "tracks-table"});
-    
+function createTable(tableData) {
+    const table = createElement("table", { class: "table table-striped", id: "tracks-table" });
     const thead = createElement("thead");
     const tr = createElement("tr");
-    const th1 = createElement("th", {scope: "col"}, "Rank");
-    const th2 = createElement("th", {scope: "col"}, "Title");
-    const th3 = createElement("th", {scope: "col"}, "Artists");
-    tr.appendChild(th1);
-    tr.appendChild(th2);
-    tr.appendChild(th3);
+    const thRank = createElement("th", { scope: "col", class: 'rank-col-track' }, "Rank");
+    const thTitle = createElement("th", { scope: "col" }, "Title");
+    const thArtists = createElement("th", { scope: "col" }, "Artists");
+    tr.appendChild(thRank);
+    tr.appendChild(thTitle);
+    tr.appendChild(thArtists);
     thead.appendChild(tr);
-    newTable.appendChild(thead);
+    table.appendChild(thead);
 
-    const newBody = createElement("tbody");
-    
-    // fill in new body with new data
-    for (let i=0; i<data.length; i++) {
-        const currTrack = data[i];
-
-        const tr = createElement("tr");
-
-        const thRank = createElement("th", {class: "track-rank", scope:"row"});
-
-        const tdTrack = createElement("td", {class: "track-title", id: currTrack.spotifyID}, currTrack.title);
-
-        const tdArtists = createElement("td", {class: "track-artist"}, currTrack.artists);
-
-        tr.appendChild(thRank);
-        tr.appendChild(tdTrack);
-        tr.appendChild(tdArtists);
-        newBody.appendChild(tr);
+    const tableBody = createElement("tbody");
+    for (const track of tableData) {
+        const trackRow = createElement("tr", { id: track.spotifyID, class: 'data-row' });
+        const trackRank = createElement("td", { class: "track-rank", scope: "row" });
+        const trackName = createElement("td", { class: "track-title" }, track.title);
+        const trackArtists = createElement("td", { class: "track-artist" }, track.artists);
+        trackRow.appendChild(trackRank);
+        trackRow.appendChild(trackName);
+        trackRow.appendChild(trackArtists);
+        tableBody.appendChild(trackRow);
     }
 
-    newTable.appendChild(newBody);
-    document.querySelector("#table-container").appendChild(newTable);
+    table.appendChild(tableBody);
+    document.querySelector("#table-container").appendChild(table);
     normalizeArtistNames();
     addRankNumbersToTable();
+}
+
+function reCreateTable(tableData) {
+    removeTable();
+    createTable(tableData);
 }
