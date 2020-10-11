@@ -27,6 +27,7 @@ function renderChart(trackFeatures) {
       }]
     },
     options: {
+      animation: { duration: 1200, easing: 'easeInOutCubic' },
       legend: { display: false },
       responsive: true,
       scales: {
