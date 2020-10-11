@@ -6,7 +6,7 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
 const TrackSchema = new mongoose.Schema({
-    title: { type: String, required: true }, 
+    title: { type: String, required: true },
     spotifyID: { type: String, required: true },
     artists: { type: [String], required: true },
 });
@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
         lastUpdated: Date
     },
     topTracksMedium: {
-        tracks: [TrackSchema], 
+        tracks: [TrackSchema],
         lastUpdated: Date
     },
     topTracksShort: {
@@ -49,4 +49,6 @@ const UserSchema = new mongoose.Schema({
 });
 mongoose.model('User', UserSchema);
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/metrify', { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/metrify',
+    { useNewUrlParser: true, useUnifiedTopology: true }
+);
