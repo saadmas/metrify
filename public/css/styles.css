@@ -96,6 +96,7 @@ tr {
 
 .action-btn {
   font-size: 15px !important;
+  height: 40px;
 }
 
 /* tracks only */
