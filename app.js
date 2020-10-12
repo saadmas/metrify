@@ -21,22 +21,22 @@ app.use(cookieSession({
 
 // Spotify auth ///
 app.use(async (req, res, next) => {
-    // const authUrls = ['top-tracks', 'top-artists', 'track'];
-    // const isAuthUrl = authUrls.some(authUrl => req.url.includes(authUrl));
-    // if (isAuthUrl) {
-    //     if (req.session.spotifyID) {
-    //         const token = await dbHelpers.getToken(req.session.spotifyID, next);
-    //         if (token === "token-err") {
-    //             res.redirect("/");
-    //             return;
-    //         }
-    //         next();
-    //         return;
-    //     }
-    //     res.redirect("/");
-    //     return;
-    // }
-    // next();
+    const authUrls = ['top-tracks', 'top-artists', 'track'];
+    const isAuthUrl = authUrls.some(authUrl => req.url.includes(authUrl));
+    if (isAuthUrl) {
+        if (req.session.spotifyID) {
+            const token = await dbHelpers.getToken(req.session.spotifyID, next);
+            if (token === "token-err") {
+                res.redirect("/");
+                return;
+            }
+            next();
+            return;
+        }
+        res.redirect("/");
+        return;
+    }
+    next();
 });
 
 const publicPath = path.join(__dirname, 'public');

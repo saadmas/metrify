@@ -49,6 +49,8 @@ const UserSchema = new mongoose.Schema({
 });
 mongoose.model('User', UserSchema);
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/metrify',
-    { useNewUrlParser: true, useUnifiedTopology: true }
+console.info(process.env.MONGODB_URI);
+mongoose.connect(
+    process.env.MONGODB_URI || 'mongodb://localhost/metrify',
+    { useNewUrlParser: true }
 );
