@@ -120,6 +120,9 @@ function removeTable() {
     const table = document.querySelector("table");
     const parent = table.parentNode;
     parent.removeChild(table);
+    if (window.innerWidth > 420) {
+        document.body.style.overflowY = 'scroll';
+    }
 }
 
 function createTable(tableData) {
@@ -148,7 +151,12 @@ function createTable(tableData) {
     }
 
     table.appendChild(tableBody);
+
     toggleLoader(false);
+    if (window.innerWidth > 420) {
+        document.body.style.overflowY = 'auto';
+    }
+
     document.querySelector("#table-container").appendChild(table);
     normalizeArtistNames();
     addRankNumbersToTable();
