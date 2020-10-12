@@ -72,9 +72,11 @@ async function timeQuery() {
             break;
     }
 
+    removeTable();
+    toggleLoader(true);
     const rawRes = await fetch(`/get-metric?target=tracks&timeRange=${this.id}`, { method: 'GET' });
     const res = await rawRes.json();
-    reCreateTable(res);
+    setTimeout(() => createTable(res), 400);
 }
 
 function deactivateTimeFilters(timeFilters) {
@@ -146,12 +148,13 @@ function createTable(tableData) {
     }
 
     table.appendChild(tableBody);
+    toggleLoader(false);
     document.querySelector("#table-container").appendChild(table);
     normalizeArtistNames();
     addRankNumbersToTable();
 }
 
-function reCreateTable(tableData) {
-    removeTable();
-    createTable(tableData);
+function toggleLoader(shouldShow) {
+    const loader = document.querySelector('.loader');
+    loader.style.display = shouldShow ? 'block' : 'none';
 }
