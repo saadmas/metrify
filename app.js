@@ -1,5 +1,6 @@
 const path = require("path");
 const sanitize = require('mongo-sanitize');
+const enforce = require('express-sslify');
 const express = require('express');
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
@@ -12,12 +13,16 @@ const app = express();
 app.set('view engine', 'hbs');
 
 // Middleware
+app.use(enforce.HTTPS({ trustProtoHeader: true }));
+
 app.use(cookieSession({
     name: 'spotifyUser',
     keys: new keyGrip(['key1', 'key2'], 'SHA384', 'base64'),
     maxAge: 3600000,
     httpOnly: true
 }));
+
+
 
 // Spotify auth ///
 app.use(async (req, res, next) => {

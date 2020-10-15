@@ -76,7 +76,7 @@ async function timeQuery() {
     toggleLoader(true);
     const rawRes = await fetch(`/get-metric?target=tracks&timeRange=${this.id}`, { method: 'GET' });
     const res = await rawRes.json();
-    setTimeout(() => createTable(res), 400);
+    createTable(res);
 }
 
 function deactivateTimeFilters(timeFilters) {
