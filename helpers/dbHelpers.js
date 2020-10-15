@@ -159,7 +159,7 @@ async function parseAndStoreTracks(trackItems, next) {
 
 function createTrack(trackItem) {
   return {
-    title: trackItem.name,
+    title: trackItem.name || '[EMPTY TRACK NAME]',
     spotifyID: trackItem.id,
     artists: trackItem.artists.map(artist => artist.name)
   }
