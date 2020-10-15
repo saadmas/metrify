@@ -1,10 +1,15 @@
 const mongoose = require('mongoose');
-const appHelpers = require('./appHelpers');
 require('../db');
 
 const User = mongoose.model('User');
 const Track = mongoose.model("Track");
 const Artist = mongoose.model("Artist");
+
+function handleError(errorMessage, next) {
+  console.error(errorMessage);
+  const error = new Error(errorMessage);
+  next(error);
+}
 
 async function storeUser(id, name, token, next) {
   await User.findOneAndUpdate(
@@ -26,7 +31,7 @@ function onFindUserForSave(id, token, err, user, name, next) {
     user.save((err) => {
       if (err) {
         const errorMessage = `Error storing user in db: ${err}`;
-        appHelpers.handleError(errorMessage, next);
+        handleError(errorMessage, next);
         return;
       }
       // console.log("User succesfully saved in db!");
@@ -42,7 +47,7 @@ async function getMetricData(id, time, metric, next) {
     (err, user) => {
       if (err) {
         const errorMessage = `Error finding user to get metric data: ${err}`;
-        appHelpers.handleError(errorMessage, next);
+        handleError(errorMessage, next);
       }
     })
     .exec();
@@ -123,7 +128,7 @@ async function updateTopTracks(id, time, items, next) {
     (err, user) => {
       if (err) {
         const errorMessage = `Error saving ${time}_term top-track data: ${err}`;
-        appHelpers.handleError(errorMessage, next);
+        handleError(errorMessage, next);
       } else if (user) {
         // console.log(`Found User. Stored ${time}_term tracklist`);
       }
@@ -141,7 +146,7 @@ async function parseAndStoreTracks(trackItems, next) {
       (err, trackDoc) => {
         if (err) {
           const errorMessage = `Error saving new track: ${err}`;
-          appHelpers.handleError(errorMessage, next);
+          handleError(errorMessage, next);
           return;
         }
         // // console.log("saved new track to db: "+ trackDoc.title);
@@ -190,7 +195,7 @@ async function updateTopArtists(id, time, items, next) {
     (err, user) => {
       if (err) {
         const errorMessage = `Error saving ${time}_term top-artist data: ${err}`;
-        appHelpers.handleError(errorMessage, next);
+        handleError(errorMessage, next);
       } else if (user) {
         // console.log(`Found User. Stored ${time}_term artists`);
       }
@@ -208,7 +213,7 @@ async function parseAndStoreArtists(artistItems, next) {
       (err, doc) => {
         if (err) {
           const errorMessage = `Error saving new artist: ${err}`;
-          appHelpers.handleError(errorMessage, next);
+          handleError(errorMessage, next);
         } else if (doc) {
           // // console.log("saved new artist to db: "+ doc.name);
           artists.push(doc);
@@ -230,7 +235,7 @@ async function getToken(id, next) {
   const user = await User.findOne({ spotifyID: id }, (err, findResult) => {
     if (err) {
       const errorMessage = `Error. Cannot retrive access token: ${err}`;
-      appHelpers.handleError(errorMessage, next);
+      handleError(errorMessage, next);
     } else if (findResult) {
       // // console.log("Retrieved access token!");
     }
@@ -257,7 +262,7 @@ async function getDisplayName(id, next) {
   }
 
   const errorMessage = `Can't find user to retrieve display name. ${err}`;
-  appHelpers.handleError(errorMessage, next);
+  handleError(errorMessage, next);
 }
 
 function normalizeName(dbName) {
