@@ -40,7 +40,7 @@ function addEventListenersToButtons() {
 function addEventListenersToTrackRows() {
     const dataRows = [...document.querySelectorAll("tr")].splice(1);
     for (const dataRow of dataRows) {
-        dataRow.addEventListener("click", goToTrackPage)
+        dataRow.addEventListener("click", goToTrackPage);
     }
 }
 
@@ -141,6 +141,7 @@ function createTable(tableData) {
     const tableBody = createElement("tbody");
     for (const track of tableData) {
         const trackRow = createElement("tr", { id: track.spotifyID, class: 'data-row' });
+        trackRow.addEventListener("click", goToTrackPage);
         const trackRank = createElement("td", { class: "track-rank", scope: "row" });
         const trackName = createElement("td", { class: "track-title" }, track.title);
         const trackArtists = createElement("td", { class: "track-artist" }, track.artists);

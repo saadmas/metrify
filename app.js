@@ -13,7 +13,9 @@ const app = express();
 app.set('view engine', 'hbs');
 
 // Middleware
-app.use(enforce.HTTPS({ trustProtoHeader: true }));
+if (app.get('env') !== 'development') {
+    app.use(enforce.HTTPS({ trustProtoHeader: true }));
+}
 
 app.use(cookieSession({
     name: 'spotifyUser',
