@@ -2,7 +2,7 @@
   <h1 class="track-name">{{track.name}}</h1>
   <h2 class="track-artists">
     {{#each artists}}
-    {{name}}
+    {{name}}{{#unless @last}}, {{/unless}}
     {{/each}}
   </h2>
   <div class="track-embed-chart">
