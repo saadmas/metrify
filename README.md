@@ -12,23 +12,23 @@ Enter **Metrify**. Connect your Spotify account to Metrify to get access to your
 
 ### Landing Page
 
-![/](documentation/screenshots/landing-page.jpg)
+![/](documentation/screenshots/landing-page.JPG)
 
 ### Top Tracks
 
-![/](documentation/screenshots/top-tracks.jpg)
+![/](documentation/screenshots/top-tracks.JPG)
 
 ### Top Artists
 
-![/](documentation/screenshots/top-artists.jpg)
+![/](documentation/screenshots/top-artists.JPG)
 
 ### Track Features
 
-![/](documentation/screenshots/track-features.jpg)
+![/](documentation/screenshots/track-features.JPG)
 
 ### About Page
 
-![/](documentation/screenshots/about.jpg)
+![/](documentation/screenshots/about.JPG)
 
 ## Data Model
 
