@@ -101,6 +101,8 @@ An example Track:
 
 ## Site map
 
+### NOTE: site map is outdated; Track Features page was added to the app but is missing from the site map
+
 ![site map](documentation/site-map.png)
 
 ## User Stories
