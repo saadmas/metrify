@@ -101,7 +101,7 @@ An example Track:
 
 ## Site map
 
-### NOTE: site map is outdated; Track Features page was added to the app but is missing from the site map
+NOTE: site map is outdated; Track Features page was added to the app but is missing from the site map
 
 ![site map](documentation/site-map.png)
 
@@ -113,4 +113,4 @@ An example Track:
 4. As a user, I can filter my top artists by time
 5. As a user, I can filter my top tracks by time
 6. As a user, I can make a new Spotify playlist out of my top tracks
-7. As a user, I can make view audio features of my top tracks
+7. As a user, I can view audio features of my top tracks
