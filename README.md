@@ -8,10 +8,31 @@ But, ever wondered what your top tracks are? How about your top artists? Spotify
 
 Enter **Metrify**. Connect your Spotify account to Metrify to get access to your top 50 top tracks and artists. Wanna put those tracks into their own Spotify playlists so you can bump them later? Got you covered. 
 
+## Screenshots
+
+### Landing Page
+
+![/](documentation/screenshots/landing-page.jpg)
+
+### Top Tracks
+
+![/](documentation/screenshots/top-tracks.jpg)
+
+### Top Artists
+
+![/](documentation/screenshots/top-artists.jpg)
+
+### Track Features
+
+![/](documentation/screenshots/track-features.jpg)
+
+### About Page
+
+![/](documentation/screenshots/about.jpg)
 
 ## Data Model
 
-The application will store Users, Tracks, and Artists
+The application stores Users, Tracks, and Artists
 
 **Users**
 * Can have multiple tracklists based on time (all time, last 6 months, last month) 
@@ -31,13 +52,13 @@ An example User:
 {
   spotifyID: "technojunkie",
   token: "XyAq123941XjpqR713",
-  topTracks_long: [TrackSchema],
-  topTracks_med: [TrackSchema],
-  topTracks_short: [TrackSchema],
+  topTracksLong: [TrackSchema],
+  topTracksMedium: [TrackSchema],
+  topTracksShort: [TrackSchema],
 
-  topArtists_long: [ArtistSchema],
-  topArtists_med: [ArtistSchema],
-  topArtists_short: [ArtistSchema],
+  topArtistsLong: [ArtistSchema],
+  topArtistsMedium: [ArtistSchema],
+  topArtistsShort: [ArtistSchema],
 }
 ```
 
@@ -90,3 +111,4 @@ An example Track:
 4. As a user, I can filter my top artists by time
 5. As a user, I can filter my top tracks by time
 6. As a user, I can make a new Spotify playlist out of my top tracks
+7. As a user, I can make view audio features of my top tracks
