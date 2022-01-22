@@ -20,11 +20,13 @@ nav {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 35px;
   margin-right: 10px;
-  color: #69bce2;
+  color: #1db954;
   letter-spacing: 1px;
 }
 
-#long_term, #medium_term, #short_term {
+#long_term,
+#medium_term,
+#short_term {
   font-size: 1em;
   vertical-align: top;
 }
@@ -48,7 +50,7 @@ nav {
 }
 
 .filter-text {
-  font-size: 1.25em;  
+  font-size: 1.25em;
 }
 
 table {
@@ -77,7 +79,6 @@ tr {
 }
 
 .data-row:hover {
-  color: #2A9FD6;
   background: #404040 !important;
 }
 
@@ -90,7 +91,6 @@ tr {
 }
 
 .active-time {
-  background-color: #15506c !important;
   color: white !important;
 }
 
@@ -110,7 +110,7 @@ tr {
 }
 
 #show-modal-button {
-    display: none;
+  display: none;
 }
 
 .create-playlist-title {
@@ -133,7 +133,7 @@ tr {
   margin-top: 0px;
   text-align: center;
   font-size: 30px;
-  color: #69bce2;
+  color: #1db954;
 }
 
 .track-artists {
@@ -197,7 +197,8 @@ tr {
   border-radius: 5px;
 }
 
-#welcome-div, #error-div {
+#welcome-div,
+#error-div {
   text-align: center;
   margin-top: 2.5em;
   font-size: 14px;
@@ -210,7 +211,9 @@ tr {
   color: white;
 }
 
-.welcome-details, .error-details, .about-details {
+.welcome-details,
+.error-details,
+.about-details {
   font-size: 1.5em;
   color: white;
   margin-top: 1em;
@@ -226,6 +229,8 @@ tr {
 }
 
 #login-btn {
+  background-color: #1db954 !important;
+  border-color: #1db954 !important;
   margin-top: 1.1em;
   width: 15em;
   height: 2.6em;
@@ -245,7 +250,7 @@ tr {
   align-items: center;
   color: white;
 }
-  
+
 .music-notes {
   display: block;
   margin: auto;
@@ -256,7 +261,7 @@ tr {
   border: 0px solid #000;
   margin-top: 5.1em;
 }
-  
+
 .note-1,
 .note-2,
 .note-3,
@@ -266,7 +271,7 @@ tr {
   font-size: 30px;
   opacity: 0;
 }
-  
+
 .note-1 {
   top: 60px;
   left: 0;
@@ -290,7 +295,7 @@ tr {
   left: 90%;
   animation-delay: 2s;
 }
-  
+
 @keyframes notes {
   0% {
     transform: scale(1) translate(0, 0);
@@ -309,9 +314,8 @@ tr {
     opacity: 0;
   }
 }
-  
 
-@media screen and (min-width: 420px) and (max-width: 1100px)  {
+@media screen and (min-width: 420px) and (max-width: 1100px) {
   .track-embed-chart {
     flex-direction: column-reverse;
   }
