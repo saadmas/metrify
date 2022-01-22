@@ -58,10 +58,7 @@ function addHiddenInputForPlaylistTime() {
 }
 
 async function timeQuery() {
-  toggleLoader(true);
-  this.classList.add('active-time');
   const playlistTime = document.querySelector('#time-for-playlist-creation');
-
   switch (this.id) {
     case 'long_term':
       deactivateTimeFilters(['medium_term', 'short_term']);
@@ -77,7 +74,9 @@ async function timeQuery() {
       break;
   }
 
+  this.classList.add('active-time');
   removeTable();
+  toggleLoader(true);
   const rawRes = await fetch(`/get-metric?target=tracks&timeRange=${this.id}`, { method: 'GET' });
   const res = await rawRes.json();
   setTimeout(() => createTable(res), 300);
